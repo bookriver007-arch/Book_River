@@ -1,13 +1,8 @@
 import { motion as Motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import Navbar from '../components/Navbar.jsx'
 
 const LOGO = '/logo.png'
-
-// Colours taken straight from the logo artwork (darkened for contrast)
-const BLUE = '#1d3864'
-const BLUE_SOFT = '#2c5698'
-const GOLD = '#a9782f'
-const GOLD_LIGHT = '#c89859'
 
 const paragraphs = [
   'Book River is an online marketplace where readers and sellers meet. Thousands of handpicked titles — fiction, science, history, business and everything in between — sold by people who genuinely love books.',
@@ -17,8 +12,10 @@ const paragraphs = [
 
 export default function Description() {
   return (
-    <div className="book-page min-h-screen px-5 py-16 sm:py-24">
-      <div className="mx-auto max-w-2xl">
+    <div className="book-page min-h-screen">
+      <Navbar />
+
+      <div className="mx-auto max-w-2xl px-5 py-14 sm:py-20">
         {/* ---- Logo (clickable -> home) ---- */}
         <Link to="/" className="inline-block" aria-label="Back to home">
           <Motion.img
@@ -37,22 +34,11 @@ export default function Description() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-6 font-display text-4xl font-bold tracking-tight sm:text-5xl"
-          style={{
-            backgroundImage: `linear-gradient(100deg, ${BLUE} 0%, ${BLUE_SOFT} 45%, ${BLUE} 72%, ${BLUE_SOFT} 100%)`,
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-          }}
         >
-          Book{' '}
-          <span
-            style={{
-              backgroundImage: `linear-gradient(100deg, ${GOLD} 0%, ${GOLD_LIGHT} 45%, ${GOLD} 75%, ${GOLD_LIGHT} 100%)`,
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              color: 'transparent',
-            }}
-          >
+          <span className="bg-gradient-to-r from-brand-900 to-brand-600 bg-clip-text text-transparent dark:from-brand-200 dark:to-brand-400">
+            Book{' '}
+          </span>
+          <span className="bg-gradient-to-r from-gold-700 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-gold-200">
             River
           </span>
         </Motion.h1>
@@ -73,7 +59,7 @@ export default function Description() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.35 + i * 0.12 }}
-              className="text-base leading-relaxed text-brand-800/90 sm:text-lg"
+              className="text-base leading-relaxed text-brand-800/90 dark:text-brand-200/80 sm:text-lg"
             >
               {text}
             </Motion.p>
@@ -89,7 +75,7 @@ export default function Description() {
         >
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-700/25 transition hover:bg-brand-800"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-700 to-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-700/25 transition hover:from-brand-800 hover:to-brand-600"
           >
             Back
           </Link>
