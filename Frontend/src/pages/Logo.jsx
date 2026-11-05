@@ -2,10 +2,11 @@ import { motion as Motion } from 'framer-motion'
 
 const LOGO = '/logo.png'
 
-// Colours taken straight from the logo artwork
-const BLUE = '#2c5698'
-const BLUE_SOFT = '#3867a6'
-const GOLD = '#d7a558'
+// Colours taken straight from the logo artwork (darkened for contrast)
+const BLUE = '#1d3864'
+const BLUE_SOFT = '#2c5698'
+const GOLD = '#a9782f'
+const GOLD_LIGHT = '#c89859'
 
 export default function Logo() {
   return (
@@ -40,13 +41,23 @@ export default function Logo() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 font-display text-5xl font-bold tracking-tight sm:text-6xl"
           style={{
-            backgroundImage: `linear-gradient(100deg, ${BLUE} 0%, ${BLUE_SOFT} 40%, ${BLUE} 70%, ${BLUE_SOFT} 100%)`,
+            backgroundImage: `linear-gradient(100deg, ${BLUE} 0%, ${BLUE_SOFT} 45%, ${BLUE} 72%, ${BLUE_SOFT} 100%)`,
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
             color: 'transparent',
           }}
         >
-          Book <span style={{ color: GOLD, WebkitTextFillColor: GOLD }}>River</span>
+          Book{' '}
+          <span
+            style={{
+              backgroundImage: `linear-gradient(100deg, ${GOLD} 0%, ${GOLD_LIGHT} 45%, ${GOLD} 75%, ${GOLD_LIGHT} 100%)`,
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+            }}
+          >
+            River
+          </span>
         </Motion.h1>
       </div>
     </div>
