@@ -72,14 +72,7 @@ export default function Description() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-10"
-        >
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-700 to-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-700/25 transition hover:from-brand-800 hover:to-brand-600"
-          >
-            Back
-          </Link>
-        </Motion.div>
+        />
       </div>
     </div>
   )

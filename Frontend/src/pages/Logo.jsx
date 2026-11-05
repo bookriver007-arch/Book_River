@@ -11,7 +11,7 @@ const GOLD_LIGHT = '#c89859'
 
 export default function Logo() {
   return (
-    <div className="book-page flex min-h-screen items-center justify-center px-5 py-16">
+    <div className="logo-page flex min-h-screen items-center justify-center px-5 py-16">
       <div className="flex flex-col items-center text-center">
         {/* ---- Logo (clickable -> Description) ---- */}
         <Link to="/description" className="inline-block" aria-label="Go to description">
