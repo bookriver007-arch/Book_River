@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Business books banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#24467c"/>
+      <stop offset="60%" stop-color="#1d3864"/>
+      <stop offset="100%" stop-color="#0a121f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="#d7a558">
+    <rect x="130" y="520" width="70" height="130" rx="6"/>
+    <rect x="230" y="440" width="70" height="210" rx="6"/>
+    <rect x="330" y="360" width="70" height="290" rx="6"/>
+    <rect x="430" y="490" width="70" height="160" rx="6"/>
+    <rect x="530" y="400" width="70" height="250" rx="6"/>
+  </g>
+  <path d="M140 500 L265 420 L365 340 L445 470 L565 380" fill="none" stroke="#e5bc7c" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="565" cy="380" r="16" fill="#e5bc7c"/>
+  <circle cx="820" cy="300" r="200" fill="#6788ae" opacity="0.18"/>
+  <text x="700" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="bold" fill="#ffffff">Business</text>
+  <text x="702" y="228" font-family="Helvetica, Arial, sans-serif" font-size="30" fill="#e5bc7c" letter-spacing="6">BUILD &amp; GROW</text>
+  <text x="702" y="300" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#b9c9de">Ideas, strategy and</text>
+  <text x="702" y="338" font-family="Helvetica, Arial, sans-serif" font-size="26" fill="#b9c9de">the craft of success.</text>
+</svg>

@@ -29,6 +29,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Uploads
+# Uploads (slide pictures uploaded from the Admin panel)
 Backend/uploads/*
 !Backend/uploads/.gitkeep

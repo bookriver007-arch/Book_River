@@ -1,22 +1,31 @@
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import AdminLayout from './components/AdminLayout.jsx'
 
-export default function App() {
-  return (
-    <Routes>
-      <Route path="*" element={<Placeholder />} />
-    </Routes>
-  )
-}
+// sab sections EK page par — isliye sirf ek hi page hai
+const DescriptionAdmin = lazy(() => import('./pages/DescriptionAdmin.jsx'))
 
-function Placeholder() {
+function PageLoader() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <div className="card w-full max-w-lg p-10 text-center">
-        <h1 className="text-2xl font-bold text-brand-700">Book River — Admin Panel</h1>
-        <p className="mt-3 text-slate-600">
-          Admin setup ready. Apne panels yahan banayein — <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">src/pages/</code>
-        </p>
-      </div>
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-brand-200 border-t-brand-600" />
     </div>
   )
 }
+
+export default function App() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route element={<AdminLayout />}>
+          <Route path="/" element={<DescriptionAdmin />} />
+          {/* purane links (/slides, /books, /reviews …) bhi isi page par le aate hain */}
+          <Route path="*" element={<DescriptionAdmin />} />
+        </Route>
+      </Routes>
+    </Suspense>
+  )
+}
+
+
+

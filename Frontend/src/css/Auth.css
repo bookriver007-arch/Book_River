@@ -1,0 +1,633 @@
+/* ============================================================
+   AUTH — REAL khuli hui kitaab (login page)
+   hard cover + page-block (motai) + curved paper + centre spine
+   LEFT page  = Sign Up  (pehle decorative plate, phir form)
+   RIGHT page = Login
+   ============================================================ */
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.auth-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(1.25rem, 3vw, 2.5rem) 1rem clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* ---- 3D stage: book table par khuli padi hai ---- */
+.abk-stage {
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  perspective: 2200px;
+  perspective-origin: 50% 28%;
+}
+
+.abk {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: clamp(29rem, 54vw, 33rem);
+  transform: rotateX(5deg);
+  transform-origin: 50% 100%;
+  /* page-turn leaf ko 3D me ghoomne deta hai */
+  transform-style: preserve-3d;
+}
+
+/* ---- hard cover: pages ke neeche se charon taraf bahar ---- */
+.abk-cover {
+  position: absolute;
+  inset: -0.5rem -0.7rem -1.05rem;
+  z-index: 0;
+  border-radius: 0.9rem 0.9rem 1.15rem 1.15rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(155deg, #3a6098 0%, #26456f 44%, #172c4c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 0 0 1px rgba(201, 152, 89, 0.55),
+    0 2px 0 #1d3557,
+    0 4px 0 #1a3050,
+    0 6px 0 #162a47,
+    0 8px 0 #12243d,
+    0 30px 46px -22px rgba(15, 28, 50, 0.78);
+}
+
+/* cover par cloth texture + gold double rule */
+.abk-cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0.65;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0 1px, transparent 1px 3px);
+}
+
+.abk-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0.4rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(201, 152, 89, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(201, 152, 89, 0.14);
+}
+
+.dark .abk-cover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 0 0 1px rgba(201, 152, 89, 0.45),
+    0 2px 0 #16283f,
+    0 4px 0 #13233a,
+    0 6px 0 #101d31,
+    0 8px 0 #0d1828,
+    0 30px 50px -18px rgba(0, 0, 0, 0.9);
+}
+
+/* ---- dono halves (left = Sign Up, right = Login) ---- */
+.auth-half {
+  position: relative;
+  width: 50%;
+  height: 100%;
+}
+
+/* ---- page-block: open page ke PEECHE baaki pages (asli kitaab ki motai) ---- */
+.abk-block {
+  position: absolute;
+  /* top aur bottom par bhi halka sa page-block jhaankta hai */
+  top: -0.25rem;
+  bottom: -0.55rem;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #fbf7ee;
+  /* ek-ek sheet ki edge — patli cream line + halki shadow line */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #fffdf8 0 1.6px,
+    #e6ddc9 1.6px 2.6px
+  );
+  box-shadow:
+    inset 0 1px 0 #fffdf8,
+    0 14px 26px -14px rgba(60, 45, 20, 0.55);
+}
+
+.abk-block--left {
+  left: -0.5rem;
+  right: 0;
+  border-radius: 0.6rem 0.05rem 0.35rem 0.75rem;
+}
+
+.abk-block--right {
+  right: -0.5rem;
+  left: 0;
+  border-radius: 0.05rem 0.6rem 0.75rem 0.35rem;
+}
+
+/* ---- the paper sheets ---- */
+.abk-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #fdfbf5;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(180, 160, 120, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(165deg, #fefcf7 0%, #f8f2e4 58%, #f0e8d7 100%);
+}
+
+/* LEFT page — gutter (spine) ki taraf shading gehra hota hai */
+.abk-page--left {
+  border-radius: 0.6rem 0.1rem 0.1rem 0.6rem;
+  background-image:
+    linear-gradient(90deg, transparent 64%, rgba(120, 98, 58, 0.14) 92%, rgba(96, 76, 42, 0.32) 100%),
+    repeating-linear-gradient(0deg, rgba(180, 160, 120, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(165deg, #fefcf7 0%, #f8f2e4 58%, #f0e8d7 100%);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    -2px 26px 36px -18px rgba(60, 45, 20, 0.62);
+}
+
+/* RIGHT page — gutter shading mirror ho jati hai */
+.abk-page--right {
+  border-radius: 0.1rem 0.6rem 0.6rem 0.1rem;
+  background-image:
+    linear-gradient(270deg, transparent 64%, rgba(120, 98, 58, 0.14) 92%, rgba(96, 76, 42, 0.32) 100%),
+    repeating-linear-gradient(0deg, rgba(180, 160, 120, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(165deg, #fefcf7 0%, #f8f2e4 58%, #f0e8d7 100%);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    2px 26px 36px -18px rgba(60, 45, 20, 0.62);
+}
+
+/* page ke andar ka content column (form) */
+.abk-paper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 25rem;
+  height: 100%;
+  margin: 0 auto;
+  padding: clamp(1.1rem, 2.4vw, 2rem);
+}
+
+/* ---- centre gutter (spine) ---- */
+.abk-gutter {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: clamp(18px, 2.3vw, 30px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(120, 100, 60, 0) 0%,
+    rgba(120, 100, 60, 0.1) 20%,
+    rgba(88, 70, 38, 0.3) 45%,
+    rgba(68, 52, 24, 0.44) 50%,
+    rgba(88, 70, 38, 0.3) 55%,
+    rgba(120, 100, 60, 0.1) 80%,
+    rgba(120, 100, 60, 0) 100%
+  );
+}
+
+/* ---- gold bookmark ribbon (spine se latakta hua) ---- */
+.abk-ribbon {
+  position: absolute;
+  top: -0.45rem;
+  left: 50%;
+  z-index: 6;
+  width: 1.05rem;
+  height: 4.6rem;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    #a9782f 0%,
+    #e5bc7c 38%,
+    #f0d3a4 52%,
+    #c89859 72%,
+    #a9782f 100%
+  );
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%);
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   TURNING LEAF — asli page turn (leaf spine ke around 3D flip)
+   'next' = right page palat kar left par  (Sign Up khulta hai)
+   'prev' = left page palat kar right par  (wapas Login)
+   ============================================================ */
+.abk-flip {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  z-index: 7;
+  transform-style: preserve-3d;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* leaf right half par leta hua hai -> left par girta hai */
+.abk-flip--next {
+  left: 50%;
+  width: 50%;
+  transform-origin: left center;
+  animation: abk-turn-next 0.9s cubic-bezier(0.43, 0.05, 0.22, 1) forwards;
+}
+
+/* leaf left half par leta hua hai -> right par girta hai */
+.abk-flip--prev {
+  left: 0;
+  width: 50%;
+  transform-origin: right center;
+  animation: abk-turn-prev 0.9s cubic-bezier(0.43, 0.05, 0.22, 1) forwards;
+}
+
+@keyframes abk-turn-next {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes abk-turn-prev {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+/* leaf ke dono sides — front (jo palat raha hai) + back (jo aage aata hai) */
+.abk-flip-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.12rem;
+  background-color: #fdfbf5;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(180, 160, 120, 0.05) 0 1px, transparent 1px 7px),
+    linear-gradient(165deg, #fefcf7 0%, #f8f2e4 58%, #f0e8d7 100%);
+  box-shadow: 0 18px 34px -20px rgba(60, 45, 20, 0.6);
+}
+
+.abk-flip-face--back {
+  transform: rotateY(180deg);
+}
+
+/* palatne wale paper par light/shadow sweep */
+.abk-flip-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(60, 45, 20, 0.24) 0%,
+    rgba(60, 45, 20, 0.07) 15%,
+    transparent 34%
+  );
+  animation: abk-shade-sweep 0.9s ease-in-out forwards;
+}
+
+@keyframes abk-shade-sweep {
+  from {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 0.12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .abk-flip {
+    animation-duration: 0.001s !important;
+  }
+  .abk-flip-shade {
+    animation: none;
+  }
+}
+
+/* ---- decorative plate (left page — Sign Up se pehle) ---- */
+.abk-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 2rem 1.6rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.abk-plate-logo {
+  width: 4.25rem;
+  height: auto;
+  filter: drop-shadow(0 10px 18px rgba(44, 86, 152, 0.28));
+}
+
+.abk-plate-brand {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #1d3864;
+}
+
+.abk-plate-brand em {
+  font-style: normal;
+  color: #a9782f;
+}
+
+.abk-plate-rule {
+  width: 4.5rem;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, #c89859, transparent);
+}
+
+.abk-plate-quote {
+  max-width: 15rem;
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: rgba(70, 55, 25, 0.72);
+}
+
+/* Form aur decoration (plate) me se jo bhi us page par ho — leaf ke neeche
+   instant switch hota hai, isliye koi fade/transition nahi chahiye. */
+
+/* ---- mobile: book ek ke neeche ek (do pages stacked) ---- */
+@media (max-width: 767px) {
+  .abk-stage {
+    perspective: none;
+    width: 100%;
+  }
+
+  .abk {
+    flex-direction: column;
+    height: auto;
+    gap: 0.9rem;
+    transform: none;
+  }
+
+  /* mobile par cover / spine / ribbon / page-block / leaf ki zaroorat nahi */
+  .abk-cover,
+  .abk-block,
+  .abk-gutter,
+  .abk-ribbon,
+  .abk-flip {
+    display: none;
+  }
+
+  .auth-half {
+    width: 100%;
+    height: auto;
+  }
+
+  .abk-page {
+    height: auto;
+    border-radius: 0.85rem;
+    box-shadow: 0 18px 32px -22px rgba(60, 45, 20, 0.6);
+  }
+
+  /* left page sirf tab dikhe jab Sign Up click ho */
+  .auth-half-left {
+    display: none;
+  }
+
+  .abk.is-open .auth-half-left {
+    display: block;
+  }
+
+  .abk-paper {
+    max-width: none;
+    padding: 1.5rem 1.2rem;
+  }
+
+  .abk-plate {
+    display: none;
+  }
+
+  /* jis half me form nahi (sirf decoration) — mobile par wo half chhupa do */
+  .abk-half--plain {
+    display: none;
+  }
+}
+
+/* ============================================================
+   form styles
+   ============================================================ */
+.auth-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  font-weight: 800;
+  color: #1d3864;
+  line-height: 1.1;
+}
+
+.auth-sub {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(70, 55, 25, 0.72);
+}
+
+.auth-form {
+  margin-top: 0.55rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(60, 45, 20, 0.7);
+}
+
+.auth-input-wrap {
+  position: relative;
+}
+
+.auth-ic {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  width: 0.95rem;
+  height: 0.95rem;
+  transform: translateY(-50%);
+  color: rgba(44, 86, 152, 0.5);
+  pointer-events: none;
+}
+
+.auth-input-wrap input {
+  width: 100%;
+  padding: 0.55rem 0.8rem 0.55rem 2.15rem;
+  font-size: 0.82rem;
+  color: #1d3864;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(120, 100, 60, 0.28);
+  border-radius: 0.6rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.auth-input-wrap input::placeholder {
+  color: rgba(60, 45, 20, 0.38);
+}
+
+.auth-input-wrap input:focus {
+  background: #ffffff;
+  border-color: #2c5698;
+  box-shadow: 0 0 0 3px rgba(44, 86, 152, 0.15);
+}
+
+.auth-btn {
+  margin-top: 0.25rem;
+  width: 100%;
+  padding: 0.62rem 1rem;
+  border: 0;
+  border-radius: 9999px;
+  background: linear-gradient(100deg, #2c5698, #3867a6);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 12px 22px -12px rgba(44, 86, 152, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 26px -12px rgba(44, 86, 152, 0.85);
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.auth-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: rgba(60, 45, 20, 0.72);
+  cursor: pointer;
+}
+
+.auth-remember input {
+  width: 0.85rem;
+  height: 0.85rem;
+  accent-color: #2c5698;
+}
+
+.auth-forgot {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #2c5698;
+  cursor: pointer;
+}
+
+.auth-forgot:hover {
+  text-decoration: underline;
+}
+
+/* ---- "Account nahi hai?" divider + outlined Sign Up button (Login page) ---- */
+.auth-alt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.auth-alt-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(120, 100, 60, 0.38), transparent);
+}
+
+.auth-alt-text {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(60, 45, 20, 0.55);
+  white-space: nowrap;
+}
+
+.auth-btn-alt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  padding: 0.58rem 1rem;
+  border: 1.5px solid rgba(44, 86, 152, 0.55);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #2c5698;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.2s ease,
+    box-shadow 0.22s ease;
+}
+
+.auth-btn-alt:hover {
+  background: #2c5698;
+  border-color: #2c5698;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px -14px rgba(44, 86, 152, 0.85);
+}
+
+.auth-btn-alt:active {
+  transform: translateY(0);
+}
+
+.auth-btn-alt-ic {
+  width: 0.95rem;
+  height: 0.95rem;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "book-river",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Book River - MERN bookstore platform (Frontend + Admin + Backend)",
+  "workspaces": [
+    "Frontend",
+    "Backend",
+    "Admin"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces --include-workspace-root",
+    "dev": "concurrently -n backend,frontend,admin -c blue,green,magenta \"npm run dev --workspace Backend\" \"npm run dev --workspace Frontend\" \"npm run dev --workspace Admin\"",
+    "dev:backend": "npm run dev --workspace Backend --",
+    "dev:frontend": "npm run dev --workspace Frontend --",
+    "dev:admin": "npm run dev --workspace Admin --",
+    "build": "npm run build --workspace Frontend && npm run build --workspace Admin",
+    "start": "npm run start --workspace Backend",
+    "lint": "npm run lint --workspace Frontend && npm run lint --workspace Admin"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,7 +1,7 @@
 import { motion as Motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-
-const LOGO = '/logo.png'
+import useBrandAssets from '../hooks/useBrandAssets.js'
+import '../css/Logo.css'
 
 // Colours taken straight from the logo artwork (darkened for contrast)
 const BLUE = '#1d3864'
@@ -10,22 +10,24 @@ const GOLD = '#a9782f'
 const GOLD_LIGHT = '#c89859'
 
 export default function Logo() {
+  const { logoUrl } = useBrandAssets()
+
   return (
     <div className="logo-page flex min-h-screen items-center justify-center px-5 py-16">
       <div className="flex flex-col items-center text-center">
         {/* ---- Logo (clickable -> Description) ---- */}
         <Link to="/description" className="inline-block" aria-label="Go to description">
-          <Motion.img
-            src={LOGO}
+          {/* CSS float animation instead of a framer-motion infinite loop:
+              no React re-renders, runs entirely on the GPU. */}
+          <img
+            src={logoUrl}
             alt="Book River logo — an open book under a rising sun"
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
-            transition={{
-              opacity: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-              scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-              y: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-            }}
-            className="w-64 cursor-pointer object-contain drop-shadow-[0_18px_38px_rgba(44,86,152,0.28)] transition-transform hover:scale-105 sm:w-80"
+            width="320"
+            height="214"
+            loading="eager"
+            decoding="async"
+            className="w-64 cursor-pointer object-contain drop-shadow-[0_18px_38px_rgba(44,86,152,0.28)] transition-transform duration-300 hover:scale-105 sm:w-80"
+            style={{ animation: 'float-soft 6s ease-in-out infinite' }}
           />
         </Link>
 

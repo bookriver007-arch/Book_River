@@ -8,7 +8,7 @@ node_modules/
 *.log
 npm-debug.log*
 
-# Uploads
+# Uploads (slide pictures uploaded from the Admin panel)
 uploads/*
 !uploads/.gitkeep
 

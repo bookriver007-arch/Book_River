@@ -1,0 +1,104 @@
+/* ============================================================
+   LOGO PAGE — always stays in the light theme (dark mode off)
+   ============================================================ */
+.logo-page {
+  position: relative;
+  isolation: isolate;
+  background-color: #e7eef7;
+  background-image:
+    radial-gradient(at 6% 4%, rgba(107, 136, 174, 0.62) 0px, transparent 48%),
+    radial-gradient(at 96% 8%, rgba(72, 111, 159, 0.58) 0px, transparent 46%),
+    radial-gradient(at 92% 94%, rgba(107, 136, 174, 0.58) 0px, transparent 48%),
+    radial-gradient(at 4% 92%, rgba(139, 163, 196, 0.62) 0px, transparent 48%),
+    radial-gradient(at 50% 46%, rgba(160, 182, 210, 0.34) 0px, transparent 58%),
+    radial-gradient(at 50% -6%, rgba(215, 165, 88, 0.34) 0px, transparent 44%),
+    radial-gradient(at 22% 2%, rgba(240, 211, 164, 0.30) 0px, transparent 36%),
+    radial-gradient(at 78% 2%, rgba(240, 211, 164, 0.26) 0px, transparent 36%),
+    radial-gradient(at 50% 104%, rgba(200, 152, 89, 0.22) 0px, transparent 38%);
+  /* `background-attachment: fixed` removed for performance (see .book-page) */
+}
+
+.logo-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(44, 86, 152, 0.075) 0px,
+      rgba(44, 86, 152, 0.075) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(200, 152, 89, 0.045) 0px,
+      rgba(200, 152, 89, 0.045) 1px,
+      transparent 1px,
+      transparent 7px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(107, 136, 174, 0.05) 0px,
+      rgba(107, 136, 174, 0.05) 2px,
+      transparent 2px,
+      transparent 9px
+    );
+  opacity: 0.95;
+}
+
+.logo-page::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: -1;
+  width: 42rem;
+  height: 42rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(222, 233, 245, 0.60) 0%,
+    rgba(200, 216, 236, 0.38) 30%,
+    rgba(240, 211, 164, 0.20) 52%,
+    rgba(240, 211, 164, 0.08) 64%,
+    transparent 72%
+  );
+  filter: blur(14px);
+}
+
+/* keep the logo page light even when <html> has .dark */
+.dark .logo-page {
+  background-color: #e7eef7;
+}
+.dark .logo-page::after {
+  background: radial-gradient(
+    circle,
+    rgba(222, 233, 245, 0.60) 0%,
+    rgba(200, 216, 236, 0.38) 30%,
+    rgba(240, 211, 164, 0.20) 52%,
+    rgba(240, 211, 164, 0.08) 64%,
+    transparent 72%
+  );
+}
+
+/* gentle float for the hero logo (GPU only, no React re-renders) */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="float-soft"] {
+    animation: none !important;
+  }
+}

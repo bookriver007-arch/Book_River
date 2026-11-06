@@ -7,10 +7,21 @@
     <meta name="description" content="Book River — Buy and sell books online" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Fonts load asynchronously so the app paints instantly (no render block) -->
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    <!-- Preload the hero logo so it appears with the first paint -->
+    <link rel="preload" as="image" href="/logo.png" />
     <title>Book River | Buy & Sell Books</title>
   </head>
   <body>

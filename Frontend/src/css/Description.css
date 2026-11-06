@@ -1,0 +1,1744 @@
+/* ============================================================
+   DESCRIPTION PAGE — full-width auto-rotating slideshow.
+   ONE picture at a time, pushing right -> left.
+   Width spans the whole page; height is ~75% of the screen,
+   starting right under the navbar.
+   ============================================================ */
+.slideshow-viewport {
+  position: relative;
+  width: 100%;
+  /* Large hero band: ~75% of the screen tall, starting right below
+     the navbar. */
+  height: 75vh;
+  min-height: 340px;
+  overflow: hidden;
+  box-shadow: 0 24px 48px -24px rgba(29, 56, 100, 0.45);
+}
+
+.dark .slideshow-viewport {
+  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.75);
+}
+
+.slideshow-track {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slideshow-slide {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.slideshow-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .slideshow-track {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   CATEGORY RIBBON — floating orange + gold boxes (no strip bg).
+   The boxes auto-scroll right -> left (pure CSS, GPU only)
+   and pause on hover. Replaces the old "Browse every shelf" block.
+   ============================================================ */
+.ribbon {
+  margin-top: 1.25rem; /* thoda upar — slideshow ke paas */
+  width: 100%;
+  overflow: hidden;
+  /* no strip background — only the boxes carry the orange + gold look */
+}
+
+@media (min-width: 640px) {
+  .ribbon {
+    margin-top: 1.75rem;
+  }
+}
+
+.ribbon-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: ribbon-scroll 30s linear infinite;
+}
+
+/* pause while the pointer is over the strip */
+.ribbon:hover .ribbon-track {
+  animation-play-state: paused;
+}
+
+.ribbon-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 1rem;
+  /* right padding = gap -> the two copies line up for a seamless loop */
+  padding: 1.4rem 1rem 1.4rem 0;
+}
+
+/* every category is its own little NEON box — orange + gold glow */
+.ribbon-item {
+  flex-shrink: 0;
+  padding: 0.5rem 1.3rem;
+  border-radius: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  background-image: linear-gradient(135deg, #f97316 0%, #f59e0b 55%, #fbbf24 100%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 0 10px rgba(249, 115, 22, 0.6),
+    0 0 24px rgba(245, 158, 11, 0.4),
+    inset 0 0 10px rgba(255, 255, 255, 0.25);
+  animation: neon-pulse 2.6s ease-in-out infinite alternate;
+}
+
+.dark .ribbon-item {
+  /* neon pops brighter on the dark page */
+  background-image: linear-gradient(135deg, #fb923c 0%, #fbbf24 55%, #fde68a 100%);
+}
+
+@media (min-width: 640px) {
+  .ribbon-item {
+    font-size: 1rem;
+    padding: 0.55rem 1.5rem;
+  }
+}
+
+/* "50% Off All Books" — inverted white box with a white/gold neon glow */
+.ribbon-item.ribbon-promo {
+  background: #fff;
+  color: #c2410c;
+  border-color: rgba(255, 255, 255, 0.95);
+  text-shadow: none;
+  box-shadow:
+    0 0 12px rgba(255, 255, 255, 0.85),
+    0 0 30px rgba(251, 191, 36, 0.6);
+  animation: none;
+}
+
+/* gentle neon breathing effect */
+@keyframes neon-pulse {
+  from {
+    box-shadow:
+      0 0 8px rgba(249, 115, 22, 0.5),
+      0 0 18px rgba(245, 158, 11, 0.3),
+      inset 0 0 8px rgba(255, 255, 255, 0.18);
+  }
+  to {
+    box-shadow:
+      0 0 14px rgba(249, 115, 22, 0.9),
+      0 0 36px rgba(245, 158, 11, 0.65),
+      inset 0 0 12px rgba(255, 255, 255, 0.38);
+  }
+}
+
+/* the actual right -> left movement */
+@keyframes ribbon-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-track,
+  .ribbon-item {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   NEW LAUNCHES — big modern section heading above the books
+   ============================================================ */
+.launch-head {
+  margin-top: 3.5rem;
+  padding: 0 1.25rem;
+  text-align: center;
+}
+
+.launch-eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 103, 166, 0.45);
+  background: rgba(56, 103, 166, 0.12);
+  color: #2c5698;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dark .launch-eyebrow {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.launch-title {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.launch-title-grad {
+  background: linear-gradient(100deg, #1d3864 0%, #2c5698 50%, #3867a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .launch-title-grad {
+  background: linear-gradient(100deg, #ffffff 0%, #e8eef7 55%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.launch-sub {
+  margin: 0.8rem auto 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(36, 70, 124, 0.85);
+}
+
+.dark .launch-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ============================================================
+   KIDS BOOK — modern standing book mock with price tag
+   (like the "10 Little Penguins" board book),
+   sits right of the first open book on wide screens.
+   ============================================================ */
+.first-book-row {
+  position: relative;
+}
+
+.second-book-row {
+  position: relative;
+}
+
+.third-book-row {
+  position: relative;
+}
+
+.kidsbook-scene {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .kidsbook-scene {
+    display: block;
+    position: absolute;
+    top: 1.25rem;
+    right: clamp(4.5rem, 7vw, 9rem); /* thoda left — gap ke center ki taraf */
+    width: 14rem;
+    z-index: 2;
+  }
+
+  /* second card — second book ke LEFT side par (mirrored) */
+  .kidsbook-scene-left {
+    right: auto;
+    left: clamp(4.5rem, 7vw, 9rem);
+  }
+
+  .kidsbook-scene-left .kidsbook-cover {
+    transform: rotateY(14deg) rotateX(3deg);
+  }
+
+  .kidsbook-scene-left .kidsbook-pages {
+    right: auto;
+    left: -0.45rem;
+    transform: rotateY(14deg);
+    box-shadow: -2px 0 6px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.kidsbook {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4; /* board-book shape */
+  perspective: 900px;
+}
+
+/* rope + book hang together and swing softly from the top */
+.kidsbook-hang {
+  position: relative;
+  transform-origin: 50% -1rem; /* pivot at the rope's attachment point */
+  will-change: transform;
+  animation: kidsbook-swing 6.5s ease-in-out infinite;
+}
+
+/* twisted rope above the book */
+.kidsbook-rope {
+  position: relative;
+  display: block;
+  width: 3px;
+  height: 2.6rem;
+  margin: 0 auto 0.25rem;
+  border-radius: 2px;
+  background: repeating-linear-gradient(160deg, #b45309 0 3px, #7c2d12 3px 6px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* little loop / knot at the top of the rope */
+.kidsbook-rope::before {
+  content: '';
+  position: absolute;
+  top: -0.6rem;
+  left: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  transform: translateX(-50%);
+  border: 3px solid #92400e;
+  border-radius: 50%;
+}
+
+/* soft table shadow under the standing book */
+.kidsbook-scene::after {
+  content: '';
+  display: block;
+  width: 80%;
+  height: 1.1rem;
+  margin: 0.45rem auto 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.42), transparent 70%);
+  filter: blur(7px);
+}
+
+.kidsbook-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0.4rem;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  transform: rotateY(-14deg) rotateX(3deg);
+  transform-origin: 50% 100%;
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.08),
+    0 26px 36px -18px rgba(29, 56, 100, 0.5);
+}
+
+/* uploaded cover photo fills the frame */
+.kidsbook-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.6rem;
+}
+
+/* page block on the right edge (book thickness) */
+.kidsbook-pages {
+  position: absolute;
+  top: 2%;
+  bottom: 2%;
+  right: -0.45rem;
+  width: 0.5rem;
+  border-radius: 0.15rem;
+  background: repeating-linear-gradient(0deg, #f8fafc 0 3px, #e2e8f0 3px 4px);
+  transform: rotateY(-14deg);
+  transform-origin: 50% 100%;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+}
+
+/* very subtle hanging sway — just like a real object hanging from a rope */
+@keyframes kidsbook-swing {
+  0%,
+  100% {
+    transform: rotate(1.5deg);
+  }
+  50% {
+    transform: rotate(-1.5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kidsbook-hang {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   HANGING FRAME GALLERY — admin pictures, scroll right -> left
+   ============================================================ */
+.frames-marquee {
+  margin-top: 3.5rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+.frames-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: frames-scroll 45s linear infinite;
+}
+
+/* pause while the pointer is over the gallery */
+.frames-marquee:hover .frames-track {
+  animation-play-state: paused;
+}
+
+.frames-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.5rem;
+  padding: 2rem 2.5rem 2rem 0;
+  flex-shrink: 0;
+}
+
+.frame-hang {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 11rem;
+}
+
+.frame-rope {
+  position: relative;
+  display: block;
+  width: 3px;
+  height: 2.2rem;
+  border-radius: 2px;
+  background: repeating-linear-gradient(160deg, #b45309 0 3px, #7c2d12 3px 6px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.frame-rope::before {
+  content: '';
+  position: absolute;
+  top: -0.55rem;
+  left: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+  transform: translateX(-50%);
+  border: 3px solid #92400e;
+  border-radius: 50%;
+}
+
+.frame-card {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  padding: 0.4rem;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.08),
+    0 26px 36px -18px rgba(29, 56, 100, 0.5);
+  transform: rotateX(3deg) rotateY(-8deg);
+  transform-origin: 50% 0;
+}
+
+.frame-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.6rem;
+}
+
+/* the actual right -> left movement */
+@keyframes frames-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frames-track {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   PRODUCTS — 4-per-row book covers; click opens the book
+   ============================================================ */
+.products {
+  margin-top: 4.5rem;
+  padding: 0 1.25rem;
+}
+
+.products-inner {
+  max-width: 63rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.products-eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 103, 166, 0.45);
+  background: rgba(56, 103, 166, 0.12);
+  color: #2c5698;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dark .products-eyebrow {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.products-title {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.products-title-grad {
+  background: linear-gradient(100deg, #1d3864 0%, #2c5698 55%, #3867a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .products-title-grad {
+  background: linear-gradient(100deg, #ffffff 0%, #e8eef7 55%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.products-sub {
+  margin: 0.8rem auto 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(36, 70, 124, 0.85);
+}
+
+.dark .products-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.products-grid {
+  margin-top: 2.2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+.product-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  /* real 3D camera — isse tilt asli depth deta hai */
+  perspective: 1000px;
+}
+
+.product-btn:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+
+.product-book {
+  position: relative;
+  display: block;
+  /* real book angle + thoda slope (tircha) */
+  transform: rotateY(-18deg) rotateX(4deg) rotateZ(-1.5deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 24px 26px rgba(29, 56, 100, 0.38));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.product-btn:hover .product-book,
+.product-btn:focus-visible .product-book {
+  transform: rotateY(-6deg) rotateX(2deg) rotateZ(-0.5deg) translateY(-6px);
+  filter: drop-shadow(0 32px 32px rgba(29, 56, 100, 0.48));
+}
+
+/* the cover itself — full-bleed like a real hardcover */
+.product-cover {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px 9px 9px 4px;
+  background: #e8e2d3;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset -3px 0 6px -3px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(15, 23, 42, 0.16);
+}
+
+.product-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* spine groove along the left edge */
+.product-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 14%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.07) 60%,
+    transparent
+  );
+}
+
+/* soft light sheen across the cover — top-left light, bottom-right shade */
+.product-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.06) 32%,
+    rgba(0, 0, 0, 0.02) 60%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+}
+
+/* page block — visible on the right edge like a real closed book */
+.product-pages {
+  position: absolute;
+  top: 2.6%;
+  bottom: 2.6%;
+  right: -0.55rem;
+  z-index: 1;
+  width: 0.55rem;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(90deg, #d9d0ba 0%, #f7f2e6 35%, #efe8d7 75%, #d9d0ba 100%);
+  box-shadow: 4px 4px 10px rgba(15, 23, 42, 0.2);
+  /* page lines */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(120, 105, 75, 0.16) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, #d9d0ba 0%, #f7f2e6 35%, #efe8d7 75%, #d9d0ba 100%);
+}
+
+/* page block on the bottom edge too */
+.product-book::after {
+  content: '';
+  position: absolute;
+  left: 2%;
+  right: -0.3rem;
+  bottom: -0.3rem;
+  z-index: 0;
+  height: 0.3rem;
+  border-radius: 0 0 4px 4px;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 105, 75, 0.16) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #efe8d7, #d9d0ba);
+}
+
+.product-btn:hover .product-cover,
+.product-btn:focus-visible .product-cover {
+  transform: rotateY(0deg) rotateX(0deg) translateY(-6px);
+  box-shadow:
+    0 4px 8px rgba(15, 23, 42, 0.14),
+    0 30px 40px -18px rgba(29, 56, 100, 0.6);
+}
+
+.product-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.6rem;
+}
+
+/* book spine hint on the left edge */
+.product-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 12px;
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.22), transparent);
+  pointer-events: none;
+}
+
+/* ---- the opened book (modal) ---- */
+.product-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.product-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(6, 12, 24, 0.62);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.product-spread {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: min(46rem, 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  perspective: 2000px;
+  /* stacked pages below — open-book illustration jaisa */
+  box-shadow:
+    0 5px 0 -1px #efe8d8,
+    0 10px 0 -3px #e4dbc7,
+    0 15px 0 -5px #d8cdb5,
+    0 50px 90px -40px rgba(0, 0, 0, 0.75);
+}
+
+.spread-left {
+  width: 42%;
+  padding: 0.9rem;
+  background: linear-gradient(160deg, #fdfaf4, #f4eee0);
+  box-shadow: inset -16px 0 24px -18px rgba(60, 45, 20, 0.45);
+}
+
+.spread-left img {
+  width: 100%;
+  height: 100%;
+  max-height: 22rem;
+  object-fit: cover;
+  border-radius: 0.6rem;
+  display: block;
+  box-shadow: 0 16px 30px -16px rgba(60, 45, 20, 0.55);
+}
+
+.spread-right {
+  display: flex;
+  flex-direction: column;
+  width: 58%;
+  padding: 1.4rem;
+  background: linear-gradient(160deg, #fffdf8, #f6f0e2);
+  text-align: left;
+}
+
+/* the front cover — flips open to the left like a real book */
+.spread-cover {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: 50%;
+  height: 100%;
+  padding: 0.5rem;
+  overflow: hidden;
+  border-radius: 0 0.7rem 0.7rem 0;
+  background: #ffffff;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 24px 50px -30px rgba(0, 0, 0, 0.6);
+}
+
+.spread-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.45rem;
+}
+
+.spread-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-700);
+}
+
+.spread-title {
+  margin-top: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2c2417;
+}
+
+.spread-author {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #7a6a4f;
+}
+
+.spread-price {
+  margin-top: 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #b45309;
+}
+
+/* short description — sirf 5 lines, uske baad ... */
+.spread-desc {
+  flex: 1;
+  margin-top: 0.6rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #4a3f2c;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+.spread-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* modern Login button */
+.spread-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.6rem;
+  border: 0;
+  border-radius: 9999px;
+  background: linear-gradient(100deg, #2c5698, #3867a6);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 12px 22px -12px rgba(44, 86, 152, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.spread-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 26px -12px rgba(44, 86, 152, 0.8);
+}
+
+.spread-close {
+  padding: 0.5rem 1.1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(120, 100, 60, 0.35);
+  background: transparent;
+  color: #4a3f2c;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.spread-close:hover {
+  background: rgba(120, 100, 60, 0.1);
+}
+
+@media (max-width: 640px) {
+  .product-spread {
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .spread-left,
+  .spread-right {
+    width: 100%;
+  }
+
+  .spread-left {
+    box-shadow: inset 0 -16px 24px -18px rgba(60, 45, 20, 0.45);
+  }
+
+  .spread-cover {
+    left: 0;
+    width: 100%;
+    height: 50%;
+    border-radius: 0.7rem 0.7rem 0 0;
+    transform-origin: 50% 0;
+  }
+}
+
+/* ============================================================
+   REVIEWS — modern cards scrolling right -> left
+   ============================================================ */
+.reviews {
+  margin-top: 4.5rem;
+  overflow: hidden;
+}
+
+.reviews-inner {
+  max-width: 63rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  text-align: center;
+}
+
+.reviews-eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 103, 166, 0.45);
+  background: rgba(56, 103, 166, 0.12);
+  color: #2c5698;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dark .reviews-eyebrow {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.reviews-title {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.reviews-title-grad {
+  background: linear-gradient(100deg, #1d3864 0%, #2c5698 55%, #3867a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .reviews-title-grad {
+  background: linear-gradient(100deg, #ffffff 0%, #e8eef7 55%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.reviews-sub {
+  margin: 0.8rem auto 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(36, 70, 124, 0.85);
+}
+
+.dark .reviews-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.reviews-marquee {
+  margin-top: 2.2rem;
+  width: 100%;
+  overflow: hidden;
+}
+
+.reviews-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: reviews-scroll 55s linear infinite;
+}
+
+/* pause while the pointer is over the reviews */
+.reviews-marquee:hover .reviews-track {
+  animation-play-state: paused;
+}
+
+.reviews-group {
+  display: flex;
+  gap: 1.2rem;
+  flex-shrink: 0;
+  padding: 0.5rem 1.2rem 0.5rem 0;
+}
+
+.review-card {
+  flex-shrink: 0;
+  width: 21rem;
+  padding: 1.25rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(44, 86, 152, 0.25);
+  background: #e9f0fa;
+  text-align: left;
+  box-shadow: 0 14px 30px -22px rgba(29, 56, 100, 0.35);
+}
+
+.dark .review-card {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.7);
+}
+
+.review-stars {
+  display: flex;
+  gap: 0.15rem;
+  color: #f59e0b;
+}
+
+.review-star {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.25;
+}
+
+.review-star.is-on {
+  opacity: 1;
+  fill: currentColor;
+}
+
+.review-text {
+  margin-top: 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: rgba(36, 70, 124, 0.88);
+}
+
+.dark .review-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.review-who {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.95rem;
+}
+
+.review-avatar {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #2c5698, #3867a6);
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.review-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1d3864;
+}
+
+.dark .review-name {
+  color: #ffffff;
+}
+
+.review-verified {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(36, 70, 124, 0.55);
+}
+
+.dark .review-verified {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the actual right -> left movement */
+@keyframes reviews-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviews-track {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   SITE INFO — what's on the website (feature cards)
+   ============================================================ */
+.siteinfo {
+  margin-top: 4.5rem;
+  padding: 0 1.25rem;
+}
+
+.siteinfo-inner {
+  max-width: 63rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.siteinfo-eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 103, 166, 0.35);
+  background: rgba(56, 103, 166, 0.1);
+  color: #2c5698;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.dark .siteinfo-eyebrow {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.siteinfo-title {
+  margin-top: 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.siteinfo-title-grad {
+  background: linear-gradient(100deg, #1d3864 0%, #2c5698 55%, #3867a6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .siteinfo-title-grad {
+  background: linear-gradient(100deg, #ffffff 0%, #e8eef7 55%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.siteinfo-sub {
+  margin: 0.8rem auto 0;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(36, 70, 124, 0.85);
+}
+
+.dark .siteinfo-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.siteinfo-grid {
+  margin-top: 2.2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .siteinfo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .siteinfo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.siteinfo-card {
+  text-align: left;
+  padding: 1.25rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(44, 86, 152, 0.25);
+  background: #e9f0fa;
+  box-shadow: 0 14px 30px -22px rgba(29, 56, 100, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.siteinfo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 38px -20px rgba(29, 56, 100, 0.45);
+}
+
+.dark .siteinfo-card {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.7);
+}
+
+.siteinfo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.85rem;
+  background: rgba(44, 86, 152, 0.12);
+  color: #2c5698;
+}
+
+.dark .siteinfo-icon {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.siteinfo-card-title {
+  margin-top: 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1d3864;
+}
+
+.dark .siteinfo-card-title {
+  color: #ffffff;
+}
+
+.siteinfo-card-text {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(36, 70, 124, 0.8);
+}
+
+.dark .siteinfo-card-text {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ============================================================
+   FOOTER — dark navy with gold accent
+   ============================================================ */
+.site-footer {
+  position: relative;
+  margin-top: 5rem;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(56, 103, 166, 0.25), transparent 45%),
+    radial-gradient(circle at 88% 100%, rgba(200, 152, 89, 0.18), transparent 42%),
+    #0a121f;
+  color: #b9c9de;
+}
+
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #d7a558 50%, transparent);
+}
+
+.footer-inner {
+  max-width: 63rem;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 1.5rem;
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1.6fr 1fr 1fr 1.1fr;
+  }
+}
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.footer-logo img {
+  width: 2.4rem;
+  height: 2.4rem;
+  object-fit: contain;
+}
+
+.footer-logo span {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.footer-logo em {
+  font-style: normal;
+  background: linear-gradient(90deg, #e5bc7c, #f0d3a4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.footer-tag {
+  margin-top: 0.8rem;
+  max-width: 20rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(185, 201, 222, 0.75);
+}
+
+.footer-social {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(185, 201, 222, 0.25);
+  color: #b9c9de;
+  transition: all 0.25s ease;
+}
+
+.footer-social a:hover {
+  border-color: rgba(229, 188, 124, 0.65);
+  color: #f0d3a4;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -10px rgba(229, 188, 124, 0.5);
+}
+
+.footer-col h3 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8ba3c4;
+}
+
+.footer-col ul {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-col a,
+.footer-col li {
+  font-size: 0.86rem;
+  color: rgba(185, 201, 222, 0.8);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: #f0d3a4;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(185, 201, 222, 0.15);
+  font-size: 0.75rem;
+  color: rgba(185, 201, 222, 0.6);
+}
+
+/* dark mode -> footer text pure white */
+.dark .footer-tag {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dark .footer-col h3 {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .footer-col a,
+.dark .footer-col li {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark .footer-bottom {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ============================================================
+   OPEN BOOK — left page = picture, right page = description.
+   Clicking a page flips it in 3D like a real book page.
+   ============================================================ */
+.open-book-wrap {
+  position: relative;
+  margin-top: 2rem;
+  /* page ke left side par — thoda sa left se shuru */
+  margin-left: clamp(1rem, 4vw, 3.5rem);
+  margin-right: auto;
+  max-width: 56rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+@media (min-width: 640px) {
+  .open-book-wrap {
+    margin-top: 2.75rem;
+  }
+}
+
+/* second book — sits on the RIGHT side of the page, mirrored slope */
+.open-book-wrap-right {
+  margin-left: auto;
+  margin-right: clamp(1rem, 4vw, 3.5rem);
+  /* dono books ke beech thoda extra space */
+  margin-top: 3.5rem;
+}
+
+@media (min-width: 640px) {
+  .open-book-wrap-right {
+    margin-top: 5rem;
+  }
+}
+
+.open-book-wrap-right .open-book {
+  transform: rotateX(9deg) rotate(3.5deg);
+}
+
+/* soft shadow — the book lying on a "table" */
+.open-book-wrap::after {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 1.9rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(20, 30, 50, 0.38) 0%, transparent 68%);
+  filter: blur(10px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark .open-book-wrap::after {
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.65) 0%, transparent 68%);
+}
+
+.open-book {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  max-width: 56rem;
+  height: 26rem;
+  perspective: 2400px;
+  /* lying on a surface: top edge leans away + a slight slope on the table */
+  transform: rotateX(9deg) rotate(-3.5deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 30px 40px rgba(29, 56, 100, 0.35));
+}
+
+@media (min-width: 640px) {
+  .open-book {
+    height: 30rem;
+  }
+}
+
+.dark .open-book {
+  filter: drop-shadow(0 30px 44px rgba(0, 0, 0, 0.65));
+}
+
+.book-click {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.book-click:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 2px;
+  border-radius: 1rem;
+}
+
+/* ---- the paper pages ---- */
+.bk-page {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #fbf8f1;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(180, 160, 120, 0.06) 0px,
+      rgba(180, 160, 120, 0.06) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    linear-gradient(160deg, #fdfaf4 0%, #f4eee0 100%);
+}
+
+.bk-left {
+  border-radius: 1rem 0 0 1rem;
+  box-shadow: inset -18px 0 24px -18px rgba(60, 45, 20, 0.45);
+}
+
+.bk-right {
+  border-radius: 0 1rem 1rem 0;
+  box-shadow: inset 18px 0 24px -18px rgba(60, 45, 20, 0.45);
+}
+
+/* centre crease of the book */
+.open-book::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    rgba(120, 100, 60, 0.28),
+    rgba(120, 100, 60, 0.06) 30%,
+    rgba(120, 100, 60, 0.28)
+  );
+  pointer-events: none;
+  z-index: 6;
+}
+
+.book-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  height: 100%;
+  padding: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .book-col {
+    padding: 1.5rem;
+  }
+}
+
+/* ---- left page: the picture (polaroid style, slightly tilted in 3D) ---- */
+.book-img {
+  flex: 1;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.5rem;
+  transform: rotate(-1.6deg);
+  border: 1px solid rgba(120, 100, 60, 0.2);
+  box-shadow: 0 18px 32px -16px rgba(60, 45, 20, 0.55);
+}
+
+.book-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.3rem;
+}
+
+/* ---- right page: the description ---- */
+.book-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-700);
+}
+
+.book-title {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2c2417;
+}
+
+@media (min-width: 640px) {
+  .book-title {
+    font-size: 1.9rem;
+  }
+}
+
+.book-author {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #7a6a4f;
+}
+
+.book-desc {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #4a3f2c;
+}
+
+@media (min-width: 640px) {
+  .book-desc {
+    font-size: 0.95rem;
+  }
+}
+
+.book-page-no {
+  align-self: flex-end;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: #a08d6a;
+}
+
+/* ---- the turning page (3D flip) ---- */
+.book-flip {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.book-flip-next {
+  left: 50%;
+  transform-origin: left center;
+  /* slow, physical page turn — pehle halka uthna, phir girna */
+  animation: page-flip-next 1.6s cubic-bezier(0.4, 0.02, 0.25, 1) forwards;
+}
+
+.book-flip-prev {
+  left: 0;
+  transform-origin: right center;
+  animation: page-flip-prev 1.6s cubic-bezier(0.4, 0.02, 0.25, 1) forwards;
+}
+
+.book-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.book-face-back {
+  transform: rotateY(180deg);
+}
+
+/* light/shadow sweep on the turning page — like real light on paper */
+.book-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(40, 30, 10, 0.34) 0%,
+    rgba(40, 30, 10, 0.08) 40%,
+    transparent 68%
+  );
+}
+
+.book-flip .book-face:first-child .book-shade {
+  animation: shade-sweep 1.6s ease-in-out forwards;
+}
+
+@keyframes shade-sweep {
+  0% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes page-flip-next {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes page-flip-prev {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}

@@ -6,7 +6,8 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test:db": "node src/scripts/test-db.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -18,7 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
     "morgan": "^1.10.0",
-    "multer": "^2.0.0",
+    "multer": "^2.5.0",
     "stripe": "^17.5.0",
     "zod": "^3.24.1"
   },

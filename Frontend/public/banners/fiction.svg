@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Fiction books banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d3864"/>
+      <stop offset="55%" stop-color="#2c5698"/>
+      <stop offset="100%" stop-color="#0f2445"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e5bc7c" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#e5bc7c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <circle cx="980" cy="130" r="220" fill="#e5bc7c" opacity="0.18"/>
+  <circle cx="180" cy="700" r="260" fill="#6788ae" opacity="0.25"/>
+  <rect y="520" width="1200" height="280" fill="url(#shine)" opacity="0.35"/>
+  <g fill="#f3ece1">
+    <rect x="120" y="330" width="70" height="300" rx="6" opacity="0.92"/>
+    <rect x="205" y="290" width="54" height="340" rx="6" opacity="0.78"/>
+    <rect x="274" y="360" width="80" height="270" rx="6" opacity="0.85"/>
+    <rect x="368" y="250" width="46" height="380" rx="6" opacity="0.7"/>
+    <rect x="428" y="340" width="66" height="290" rx="6" opacity="0.9"/>
+  </g>
+  <g fill="#d7a558">
+    <rect x="120" y="330" width="70" height="12" rx="4"/>
+    <rect x="274" y="360" width="80" height="12" rx="4"/>
+    <rect x="428" y="340" width="66" height="12" rx="4"/>
+  </g>
+  <text x="120" y="180" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="bold" fill="#ffffff">Fiction</text>
+  <text x="122" y="228" font-family="Helvetica, Arial, sans-serif" font-size="30" fill="#e5bc7c" letter-spacing="6">STORIES THAT MOVE</text>
+</svg>

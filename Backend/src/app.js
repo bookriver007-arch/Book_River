@@ -1,11 +1,24 @@
 import express from 'express'
 import cors from 'cors'
 import morgan from 'morgan'
+import mongoose from 'mongoose'
 import rateLimit from 'express-rate-limit'
 import dotenv from 'dotenv'
-import connectDB from './config/db.js'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import connectDB, { dbStatus } from './config/db.js'
+import authRouter from './routes/auth.js'
+import descriptionAdminRouter from './routes/descriptionAdmin.js'
+import descriptionAdminCategoryRouter from './routes/descriptionAdminCategories.js'
+import descriptionAdminBooksRouter from './routes/descriptionAdminBooks.js'
+import descriptionAdminKidsBookRouter from './routes/descriptionAdminKidsBook.js'
+import descriptionAdminFramesRouter from './routes/descriptionAdminFrames.js'
+import descriptionAdminProductsRouter from './routes/descriptionAdminProducts.js'
+import descriptionAdminReviewsRouter from './routes/descriptionAdminReviews.js'
 
 dotenv.config()
+
+const baseDir = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 
@@ -24,9 +37,32 @@ app.use(
   }),
 )
 
-// ---- Routes (add apne yahan) ----
+// ---- Static: pictures uploaded from the Admin panel ----
+app.use('/uploads', express.static(path.resolve(baseDir, '..', 'uploads')))
+
+// ---- Routes ----
+app.use('/api/auth', authRouter)
+app.use('/api/description-admin/categories', descriptionAdminCategoryRouter)
+app.use('/api/description-admin/books', descriptionAdminBooksRouter)
+app.use('/api/description-admin/kids-book', descriptionAdminKidsBookRouter)
+app.use('/api/description-admin/frames', descriptionAdminFramesRouter)
+app.use('/api/description-admin/products', descriptionAdminProductsRouter)
+app.use('/api/description-admin/reviews', descriptionAdminReviewsRouter)
+app.use('/api/description-admin', descriptionAdminRouter)
+
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'Book River API', time: new Date().toISOString() })
+  const states = ['disconnected', 'connected', 'connecting', 'disconnecting']
+  const state = dbStatus()
+  res.json({
+    status: 'ok',
+    service: 'Book River API',
+    db: {
+      state,
+      connected: state === 1,
+      name: mongoose.connection.name || null,
+    },
+    time: new Date().toISOString(),
+  })
 })
 
 // ---- Error handler ----
