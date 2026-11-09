@@ -19,6 +19,27 @@ const userSchema = new mongoose.Schema(
       index: true,
     },
     password: { type: String, required: true, minlength: 6, select: false },
+
+    /* profile extras (Settings page) */
+    phone: { type: String, trim: true, default: '' },
+    address: { type: String, trim: true, default: '' },
+    city: { type: String, trim: true, default: '' },
+
+    /* notification preferences */
+    prefs: {
+      orders: { type: Boolean, default: true },
+      offers: { type: Boolean, default: true },
+      wishlist: { type: Boolean, default: true },
+      newsletter: { type: Boolean, default: false },
+
+      /* app preferences (Settings → Appearance / Language & region) */
+      theme: { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
+      language: { type: String, enum: ['en', 'ur', 'roman'], default: 'en' },
+      numberFormat: { type: String, enum: ['pk', 'intl'], default: 'pk' },
+    },
+
+    /* kab password change hua (Settings → Security) */
+    passwordChangedAt: { type: Date },
   },
   { timestamps: true },
 )
@@ -41,6 +62,19 @@ userSchema.methods.toPublic = function toPublic() {
     id: String(this._id),
     name: this.name,
     email: this.email,
+    phone: this.phone || '',
+    address: this.address || '',
+    city: this.city || '',
+    prefs: {
+      orders: this.prefs?.orders ?? true,
+      offers: this.prefs?.offers ?? true,
+      wishlist: this.prefs?.wishlist ?? true,
+      newsletter: this.prefs?.newsletter ?? false,
+      theme: this.prefs?.theme || 'system',
+      language: this.prefs?.language === 'en' ? 'en' : this.prefs?.language ? 'ur' : 'en',
+      numberFormat: this.prefs?.numberFormat || 'pk',
+    },
+    passwordChangedAt: this.passwordChangedAt || null,
     createdAt: this.createdAt,
   }
 }

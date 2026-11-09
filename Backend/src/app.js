@@ -15,6 +15,13 @@ import descriptionAdminKidsBookRouter from './routes/descriptionAdminKidsBook.js
 import descriptionAdminFramesRouter from './routes/descriptionAdminFrames.js'
 import descriptionAdminProductsRouter from './routes/descriptionAdminProducts.js'
 import descriptionAdminReviewsRouter from './routes/descriptionAdminReviews.js'
+import homeSlidesRouter from './routes/homeSlides.js'
+import homeDealsRouter from './routes/homeDeals.js'
+import homeCategoryBooksRouter from './routes/homeCategoryBooks.js'
+import homeHangingBookRouter from './routes/homeHangingBook.js'
+import homeAboutRouter from './routes/homeAbout.js'
+import wishlistRouter from './routes/wishlist.js'
+import ordersRouter from './routes/orders.js'
 
 dotenv.config()
 
@@ -48,6 +55,20 @@ app.use('/api/description-admin/kids-book', descriptionAdminKidsBookRouter)
 app.use('/api/description-admin/frames', descriptionAdminFramesRouter)
 app.use('/api/description-admin/products', descriptionAdminProductsRouter)
 app.use('/api/description-admin/reviews', descriptionAdminReviewsRouter)
+// Home page ka apna slideshow (Description ke slides se alag collection)
+app.use('/api/home-slides', homeSlidesRouter)
+// Home page ka "Deal" section (alag collection)
+app.use('/api/home-deals', homeDealsRouter)
+// Home page ke category sections ki books (alag collection)
+app.use('/api/home-category-books', homeCategoryBooksRouter)
+// Home page ki latakti kitaab (hanging book) — apna alag cover
+app.use('/api/home-hanging-book', homeHangingBookRouter)
+// Home page ka About book (3 pages: heading / description / picture)
+app.use('/api/home-about', homeAboutRouter)
+// User ki wishlist (login zaroori — MongoDB me save hoti hai)
+app.use('/api/wishlist', wishlistRouter)
+// Orders — cart ka "Place order" + admin approve/reject/ship/deliver
+app.use('/api/orders', ordersRouter)
 app.use('/api/description-admin', descriptionAdminRouter)
 
 app.get('/api/health', (req, res) => {
