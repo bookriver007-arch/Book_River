@@ -22,6 +22,7 @@ import {
   Phone,
   Save,
   Shield,
+  ShieldCheck,
   ShoppingBag,
   Smartphone,
   Sparkles,
@@ -309,6 +310,14 @@ export default function Settings() {
   const [dangerPwd, setDangerPwd] = useState('')
   const [dangerText, setDangerText] = useState('')
 
+  /* two-factor (Google Authenticator) */
+  const [twofa, setTwofa] = useState({ enabled: false, enabledAt: null })
+  const [twofaSetup, setTwofaSetup] = useState(null) // { secret, otpauth }
+  const [twofaQr, setTwofaQr] = useState('')
+  const [twofaCode, setTwofaCode] = useState('')
+  const [twofaPwd, setTwofaPwd] = useState('')
+  const [twofaMode, setTwofaMode] = useState('') // '' | 'setup' | 'off'
+
   const t = settingsText(locale.language)
 
   /* ---------- server user -> form ---------- */
@@ -408,7 +417,7 @@ export default function Settings() {
   const logout = () => {
     localStorage.removeItem('br_token')
     localStorage.removeItem('br_user')
-    window.location.replace('/description')
+    window.location.replace('/auth')
   }
 
   /* ---------------- derived values ---------------- */
@@ -625,6 +634,88 @@ export default function Settings() {
     }
   }
 
+  /* ---------------- two-factor (Google Authenticator) ---------------- */
+  const loadTwofa = useCallback(async () => {
+    if (!localStorage.getItem('br_token')) return
+    try {
+      const data = await authApi('/2fa')
+      setTwofa({ enabled: Boolean(data.enabled), enabledAt: data.enabledAt || null })
+    } catch {
+      /* offline / not logged in */
+    }
+  }, [])
+
+  useEffect(() => {
+    loadTwofa()
+  }, [loadTwofa])
+
+  const startTwofa = async () => {
+    setBusy('2fa')
+    try {
+      const data = await authApi('/2fa/setup', { method: 'POST', body: {} })
+      /* QR library sirf jab zarurat ho tab load ho */
+      const { default: QRCode } = await import('qrcode')
+      const qr = await QRCode.toDataURL(data.otpauth, { margin: 1, width: 360 })
+      setTwofaSetup(data)
+      setTwofaQr(qr)
+      setTwofaCode('')
+      setTwofaMode('setup')
+    } catch (err) {
+      notify.error(t.security.twoFaErr, err.message)
+    } finally {
+      setBusy('')
+    }
+  }
+
+  const confirmTwofa = async (event) => {
+    event.preventDefault()
+    if (twofaCode.replace(/\D/g, '').length !== 6) {
+      notify.error(t.security.twoFaErr, t.security.twoFaCodeHint)
+      return
+    }
+
+    setBusy('2fa')
+    try {
+      const data = await authApi('/2fa/enable', {
+        method: 'POST',
+        body: { code: twofaCode },
+      })
+      setTwofa({ enabled: true, enabledAt: data.enabledAt || new Date().toISOString() })
+      setUser((prev) => (prev ? { ...prev, twoFactorEnabled: true } : prev))
+      setTwofaSetup(null)
+      setTwofaQr('')
+      setTwofaCode('')
+      setTwofaMode('')
+      notify.success(t.security.twoFaOnTitle, t.security.twoFaOnMsg)
+    } catch (err) {
+      notify.error(t.security.twoFaErr, err.message)
+    } finally {
+      setBusy('')
+    }
+  }
+
+  const turnOffTwofa = async (event) => {
+    event.preventDefault()
+    if (!twofaPwd) {
+      notify.error(t.security.twoFaErr, t.security.twoFaPwdLabel)
+      return
+    }
+
+    setBusy('2fa')
+    try {
+      await authApi('/2fa/disable', { method: 'POST', body: { password: twofaPwd } })
+      setTwofa({ enabled: false, enabledAt: null })
+      setUser((prev) => (prev ? { ...prev, twoFactorEnabled: false } : prev))
+      setTwofaPwd('')
+      setTwofaMode('')
+      notify.success(t.security.twoFaOffTitle, t.security.twoFaOffMsg)
+    } catch (err) {
+      notify.error(t.security.twoFaErr, err.message)
+    } finally {
+      setBusy('')
+    }
+  }
+
   /* ---------------- privacy ---------------- */
   const downloadData = () => {
     const payload = {
@@ -694,7 +785,7 @@ export default function Settings() {
       clearCart()
       clearWishlist()
       notify.info(t.privacy.deleted, t.privacy.deletedMsg)
-      navigate('/description', { replace: true })
+      navigate('/auth', { replace: true })
     } catch (err) {
       notify.error(t.privacy.errToast, err.message)
     } finally {
@@ -997,6 +1088,139 @@ export default function Settings() {
                   </Btn>
                 </div>
               </form>
+
+              {/* ---- two-factor (Google Authenticator) ---- */}
+              <div className="mt-4 rounded-xl border border-slate-200/70 bg-slate-50/60 p-3.5 dark:border-white/10 dark:bg-white/[0.03]">
+                <div className="flex flex-wrap items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-brand-600 dark:text-brand-300" />
+                  <p className="min-w-0 flex-1 text-sm font-bold text-slate-800 dark:text-white">
+                    {t.security.twoFaTitle}
+                  </p>
+                  <Chip tone={twofa.enabled ? 'green' : 'slate'}>
+                    {twofa.enabled ? t.security.twoFaOn : t.security.twoFaOff}
+                  </Chip>
+                </div>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                  {t.security.twoFaHint}
+                </p>
+
+                {twofa.enabled ? (
+                  <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                    <Chip tone="brand" icon={Check}>
+                      {t.security.twoFaEnabledAt} {prettyDate(twofa.enabledAt)}
+                    </Chip>
+                    {twofaMode === 'off' ? (
+                      <form onSubmit={turnOffTwofa} className="flex w-full flex-wrap items-end gap-2">
+                        <div className="min-w-[12rem] flex-1">
+                          <label htmlFor="tfa-off-pwd" className={labelCls}>
+                            {t.security.twoFaPwdLabel}
+                          </label>
+                          <input
+                            id="tfa-off-pwd"
+                            type="password"
+                            value={twofaPwd}
+                            onChange={(e) => setTwofaPwd(e.target.value)}
+                            placeholder="••••••"
+                            autoComplete="current-password"
+                            className={inputCls}
+                          />
+                        </div>
+                        <Btn type="submit" variant="danger" busy={busy === '2fa'}>
+                          {t.security.twoFaOffBtn}
+                        </Btn>
+                        <Btn
+                          variant="ghost"
+                          onClick={() => {
+                            setTwofaMode('')
+                            setTwofaPwd('')
+                          }}
+                        >
+                          {t.security.twoFaCancel}
+                        </Btn>
+                      </form>
+                    ) : (
+                      <Btn variant="danger" icon={Shield} onClick={() => setTwofaMode('off')}>
+                        {t.security.twoFaTurnOff}
+                      </Btn>
+                    )}
+                  </div>
+                ) : twofaMode === 'setup' && twofaSetup ? (
+                  <div className="mt-3 grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)]">
+                    <div className="rounded-xl bg-white p-2 shadow-sm ring-1 ring-slate-200">
+                      {twofaQr ? (
+                        <img
+                          src={twofaQr}
+                          alt={t.security.twoFaScan}
+                          className="object-contain"
+                          style={{ width: 168, height: 168 }}
+                        />
+                      ) : (
+                        <div className="grid place-items-center" style={{ width: 168, height: 168 }}>
+                          <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="min-w-0">
+                      <ol className="list-inside list-decimal space-y-1 text-xs text-slate-600 dark:text-slate-300">
+                        <li>{t.security.twoFaStep1}</li>
+                        <li>{t.security.twoFaStep2}</li>
+                        <li>{t.security.twoFaStep3}</li>
+                      </ol>
+
+                      <p className="mt-2 text-[0.66rem] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
+                        {t.security.twoFaManual}
+                      </p>
+                      <code className="mt-1 block w-full select-all break-all rounded-lg bg-white px-2.5 py-1.5 text-[0.72rem] font-bold tracking-[0.14em] text-brand-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-brand-100 dark:ring-white/10">
+                        {twofaSetup.secret}
+                      </code>
+
+                      <form onSubmit={confirmTwofa} className="mt-3 flex flex-wrap items-end gap-2">
+                        <div className="min-w-[9rem] flex-1">
+                          <label htmlFor="tfa-code" className={labelCls}>
+                            {t.security.twoFaCodeLabel}
+                          </label>
+                          <input
+                            id="tfa-code"
+                            inputMode="numeric"
+                            value={twofaCode}
+                            onChange={(e) =>
+                              setTwofaCode(e.target.value.replace(/\D/g, '').slice(0, 6))
+                            }
+                            placeholder="000000"
+                            maxLength={6}
+                            autoComplete="one-time-code"
+                            className={`${inputCls} text-center text-lg font-extrabold tracking-[0.4em]`}
+                          />
+                        </div>
+                        <Btn type="submit" icon={ShieldCheck} busy={busy === '2fa'}>
+                          {t.security.twoFaConfirm}
+                        </Btn>
+                        <Btn
+                          variant="ghost"
+                          onClick={() => {
+                            setTwofaMode('')
+                            setTwofaSetup(null)
+                            setTwofaQr('')
+                            setTwofaCode('')
+                          }}
+                        >
+                          {t.security.twoFaCancel}
+                        </Btn>
+                      </form>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <Btn icon={ShieldCheck} busy={busy === '2fa'} onClick={startTwofa}>
+                      {t.security.twoFaEnable}
+                    </Btn>
+                    <span className="text-[0.68rem] text-slate-400 dark:text-slate-500">
+                      {t.security.twoFaApp}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200/70 bg-slate-50/60 px-3.5 py-3 dark:border-white/10 dark:bg-white/[0.03]">
                 <Smartphone className="h-4 w-4 shrink-0 text-brand-600 dark:text-brand-300" />

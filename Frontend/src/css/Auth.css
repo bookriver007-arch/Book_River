@@ -569,6 +569,63 @@
   text-decoration: underline;
 }
 
+/* button.auth-forgot — Link jaisa dikhe (default button styles hata do) */
+button.auth-forgot {
+  border: 0;
+  padding: 0;
+  background: none;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+button.auth-forgot:disabled {
+  opacity: 0.55;
+  cursor: default;
+  text-decoration: none;
+}
+
+/* ---- forgot / authentication page ---- */
+.auth-row--between {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* 6-digit code input */
+.auth-input-wrap input.auth-code {
+  letter-spacing: 0.45em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  padding-left: 2.35rem;
+}
+
+/* demo code note (email service off) */
+.auth-note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin: 0.15rem 0 0.85rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.6rem;
+  border: 1px dashed rgba(44, 86, 152, 0.35);
+  background: rgba(233, 242, 254, 0.75);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #2c5698;
+}
+
+.auth-note-ic {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+}
+
+.auth-note-code {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
 /* ---- "Account nahi hai?" divider + outlined Sign Up button (Login page) ---- */
 .auth-alt {
   display: flex;
