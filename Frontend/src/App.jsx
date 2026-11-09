@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import { WishlistProvider } from './context/WishlistContext.jsx'
 import { CartProvider } from './context/CartContext.jsx'
+import RequireAuth from './components/RequireAuth.jsx'
 
 // Lazy load pages -> smaller first paint, faster app start
 const Logo = lazy(() => import('./pages/Logo.jsx'))
@@ -13,6 +14,7 @@ const Category = lazy(() => import('./pages/Category.jsx'))
 const Wishlist = lazy(() => import('./pages/Wishlist.jsx'))
 const Cart = lazy(() => import('./pages/Cart.jsx'))
 const TrackOrder = lazy(() => import('./pages/TrackOrder.jsx'))
+const OrderHistory = lazy(() => import('./pages/OrderHistory.jsx'))
 const Settings = lazy(() => import('./pages/Settings.jsx'))
 
 function PageLoader() {
@@ -30,18 +32,29 @@ export default function App() {
         <CartProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<Logo />} />
-              <Route path="/description" element={<Description />} />
+              {/* public — login / signup + Logo + Description page (footer/products) */}
               <Route path="/auth" element={<Auth />} />
               <Route path="/login" element={<Auth />} />
               <Route path="/signup" element={<Auth />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/category/:slug" element={<Category />} />
-              <Route path="/wishlist" element={<Wishlist />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/track" element={<TrackOrder />} />
-              <Route path="/track-order" element={<TrackOrder />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/" element={<Logo />} />
+              <Route path="/description" element={<Description />} />
+
+              {/* protected — in pages par login zaroori hai */}
+              <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+              <Route
+                path="/category/:slug"
+                element={
+                  <RequireAuth>
+                    <Category />
+                  </RequireAuth>
+                }
+              />
+              <Route path="/wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
+              <Route path="/cart" element={<RequireAuth><Cart /></RequireAuth>} />
+              <Route path="/track" element={<RequireAuth><TrackOrder /></RequireAuth>} />
+              <Route path="/track-order" element={<RequireAuth><TrackOrder /></RequireAuth>} />
+              <Route path="/orders" element={<RequireAuth><OrderHistory /></RequireAuth>} />
+              <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
               <Route path="*" element={<Logo />} />
             </Routes>
           </Suspense>

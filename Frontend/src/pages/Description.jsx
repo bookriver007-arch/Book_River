@@ -418,7 +418,7 @@ function ProductsGrid() {
               {selected.price ? <p className="spread-price">{selected.price}</p> : null}
               <p className="spread-desc">{selected.description}</p>
               <div className="spread-actions">
-                <Link to="/auth" className="spread-login">
+                <Link to="/auth" state={{ from: '/description' }} className="spread-login">
                   Login
                 </Link>
                 <button type="button" className="spread-close" onClick={() => setSelected(null)}>

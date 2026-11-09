@@ -32,7 +32,7 @@ export default function Home() {
   const logout = () => {
     localStorage.removeItem('br_token')
     localStorage.removeItem('br_user')
-    window.location.replace('/description')
+    window.location.replace('/auth')
   }
 
   return (

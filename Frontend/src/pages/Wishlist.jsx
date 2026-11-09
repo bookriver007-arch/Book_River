@@ -25,7 +25,7 @@ export default function Wishlist() {
   const logout = () => {
     localStorage.removeItem('br_token')
     localStorage.removeItem('br_user')
-    window.location.replace('/description')
+    window.location.replace('/auth')
   }
 
   const removeItem = async (item) => {
