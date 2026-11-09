@@ -36,6 +36,8 @@ const orderSchema = new mongoose.Schema(
     items: { type: [orderItemSchema], default: [] },
     itemCount: { type: Number, default: 0 },
     subtotal: { type: Number, default: 0 },
+    tax: { type: Number, default: 0 },
+    taxLabel: { type: String, trim: true, default: '' },
     shipping: { type: Number, default: 0 },
     total: { type: Number, default: 0 },
 

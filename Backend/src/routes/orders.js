@@ -1,7 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import Order, { ORDER_STATUSES } from '../models/Order.js'
+import CheckoutSettings from '../models/CheckoutSettings.js'
 import { optionalAuth } from '../middleware/auth.js'
+import requireAdmin from '../middleware/adminAuth.js'
 
 /**
  * Orders API — frontend cart ka "Place order" yahan aata hai,
@@ -20,6 +22,9 @@ const SHIP_FEE = 60
 
 /** checkout ke payment methods */
 const PAYMENT_METHODS = ['cod', 'card', 'easypaisa', 'jazzcash', 'bank']
+
+/** ye status final hain — order lock ho jata hai (sirf dekh sakte hain) */
+export const FINAL_STATUSES = ['delivered', 'rejected']
 
 /** "Rs. 1,320.50" / "1320" -> 1320.5 */
 const priceOf = (value) => {
@@ -52,6 +57,8 @@ const toPublic = (order) => ({
   items: order.items,
   itemCount: order.itemCount,
   subtotal: order.subtotal,
+  tax: order.tax || 0,
+  taxLabel: order.taxLabel || '',
   shipping: order.shipping,
   total: order.total,
   payment: {
@@ -92,8 +99,22 @@ router.post('/', optionalAuth, async (req, res, next) => {
 
     // paisa server par hi dobara ginte hain (client ki value par bharosa nahi)
     const subtotal = items.reduce((sum, item) => sum + priceOf(item.price) * item.qty, 0)
-    const shipping = subtotal >= FREE_SHIP_OVER ? 0 : SHIP_FEE
     const itemCount = items.reduce((sum, item) => sum + item.qty, 0)
+
+    // shipping + tax Admin → Checkout settings se
+    const settings = (await CheckoutSettings.findOne({ key: 'main' })) || {
+      taxEnabled: false,
+      taxLabel: 'Tax',
+      taxPercent: 0,
+      shippingFee: SHIP_FEE,
+      freeShippingOver: FREE_SHIP_OVER,
+    }
+
+    const freeOver = Number(settings.freeShippingOver) || 0
+    const shipping = freeOver > 0 && subtotal >= freeOver ? 0 : Number(settings.shippingFee) || 0
+    const taxPercent = settings.taxEnabled ? Number(settings.taxPercent) || 0 : 0
+    const tax = taxPercent > 0 ? Math.round(subtotal * (taxPercent / 100)) : 0
+    const taxLabel = taxPercent > 0 ? settings.taxLabel || 'Tax' : ''
 
     // payment — sirf safe info (poora card number / CVV kabhi nahi)
     const rawPayment = body.payment && typeof body.payment === 'object' ? body.payment : {}
@@ -121,8 +142,10 @@ router.post('/', optionalAuth, async (req, res, next) => {
       items,
       itemCount,
       subtotal,
+      tax,
+      taxLabel,
       shipping,
-      total: subtotal + shipping,
+      total: subtotal + shipping + tax,
       status: 'pending',
     })
 
@@ -167,6 +190,8 @@ router.get('/track/:code', async (req, res, next) => {
       customerName: order.customerName,
       itemCount: order.itemCount,
       subtotal: order.subtotal,
+      tax: order.tax || 0,
+      taxLabel: order.taxLabel || '',
       shipping: order.shipping,
       total: order.total,
       payment: {
@@ -204,8 +229,8 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-// PATCH — status badlo (approve / reject / ship / deliver)
-router.patch('/:id', async (req, res, next) => {
+// PATCH — status badlo (approve / reject / ship / deliver) — sirf admin
+router.patch('/:id', requireAdmin, async (req, res, next) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(404).json({ message: 'Order nahi mila' })
@@ -222,8 +247,18 @@ router.patch('/:id', async (req, res, next) => {
     const update = { status, statusNote: String(body.statusNote || '').trim() }
     if (status !== 'pending') update.decidedAt = new Date()
 
+    const existing = await Order.findById(req.params.id)
+    if (!existing) return res.status(404).json({ message: 'Order nahi mila' })
+
+    // deliver / reject hone ke baad order LOCK — sirf dekh sakte hain
+    if (FINAL_STATUSES.includes(existing.status) && status !== existing.status) {
+      return res.status(409).json({
+        message:
+          'Ye order complete ho chuka hai (Delivered / Rejected) — ab change nahi ho sakta, sirf dekh sakte hain',
+      })
+    }
+
     const order = await Order.findByIdAndUpdate(req.params.id, { $set: update }, { new: true })
-    if (!order) return res.status(404).json({ message: 'Order nahi mila' })
 
     res.json(toPublic(order))
   } catch (err) {
@@ -231,14 +266,23 @@ router.patch('/:id', async (req, res, next) => {
   }
 })
 
-// DELETE — order hatao
-router.delete('/:id', async (req, res, next) => {
+// DELETE — order hatao (sirf admin) — complete order delete nahi hota
+router.delete('/:id', requireAdmin, async (req, res, next) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
       return res.status(404).json({ message: 'Order nahi mila' })
     }
-    const removed = await Order.findByIdAndDelete(req.params.id)
-    if (!removed) return res.status(404).json({ message: 'Order nahi mila' })
+
+    const order = await Order.findById(req.params.id)
+    if (!order) return res.status(404).json({ message: 'Order nahi mila' })
+
+    if (FINAL_STATUSES.includes(order.status)) {
+      return res.status(409).json({
+        message: 'Complete order (Delivered / Rejected) delete nahi ho sakta — ye history me save rehta hai',
+      })
+    }
+
+    await order.deleteOne()
     res.json({ message: 'Deleted', id: req.params.id })
   } catch (err) {
     next(err)

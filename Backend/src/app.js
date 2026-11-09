@@ -22,6 +22,8 @@ import homeHangingBookRouter from './routes/homeHangingBook.js'
 import homeAboutRouter from './routes/homeAbout.js'
 import wishlistRouter from './routes/wishlist.js'
 import ordersRouter from './routes/orders.js'
+import checkoutRouter from './routes/checkout.js'
+import adminAuthRouter from './routes/adminAuth.js'
 
 dotenv.config()
 
@@ -69,6 +71,8 @@ app.use('/api/home-about', homeAboutRouter)
 app.use('/api/wishlist', wishlistRouter)
 // Orders — cart ka "Place order" + admin approve/reject/ship/deliver
 app.use('/api/orders', ordersRouter)
+app.use('/api/checkout', checkoutRouter)
+app.use('/api/admin', adminAuthRouter)
 app.use('/api/description-admin', descriptionAdminRouter)
 
 app.get('/api/health', (req, res) => {
