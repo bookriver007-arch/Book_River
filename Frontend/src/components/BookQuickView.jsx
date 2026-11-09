@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Heart, Minus, Plus, ShoppingCart, Star, Truck, X } from 'lucide-react'
 import { notify } from '../utils/notify.jsx'
 import useCart from '../hooks/useCart.js'
@@ -14,12 +13,11 @@ const hashOf = (text) => {
 /**
  * Product quick-view (book par click) — modern e-commerce detail:
  * title, price + old price + discount badge, shipping line, quantity
- * stepper, "In stock", Add to cart + Buy it now.
+ * stepper, "In stock" aur ek hi action: Add to cart.
  */
 export default function BookQuickView({ book, category, liked, onWishlist, onClose }) {
   const [qty, setQty] = useState(1)
   const { add } = useCart()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const onKey = (e) => {
@@ -44,12 +42,6 @@ export default function BookQuickView({ book, category, liked, onWishlist, onClo
     add(book, qty)
     notify.cart('Cart me add ho gayi 🛒', `${qty} × ${book.title} — checkout ke liye taiyar`)
     onClose()
-  }
-
-  const buyNow = () => {
-    add(book, qty)
-    onClose()
-    navigate('/cart')
   }
 
   return (
@@ -172,23 +164,14 @@ export default function BookQuickView({ book, category, liked, onWishlist, onClo
 
             <div className="my-4 h-px bg-slate-200 dark:bg-white/10" />
 
-            {/* actions */}
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={addToCart}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-600/25 transition hover:bg-brand-700 active:scale-[0.98] dark:bg-brand-500 dark:hover:bg-brand-400"
-              >
-                <ShoppingCart className="h-4 w-4" /> Add to cart
-              </button>
-              <button
-                type="button"
-                onClick={buyNow}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-black active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100"
-              >
-                Buy it now
-              </button>
-            </div>
+            {/* action — ek hi button (Add to cart) */}
+            <button
+              type="button"
+              onClick={addToCart}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-600/25 transition hover:bg-brand-700 active:scale-[0.98] dark:bg-brand-500 dark:hover:bg-brand-400"
+            >
+              <ShoppingCart className="h-4 w-4" /> Add to cart
+            </button>
           </div>
         </div>
       </div>
