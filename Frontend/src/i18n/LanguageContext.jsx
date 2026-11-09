@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import { UR } from './ur.js'
+import { EN } from './en.js'
 import { LanguageContext, applyToTree } from './languageContextDef.js'
 import { LOCALE_KEY, readStoredLanguage, writeStoredLanguage } from './languageStore.js'
 
@@ -27,12 +28,11 @@ export function LanguageProvider({ children }) {
     if (!root) return undefined
 
     applyToTree(root, lang)
-    if (lang !== 'ur') return undefined
 
     let scheduled = false
     const run = () => {
       scheduled = false
-      applyToTree(document.body, 'ur')
+      applyToTree(document.body, lang)
     }
     const schedule = () => {
       if (scheduled) return
@@ -93,7 +93,7 @@ export function LanguageProvider({ children }) {
       isUrdu: lang === 'ur',
       setLang,
       toggleLang,
-      t: (text) => (lang === 'ur' ? (UR[text] ?? text) : text),
+      t: (text) => (lang === 'ur' ? (UR[text] ?? text) : (EN[text] ?? text)),
     }),
     [lang, setLang, toggleLang],
   )

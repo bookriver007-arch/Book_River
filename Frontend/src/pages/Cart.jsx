@@ -4,12 +4,14 @@ import {
   ArrowRight,
   Banknote,
   CheckCircle2,
+  ChevronRight,
   CreditCard,
   Landmark,
   MapPin,
   Minus,
   Phone,
   Plus,
+  Receipt,
   ShieldCheck,
   ShoppingBag,
   Smartphone,
@@ -23,9 +25,10 @@ import Footer from '../components/Footer.jsx'
 import useCart from '../hooks/useCart.js'
 import { MAX_QTY } from '../context/cartStore.js'
 import { moneyOf, priceOf } from '../utils/money.js'
+import { rememberOrder } from '../utils/orderHistory.js'
+import { confirmAction } from '../utils/confirm.js'
 import {
   PAYMENTS,
-  PAYMENT_TITLE,
   cardBrand,
   digitsOnly,
   expiryOk,
@@ -62,6 +65,164 @@ const labelCls =
 
 const errCls = 'mt-1 block text-[0.68rem] font-semibold text-rose-600 dark:text-rose-300'
 
+/** checkout ke 3 steps */
+const STEPS = [
+  { n: 1, title: 'Order review', desc: 'Books check karo', next: 'Delivery address' },
+  { n: 2, title: 'Delivery address', desc: 'Kahan bhejna hai', next: 'Payment method' },
+  { n: 3, title: 'Payment method', desc: 'Kaise dena hai', next: 'Place order' },
+]
+
+/** checkout steps — har step ka circle, ek ke baad ek enter hota hai */
+function Stepper({ step, maxStep, onJump, horizontal = false }) {
+  /** circle ka look: done (tick) / active (number) / upcoming (outline) */
+  const circle = (done, active) =>
+    [
+      'grid shrink-0 place-items-center rounded-full font-extrabold transition-all duration-300',
+      done
+        ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+        : active
+          ? 'bg-gradient-to-br from-brand-600 to-brand-800 text-white ring-4 ring-brand-100 shadow-lg shadow-brand-700/30 dark:ring-brand-500/25'
+          : 'border-2 border-slate-200 bg-white text-slate-400',
+    ].join(' ')
+
+  if (horizontal) {
+    return (
+      <ol className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-1">
+        {STEPS.map((item, index) => {
+          const done = item.n < step
+          const active = item.n === step
+          const clickable = item.n <= maxStep && !active
+          const isLast = index === STEPS.length - 1
+
+          return (
+            <li
+              key={item.n}
+              className="stepper-item flex items-center gap-2.5 sm:flex-1"
+              style={{ animationDelay: `${index * 90}ms` }}
+            >
+              <button
+                type="button"
+                onClick={() => (clickable ? onJump(item.n) : undefined)}
+                disabled={!clickable}
+                aria-current={active ? 'step' : undefined}
+                aria-label={item.title}
+                className={`${circle(done, active)} h-10 w-10 text-[0.72rem] tracking-tight ${
+                  clickable ? 'cursor-pointer hover:scale-105' : 'cursor-default'
+                }`}
+              >
+                {done ? <CheckCircle2 className="h-4 w-4" /> : `0${item.n}`}
+              </button>
+
+              <span className="min-w-0 flex-1">
+                <span className="block text-[0.58rem] font-extrabold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                  {`Step 0${item.n}`}
+                </span>
+                <span
+                  className={`block truncate text-[0.82rem] font-bold leading-tight ${
+                    active
+                      ? 'text-brand-800 dark:text-white'
+                      : done
+                        ? 'text-slate-700 dark:text-slate-300'
+                        : 'text-slate-400 dark:text-slate-500'
+                  }`}
+                >
+                  {item.title}
+                </span>
+                <span className="hidden truncate text-[0.64rem] text-slate-400 sm:block dark:text-slate-500">
+                  {item.desc}
+                </span>
+              </span>
+
+              {!isLast ? (
+                <span className="hidden shrink-0 items-center gap-0.5 sm:flex">
+                  <span
+                    className={`h-0.5 w-4 rounded-full lg:w-6 ${
+                      done ? 'bg-emerald-400' : 'bg-slate-200 dark:bg-white/20'
+                    }`}
+                  />
+                  <ChevronRight
+                    className={`h-4 w-4 ${done ? 'text-emerald-400' : 'text-slate-300 dark:text-white/25'}`}
+                  />
+                </span>
+              ) : null}
+            </li>
+          )
+        })}
+      </ol>
+    )
+  }
+
+  return (
+    <ol>
+      {STEPS.map((item, index) => {
+        const done = item.n < step
+        const active = item.n === step
+        const clickable = item.n <= maxStep && !active
+        const isLast = index === STEPS.length - 1
+
+        return (
+          <li
+            key={item.n}
+            className="stepper-item flex gap-3"
+            style={{ animationDelay: `${index * 90}ms` }}
+          >
+            {/* circle + connector line */}
+            <div className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => (clickable ? onJump(item.n) : undefined)}
+                disabled={!clickable}
+                aria-current={active ? 'step' : undefined}
+                aria-label={item.title}
+                className={`${circle(done, active)} h-9 w-9 text-[0.78rem] ${
+                  clickable ? 'cursor-pointer hover:scale-105' : 'cursor-default'
+                }`}
+              >
+                {done ? <CheckCircle2 className="h-4 w-4" /> : item.n}
+              </button>
+
+              {!isLast ? (
+                <span
+                  className={`my-1 w-0.5 flex-1 rounded-full transition-colors ${
+                    done ? 'bg-emerald-400' : 'bg-slate-200 dark:bg-white/20'
+                  }`}
+                  style={{ minHeight: '1.15rem' }}
+                />
+              ) : null}
+            </div>
+
+            {/* title + description */}
+            <button
+              type="button"
+              onClick={() => (clickable ? onJump(item.n) : undefined)}
+              disabled={!clickable}
+              className={`-mt-0.5 mb-1 min-w-0 flex-1 rounded-lg px-1 py-0.5 text-left transition ${
+                clickable ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5' : 'cursor-default'
+              }`}
+            >
+              <span
+                className={`block truncate text-[0.8rem] font-bold ${
+                  active
+                    ? 'text-brand-800 dark:text-white'
+                    : done
+                      ? 'text-slate-700 dark:text-slate-300'
+                      : 'text-slate-400 dark:text-slate-500'
+                }`}
+              >
+                {item.title}
+              </span>
+              <span className="block truncate text-[0.66rem] text-slate-400 dark:text-slate-500">
+                {item.desc}
+              </span>
+            </button>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
+
+
 /** Cart page — jahan se koi bhi product buy (order place) ho sakta hai. */
 export default function Cart() {
   const { items, count, subtotal, setQty, remove, clear } = useCart()
@@ -72,6 +233,9 @@ export default function Cart() {
   const [wallet, setWallet] = useState({ mobile: '' })
   const [bankRef, setBankRef] = useState('')
   const [errors, setErrors] = useState({})
+  const [checkout, setCheckout] = useState(null)
+  const [step, setStep] = useState(1)
+  const [maxStep, setMaxStep] = useState(1)
   const [placing, setPlacing] = useState(false)
   const navigate = useNavigate()
 
@@ -100,8 +264,49 @@ export default function Cart() {
     })
   }, [])
 
-  const shipping = subtotal === 0 || subtotal >= FREE_SHIP_OVER ? 0 : SHIP_FEE
-  const total = subtotal + shipping
+  /* ---------- Admin → Checkout settings (payment + tax + shipping) ---------- */
+  useEffect(() => {
+    let alive = true
+    fetch('/api/checkout')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (alive && data) setCheckout(data)
+      })
+      .catch(() => {
+        /* offline — defaults hi chalenge */
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  const methods =
+    checkout?.paymentMethods?.length > 0
+      ? checkout.paymentMethods.filter((method) => method.enabled !== false)
+      : PAYMENTS
+  const freeOver = Number(checkout?.freeShippingOver ?? FREE_SHIP_OVER) || 0
+  const shippingFee = Number(checkout?.shippingFee ?? SHIP_FEE) || 0
+  const taxPercent = checkout?.taxEnabled ? Number(checkout.taxPercent) || 0 : 0
+  const taxLabel = checkout?.taxLabel || 'Tax'
+  const paymentTitle = methods.find((method) => method.key === payment)?.title || 'Cash on Delivery'
+
+  // admin ne method band kar diya ho to pehle available par jao
+  useEffect(() => {
+    if (methods.length && !methods.some((method) => method.key === payment)) {
+      setPayment(methods[0].key)
+    }
+  }, [methods, payment])
+
+  const shipping = Math.max(
+    0,
+    subtotal === 0
+      ? 0
+      : subtotal >= freeOver
+        ? 0
+        : shippingFee,
+  )
+  const tax = taxPercent > 0 ? Math.round(subtotal * (taxPercent / 100)) : 0
+  const total = subtotal + shipping + tax
 
   const logout = () => {
     localStorage.removeItem('br_token')
@@ -109,7 +314,13 @@ export default function Cart() {
     window.location.replace('/description')
   }
 
-  const removeItem = (item) => {
+  const removeItem = async (item) => {
+    const ok = await confirmAction({
+      title: 'Cart se hatao?',
+      message: `${item.title} cart se nikal jayegi.`,
+      confirmLabel: 'Haan, hatao',
+    })
+    if (!ok) return
     remove(item.id)
     notify.cart('Cart se hata di 🗑️', item.title)
   }
@@ -121,14 +332,19 @@ export default function Cart() {
     setErrors((prev) => (prev[key] ? { ...prev, [key]: '' } : prev))
   }
 
-  /** checkout ki validation — ghalti ho to message + scroll */
-  const validate = () => {
+  /** step 2 — delivery ki validation */
+  const deliveryErrors = () => {
     const next = {}
-
     if (!delivery.fullName.trim()) next.fullName = 'Poora naam likho'
     if (!mobileOk(delivery.phone)) next.phone = 'Sahi phone number likho (03xx xxxxxxx)'
     if (!delivery.address.trim()) next.address = 'Ghar ka pata likho'
     if (!delivery.city.trim()) next.city = 'Sheher likho'
+    return next
+  }
+
+  /** step 3 — payment ki validation */
+  const paymentErrors = () => {
+    const next = {}
 
     if (payment === 'card') {
       if (!luhnOk(card.number)) next.number = 'Card number sahi nahi hai'
@@ -145,21 +361,48 @@ export default function Cart() {
       next.bankRef = 'Transaction ID / reference likho'
     }
 
+    return next
+  }
+
+  /** errors set karo — pehli ghalti wale step par scroll */
+  const showErrors = (next) => {
     setErrors(next)
     const first = Object.values(next)[0]
-    if (first) {
-      notify.error('Checkout adhoora hai', first)
-      document
-        .getElementById('checkout-delivery')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      return false
-    }
-    return true
+    if (!first) return true
+
+    notify.error('Checkout adhoora hai', first)
+    const deliveryKeys = ['fullName', 'phone', 'address', 'city']
+    const onDelivery = Object.keys(next).some((key) => deliveryKeys.includes(key))
+    document
+      .getElementById(onDelivery ? 'checkout-delivery' : 'checkout-payment')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return false
   }
+
+  /** step navigation */
+  const goTo = (target) => {
+    if (target <= maxStep) setStep(target)
+  }
+
+  const goNext = () => {
+    if (step === 1) {
+      setMaxStep((value) => Math.max(value, 2))
+      setStep(2)
+      return
+    }
+    if (step === 2) {
+      if (!showErrors(deliveryErrors())) return
+      setErrors({})
+      setMaxStep((value) => Math.max(value, 3))
+      setStep(3)
+    }
+  }
+
+  const goBack = () => setStep((value) => Math.max(1, value - 1))
 
   const placeOrder = async () => {
     if (!items.length || placing) return
-    if (!validate()) return
+    if (!showErrors({ ...deliveryErrors(), ...paymentErrors() })) return
 
     const cleanDelivery = {
       fullName: delivery.fullName.trim(),
@@ -196,7 +439,7 @@ export default function Cart() {
           customerEmail: user?.email || '',
           customerPhone: cleanDelivery.phone,
           address: [cleanDelivery.address, cleanDelivery.city].filter(Boolean).join(', '),
-          note: PAYMENT_TITLE[payment],
+          note: paymentTitle,
           payment: paymentPayload({ method: payment, card, wallet, bankRef }),
           items: items.map((item) => ({
             bookId: item.id,
@@ -220,9 +463,16 @@ export default function Cart() {
         books: Number(data.itemCount) || count,
       }
       clear()
+      rememberOrder({
+        code: placed.id,
+        status: 'pending',
+        total: placed.total,
+        itemCount: placed.books,
+        at: new Date().toISOString(),
+      })
       notify.payment(
         'Order place ho gaya 🎉',
-        `${placed.id} · ${moneyOf(placed.total)} · ${PAYMENT_TITLE[payment]}`,
+        `${placed.id} · ${moneyOf(placed.total)} · ${paymentTitle}`,
       )
       // seedha tracking page par — status wahin se track hoga
       navigate(`/track?code=${encodeURIComponent(placed.id)}&new=1`)
@@ -257,7 +507,13 @@ export default function Cart() {
               {items.length > 0 ? (
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
+                    const ok = await confirmAction({
+                      title: 'Cart khali karein?',
+                      message: 'Saari books cart se nikal jayengi.',
+                      confirmLabel: 'Haan, khali karo',
+                    })
+                    if (!ok) return
                     clear()
                     notify.info('Cart khali kar di 🧺')
                   }}
@@ -288,9 +544,31 @@ export default function Cart() {
                 </Link>
               </section>
             ) : (
-              <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
+              <>
+              {/* ---------- steps (01 → 02 → 03) ---------- */}
+              <div className="mt-6 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-3 shadow-sm sm:px-5 dark:border-white/10 dark:bg-white/[0.04]">
+                <Stepper step={step} maxStep={maxStep} onJump={goTo} horizontal />
+              </div>
+
+              <div className="mt-5 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
                 {/* ---------- items + checkout ---------- */}
-                <div className="space-y-6">
+                <div className="space-y-5">
+                  {step > 1 ? (
+                    <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                        {count} {count === 1 ? 'book' : 'books'} · {moneyOf(total)}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => goTo(1)}
+                        className="text-[0.72rem] font-bold text-brand-700 hover:underline dark:text-brand-300"
+                      >
+                        Edit cart
+                      </button>
+                    </div>
+                  ) : null}
+
+                  {step === 1 ? (
                   <div className="space-y-3">
                   {items.map((item) => (
                     <article
@@ -376,8 +654,10 @@ export default function Cart() {
                     </article>
                   ))}
                   </div>
+                  ) : null}
 
-                  {/* ===== delivery details ===== */}
+                  {/* ===== step 2: delivery details ===== */}
+                  {step === 2 ? (
                   <section
                     id="checkout-delivery"
                     className="scroll-mt-24 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]"
@@ -477,15 +757,20 @@ export default function Cart() {
 
                       <div className="flex items-end">
                         <p className="text-[0.68rem] leading-relaxed text-slate-400 dark:text-slate-500">
-                          <Truck className="mr-1 inline h-3 w-3" /> Cash on Delivery · Rs. 999+ par
-                          shipping free
+                          <Truck className="mr-1 inline h-3 w-3" /> {paymentTitle} · Free shipping
+                          over {moneyOf(freeOver)}
                         </p>
                       </div>
                     </div>
                   </section>
+                  ) : null}
 
-                {/* ===== payment method ===== */}
-                <section className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
+                {/* ===== step 3: payment method ===== */}
+                {step === 3 ? (
+                <section
+                  id="checkout-payment"
+                  className="scroll-mt-24 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]"
+                >
                   <div className="flex items-start gap-2.5">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-gold-600 to-gold-800 text-white shadow-md shadow-gold-700/25">
                       <CreditCard className="h-4 w-4" />
@@ -501,8 +786,8 @@ export default function Cart() {
                   </div>
 
                   <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                    {PAYMENTS.map((option) => {
-                      const Icon = PAYMENT_ICONS[option.key]
+                    {methods.map((option) => {
+                      const Icon = PAYMENT_ICONS[option.key] || CreditCard
                       const active = payment === option.key
                       return (
                         <button
@@ -689,10 +974,12 @@ export default function Cart() {
                     </p>
                   ) : null}
                 </section>
+                ) : null}
 
               </div>
 
-                <aside className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm lg:sticky lg:top-24 dark:border-white/10 dark:bg-white/[0.04]">
+              {/* ---------- summary ---------- */}
+                <aside className="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm lg:sticky lg:top-24 dark:border-white/10 dark:bg-white/[0.04]">
                   <h2 className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                     Order summary
                   </h2>
@@ -717,12 +1004,23 @@ export default function Cart() {
                       </dd>
                     </div>
 
+                    {tax > 0 ? (
+                      <div className="flex items-center justify-between">
+                        <dt className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                          <Receipt className="h-3.5 w-3.5" /> {`${taxLabel} (${taxPercent}%)`}
+                        </dt>
+                        <dd className="font-semibold text-slate-900 dark:text-white">
+                          {moneyOf(tax)}
+                        </dd>
+                      </div>
+                    ) : null}
+
                     <div className="flex items-start justify-between gap-2">
                       <dt className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
                         <CreditCard className="h-3.5 w-3.5" /> Payment
                       </dt>
                       <dd className="text-right font-semibold text-slate-900 dark:text-white">
-                        {PAYMENT_TITLE[payment]}
+                        {paymentTitle}
                         {payment === 'card' && digitsOnly(card.number).length >= 4 ? (
                           <span className="block text-[0.66rem] font-medium text-slate-400 dark:text-slate-500">
                             {cardBrand(card.number)} ···· {digitsOnly(card.number).slice(-4)}
@@ -739,7 +1037,7 @@ export default function Cart() {
 
                   {shipping > 0 ? (
                     <p className="mt-2.5 rounded-xl bg-amber-50 px-3 py-2 text-[0.72rem] font-medium text-amber-800 dark:bg-amber-500/15 dark:text-amber-200">
-                      {moneyOf(FREE_SHIP_OVER - subtotal)} aur add karo → shipping free!
+                      {moneyOf(Math.max(0, freeOver - subtotal))} aur add karo → shipping free!
                     </p>
                   ) : null}
 
@@ -752,26 +1050,48 @@ export default function Cart() {
                     </span>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={placeOrder}
-                    disabled={placing}
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-700/25 transition hover:bg-brand-800 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
-                  >
-                    {placing ? (
-                      <>
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                        Order lag raha hai…
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle2 className="h-4 w-4" /> Place order · Buy now
-                      </>
-                    )}
-                  </button>
+                  {step < 3 ? (
+                    <button
+                      type="button"
+                      onClick={goNext}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-700/25 transition hover:bg-brand-800 active:scale-[0.98]"
+                    >
+                      Continue · {STEPS[step]?.title}
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={placeOrder}
+                      disabled={placing}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-brand-700/25 transition hover:bg-brand-800 active:scale-[0.98] disabled:cursor-wait disabled:opacity-70"
+                    >
+                      {placing ? (
+                        <>
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                          Order lag raha hai…
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="h-4 w-4" /> Place order · {moneyOf(total)}
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {step > 1 ? (
+                    <button
+                      type="button"
+                      onClick={goBack}
+                      disabled={placing}
+                      className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:text-slate-300 dark:hover:text-brand-200"
+                    >
+                      Back
+                    </button>
+                  ) : null}
 
                   <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[0.68rem] font-medium text-slate-500 dark:text-slate-400">
-                    <ShieldCheck className="h-3.5 w-3.5" /> Secure checkout · {PAYMENT_TITLE[payment]}
+                    <ShieldCheck className="h-3.5 w-3.5" /> Secure checkout · {paymentTitle}
                   </p>
 
                   <Link
@@ -782,6 +1102,7 @@ export default function Cart() {
                   </Link>
                 </aside>
               </div>
+              </>
             )}
       </main>
 

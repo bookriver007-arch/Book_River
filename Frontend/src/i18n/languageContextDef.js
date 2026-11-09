@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import { UR, UR_PATTERNS } from './ur.js'
+import { EN, EN_PATTERNS } from './en.js'
 
 /** default value (provider ke bahar bhi crash na ho) */
 export const LanguageContext = createContext({
@@ -28,13 +29,15 @@ export const toUrdu = (value) => {
 
   const lead = String(value).match(/^\s*/)[0]
   const trail = String(value).match(/\s*$/)[0]
+  /* JSX me line-break wala text bhi match ho jaye */
+  const key = trimmed.replace(/\s+/g, ' ')
 
-  const hit = UR[trimmed]
+  const hit = UR[key]
   if (hit) return `${lead}${hit}${trail}`
 
   // dynamic text (numbers wali) ke liye patterns
   for (const [pattern, build] of UR_PATTERNS) {
-    const match = trimmed.match(pattern)
+    const match = key.match(pattern)
     if (match) return `${lead}${build(match)}${trail}`
   }
 
@@ -53,9 +56,32 @@ const isSkippedAttr = (element) => {
   return Boolean(element.closest('[data-no-i18n]'))
 }
 
+/** Roman-Urdu text ko proper English me badlo */
+export const toEnglish = (value) => {
+  const trimmed = String(value).trim()
+  if (!trimmed) return value
+
+  const lead = String(value).match(/^\s*/)[0]
+  const trail = String(value).match(/\s*$/)[0]
+  /* JSX me line-break wala text bhi match ho jaye */
+  const key = trimmed.replace(/\s+/g, ' ')
+
+  const hit = EN[key]
+  if (hit) return `${lead}${hit}${trail}`
+
+  for (const [pattern, build] of EN_PATTERNS) {
+    const match = key.match(pattern)
+    if (match) return `${lead}${build(match)}${trail}`
+  }
+
+  return value
+}
+
 /** poore tree ke text + attributes translate (ya English par restore) karo */
 export const applyToTree = (root, lang) => {
   if (!root || typeof document === 'undefined') return
+
+  const translate = (original) => (lang === 'ur' ? toUrdu(original) : toEnglish(original))
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   const textNodes = []
@@ -67,7 +93,7 @@ export const applyToTree = (root, lang) => {
 
     if (!ORIGINAL_TEXT.has(node)) ORIGINAL_TEXT.set(node, node.nodeValue)
     const original = ORIGINAL_TEXT.get(node)
-    const next = lang === 'ur' ? toUrdu(original) : original
+    const next = translate(original)
     if (node.nodeValue !== next) node.nodeValue = next
   })
 
@@ -84,7 +110,7 @@ export const applyToTree = (root, lang) => {
       }
       if (!store.has(attr)) store.set(attr, element.getAttribute(attr))
       const original = store.get(attr)
-      const next = lang === 'ur' ? toUrdu(original) : original
+      const next = translate(original)
       if (element.getAttribute(attr) !== next) element.setAttribute(attr, next)
     })
   })

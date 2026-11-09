@@ -1,5 +1,5 @@
-/* ============================================================
-   HOME — DEAL SECTION CARDS
+﻿/* ============================================================
+   HOME â€” DEAL SECTION CARDS
    Har card asli (real) book jaisa dikhta hai: 3D tilt, spine groove,
    cover sheen, right/bottom page block aur soft shadow.
    (Products grid wale .product-book style se matched.)
@@ -20,7 +20,7 @@
   perspective: 1000px;
 }
 
-/* the book itself — real angle + thoda slope */
+/* the book itself â€” real angle + thoda slope */
 .deal-book-inner {
   position: relative;
   display: block;
@@ -35,7 +35,7 @@
   filter: drop-shadow(0 30px 30px rgba(29, 56, 100, 0.45));
 }
 
-/* cover — full-bleed like a real hardcover */
+/* cover â€” full-bleed like a real hardcover */
 .deal-cover {
   position: relative;
   z-index: 2;
@@ -77,7 +77,7 @@
   );
 }
 
-/* soft light sheen — top-left light, bottom-right shade */
+/* soft light sheen â€” top-left light, bottom-right shade */
 .deal-cover::after {
   content: '';
   position: absolute;
@@ -93,7 +93,7 @@
   );
 }
 
-/* page block — right edge, like a real closed book */
+/* page block â€” right edge, like a real closed book */
 .deal-pages {
   position: absolute;
   top: 2.6%;
@@ -108,7 +108,7 @@
   box-shadow: 4px 4px 10px rgba(15, 23, 42, 0.2);
 }
 
-/* page block — bottom edge */
+/* page block â€” bottom edge */
 .deal-book-inner::after {
   content: '';
   position: absolute;
@@ -140,7 +140,7 @@
 }
 
 /* ============================================================
-   DEAL HERO — golden + orange rectangular offer box
+   DEAL HERO â€” golden + orange rectangular offer box
    (heading + short description + offer chip isi box ke andar)
    ============================================================ */
 .deal-hero {
@@ -185,7 +185,7 @@
   pointer-events: none;
 }
 
-/* "Deal of the week" pill — orange -> gold */
+/* "Deal of the week" pill â€” orange -> gold */
 .deal-hero-badge {
   display: inline-flex;
   align-items: center;
@@ -219,7 +219,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* red sunburst "price tag" sticker — offer tag iske andar likha hota hai */
+/* red sunburst "price tag" sticker â€” offer tag iske andar likha hota hai */
 .deal-sticker {
   position: relative;
   display: grid;
@@ -263,7 +263,7 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
-/* "UP TO" / "OFF" — chhota, wide tracking */
+/* "UP TO" / "OFF" â€” chhota, wide tracking */
 .deal-sticker-unit {
   font-size: 0.5rem;
   font-weight: 800;
@@ -271,7 +271,7 @@
   opacity: 0.95;
 }
 
-/* "40%" — bada, tight, modern */
+/* "40%" â€” bada, tight, modern */
 .deal-sticker-pct {
   font-size: 1.3rem;
   font-weight: 900;
@@ -306,20 +306,30 @@
   );
 }
 
-/* dark mode — gehra golden-brown box */
+/* dark mode â€” halka safed/cream box (baaki boxes ki tarah light) */
 .dark .deal-hero {
-  border-color: rgba(215, 165, 88, 0.32);
-  background-image:
-    radial-gradient(120% 150% at 100% 0%, rgba(126, 74, 22, 0.55) 0%, transparent 55%),
-    linear-gradient(135deg, #241a0d 0%, #302110 52%, #3a2813 100%);
+  border-color: #f2e7d2;
+  background-image: linear-gradient(135deg, #fffefb 0%, #fffaf1 52%, #fff6e8 100%);
   box-shadow:
-    0 26px 54px -30px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 26px 54px -34px rgba(3, 10, 22, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .dark .deal-hero::before {
-  border-color: rgba(215, 165, 88, 0.3);
+  border-color: rgba(176, 129, 63, 0.28);
 }
+
+/* white/cream box par heading + text black ho jaye */
+.dark .deal-hero h2 span {
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+.dark .deal-hero [class*='dark:text-gold-100'] {
+  color: #1a1a1a !important;
+}
+
 
 @media (min-width: 640px) {
   .deal-hero {

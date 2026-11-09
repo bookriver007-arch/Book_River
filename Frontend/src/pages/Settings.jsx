@@ -38,6 +38,7 @@ import useCart from '../hooks/useCart.js'
 import useWishlist from '../hooks/useWishlist.js'
 import { notify } from '../utils/notify.jsx'
 import { settingsText } from '../utils/settingsI18n.js'
+import { confirmAction } from '../utils/confirm.js'
 
 /* ---------------- storage keys + defaults ---------------- */
 const PREFS_KEY = 'br_prefs'
@@ -515,7 +516,14 @@ export default function Settings() {
     }
   }
 
-  const clearAddress = () => {
+  const clearAddress = async () => {
+    const ok = await confirmAction({
+      title: 'Address hata dein?',
+      message: 'Saved delivery address delete ho jayega.',
+      confirmLabel: 'Haan, hatao',
+    })
+    if (!ok) return
+
     setAddress(DEFAULT_ADDRESS)
     setAddressSnapshot(DEFAULT_ADDRESS)
     try {

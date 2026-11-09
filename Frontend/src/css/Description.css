@@ -1,5 +1,5 @@
-/* ============================================================
-   DESCRIPTION PAGE — full-width auto-rotating slideshow.
+﻿/* ============================================================
+   DESCRIPTION PAGE â€” full-width auto-rotating slideshow.
    ONE picture at a time, pushing right -> left.
    Width spans the whole page; height is ~75% of the screen,
    starting right under the navbar.
@@ -15,7 +15,7 @@
   box-shadow: 0 24px 48px -24px rgba(29, 56, 100, 0.45);
 }
 
-/* Home page — zyada unchi picture band (Description se bada) */
+/* Home page â€” zyada unchi picture band (Description se bada) */
 .slideshow-viewport--tall {
   --slide-h: 90vh;
   min-height: 460px;
@@ -58,15 +58,15 @@
 }
 
 /* ============================================================
-   CATEGORY RIBBON — floating orange + gold boxes (no strip bg).
+   CATEGORY RIBBON â€” floating orange + gold boxes (no strip bg).
    The boxes auto-scroll right -> left (pure CSS, GPU only)
    and pause on hover. Replaces the old "Browse every shelf" block.
    ============================================================ */
 .ribbon {
-  margin-top: 1.25rem; /* thoda upar — slideshow ke paas */
+  margin-top: 1.25rem; /* thoda upar â€” slideshow ke paas */
   width: 100%;
   overflow: hidden;
-  /* no strip background — only the boxes carry the orange + gold look */
+  /* no strip background â€” only the boxes carry the orange + gold look */
 }
 
 @media (min-width: 640px) {
@@ -96,7 +96,7 @@
   padding: 1.4rem 1rem 1.4rem 0;
 }
 
-/* every category is its own little NEON box — orange + gold glow */
+/* every category is its own little NEON box â€” orange + gold glow */
 .ribbon-item {
   flex-shrink: 0;
   padding: 0.5rem 1.3rem;
@@ -130,7 +130,7 @@
   }
 }
 
-/* "50% Off All Books" — inverted white box with a white/gold neon glow */
+/* "50% Off All Books" â€” inverted white box with a white/gold neon glow */
 .ribbon-item.ribbon-promo {
   background: #fff;
   color: #c2410c;
@@ -176,7 +176,7 @@
 }
 
 /* ============================================================
-   NEW LAUNCHES — big modern section heading above the books
+   NEW LAUNCHES â€” big modern section heading above the books
    ============================================================ */
 .launch-head {
   margin-top: 3.5rem;
@@ -238,7 +238,7 @@
 }
 
 /* ============================================================
-   KIDS BOOK — modern standing book mock with price tag
+   KIDS BOOK â€” modern standing book mock with price tag
    (like the "10 Little Penguins" board book),
    sits right of the first open book on wide screens.
    ============================================================ */
@@ -263,12 +263,12 @@
     display: block;
     position: absolute;
     top: 1.25rem;
-    right: clamp(4.5rem, 7vw, 9rem); /* thoda left — gap ke center ki taraf */
+    right: clamp(4.5rem, 7vw, 9rem); /* thoda left â€” gap ke center ki taraf */
     width: 14rem;
     z-index: 2;
   }
 
-  /* second card — second book ke LEFT side par (mirrored) */
+  /* second card â€” second book ke LEFT side par (mirrored) */
   .kidsbook-scene-left {
     right: auto;
     left: clamp(4.5rem, 7vw, 9rem);
@@ -376,7 +376,7 @@
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
 }
 
-/* very subtle hanging sway — just like a real object hanging from a rope */
+/* very subtle hanging sway â€” just like a real object hanging from a rope */
 @keyframes kidsbook-swing {
   0%,
   100% {
@@ -394,7 +394,7 @@
 }
 
 /* ============================================================
-   HANGING FRAME GALLERY — admin pictures, scroll right -> left
+   HANGING FRAME GALLERY â€” admin pictures, scroll right -> left
    ============================================================ */
 .frames-marquee {
   margin-top: 3.5rem;
@@ -491,7 +491,7 @@
 }
 
 /* ============================================================
-   PRODUCTS — 4-per-row book covers; click opens the book
+   PRODUCTS â€” 4-per-row book covers; click opens the book
    ============================================================ */
 .products {
   margin-top: 4.5rem;
@@ -585,7 +585,7 @@
   border: 0;
   background: transparent;
   cursor: pointer;
-  /* real 3D camera — isse tilt asli depth deta hai */
+  /* real 3D camera â€” isse tilt asli depth deta hai */
   perspective: 1000px;
 }
 
@@ -611,7 +611,7 @@
   filter: drop-shadow(0 32px 32px rgba(29, 56, 100, 0.48));
 }
 
-/* the cover itself — full-bleed like a real hardcover */
+/* the cover itself â€” full-bleed like a real hardcover */
 .product-cover {
   position: relative;
   z-index: 2;
@@ -653,7 +653,7 @@
   );
 }
 
-/* soft light sheen across the cover — top-left light, bottom-right shade */
+/* soft light sheen across the cover â€” top-left light, bottom-right shade */
 .product-cover::after {
   content: '';
   position: absolute;
@@ -669,7 +669,7 @@
   );
 }
 
-/* page block — visible on the right edge like a real closed book */
+/* page block â€” visible on the right edge like a real closed book */
 .product-pages {
   position: absolute;
   top: 2.6%;
@@ -757,7 +757,7 @@
   border-radius: 1rem;
   overflow: hidden;
   perspective: 2000px;
-  /* stacked pages below — open-book illustration jaisa */
+  /* stacked pages below â€” open-book illustration jaisa */
   box-shadow:
     0 5px 0 -1px #efe8d8,
     0 10px 0 -3px #e4dbc7,
@@ -791,7 +791,7 @@
   text-align: left;
 }
 
-/* the front cover — flips open to the left like a real book */
+/* the front cover â€” flips open to the left like a real book */
 .spread-cover {
   position: absolute;
   top: 0;
@@ -849,7 +849,7 @@
   color: #b45309;
 }
 
-/* short description — sirf 5 lines, uske baad ... */
+/* short description â€” sirf 5 lines, uske baad ... */
 .spread-desc {
   flex: 1;
   margin-top: 0.6rem;
@@ -934,7 +934,7 @@
 }
 
 /* ============================================================
-   REVIEWS — modern cards scrolling right -> left
+   REVIEWS â€” modern cards scrolling right -> left
    ============================================================ */
 .reviews {
   margin-top: 4.5rem;
@@ -1037,9 +1037,9 @@
 }
 
 .dark .review-card {
-  border-color: rgba(255, 255, 255, 0.32);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.7);
+  border-color: #e8eef7;
+  background: #ffffff;
+  box-shadow: 0 18px 34px -24px rgba(3, 10, 22, 0.75);
 }
 
 .review-stars {
@@ -1067,7 +1067,7 @@
 }
 
 .dark .review-text {
-  color: rgba(255, 255, 255, 0.85);
+  color: #1a1a1a;
 }
 
 .review-who {
@@ -1096,7 +1096,7 @@
 }
 
 .dark .review-name {
-  color: #ffffff;
+  color: #000000;
 }
 
 .review-verified {
@@ -1108,7 +1108,7 @@
 }
 
 .dark .review-verified {
-  color: rgba(255, 255, 255, 0.6);
+  color: #333333;
 }
 
 /* the actual right -> left movement */
@@ -1128,7 +1128,7 @@
 }
 
 /* ============================================================
-   SITE INFO — what's on the website (feature cards)
+   SITE INFO â€” what's on the website (feature cards)
    ============================================================ */
 .siteinfo {
   margin-top: 4.5rem;
@@ -1230,9 +1230,9 @@
 }
 
 .dark .siteinfo-card {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.7);
+  border-color: #e8eef7;
+  background: #ffffff;
+  box-shadow: 0 18px 34px -24px rgba(3, 10, 22, 0.75);
 }
 
 .siteinfo-icon {
@@ -1247,8 +1247,8 @@
 }
 
 .dark .siteinfo-icon {
-  background: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
+  background: #f3f9ff;
+  color: #2c5698;
 }
 
 .siteinfo-card-title {
@@ -1260,7 +1260,7 @@
 }
 
 .dark .siteinfo-card-title {
-  color: #ffffff;
+  color: #000000;
 }
 
 .siteinfo-card-text {
@@ -1271,11 +1271,11 @@
 }
 
 .dark .siteinfo-card-text {
-  color: rgba(255, 255, 255, 0.85);
+  color: #1a1a1a;
 }
 
 /* ============================================================
-   FOOTER — dark navy with gold accent
+   FOOTER â€” dark navy with gold accent
    ============================================================ */
 .site-footer {
   position: relative;
@@ -1524,7 +1524,7 @@
 }
 
 /* ============================================================
-   FOOTER v2 — modern 3 columns + brand-colour buttons
+   FOOTER v2 â€” modern 3 columns + brand-colour buttons
    (purane rules ke upar override karta hai)
    ============================================================ */
 .site-footer .footer-inner {
@@ -1710,7 +1710,7 @@
 }
 
 /* ============================================================
-   FOOTER v3 — 4 columns + help links + payment pills (English)
+   FOOTER v3 â€” 4 columns + help links + payment pills (English)
    ============================================================ */
 
 /* ---- 4 columns ---- */
@@ -1770,7 +1770,7 @@
 }
 
 /* ============================================================
-   Footer hamesha page ke bilkul end par — koi gap nahi
+   Footer hamesha page ke bilkul end par â€” koi gap nahi
    ============================================================ */
 @supports selector(:has(*)) {
   /* jis page me footer hai usko column banao */
@@ -1781,7 +1781,7 @@
     padding-bottom: 0;
   }
 
-  /* content bachi hui jagah le le — footer hamesha bottom par */
+  /* content bachi hui jagah le le â€” footer hamesha bottom par */
   .book-page:has(> .site-footer) > main {
     flex: 1 1 auto;
     width: 100%;
@@ -1847,13 +1847,13 @@
 }
 
 /* ============================================================
-   OPEN BOOK — left page = picture, right page = description.
+   OPEN BOOK â€” left page = picture, right page = description.
    Clicking a page flips it in 3D like a real book page.
    ============================================================ */
 .open-book-wrap {
   position: relative;
   margin-top: 2rem;
-  /* page ke left side par — thoda sa left se shuru */
+  /* page ke left side par â€” thoda sa left se shuru */
   margin-left: clamp(1rem, 4vw, 3.5rem);
   margin-right: auto;
   max-width: 56rem;
@@ -1869,7 +1869,7 @@
   }
 }
 
-/* second book — sits on the RIGHT side of the page, mirrored slope */
+/* second book â€” sits on the RIGHT side of the page, mirrored slope */
 .open-book-wrap-right {
   margin-left: auto;
   margin-right: clamp(1rem, 4vw, 3.5rem);
@@ -1887,7 +1887,7 @@
   transform: rotateX(9deg) rotate(3.5deg);
 }
 
-/* soft shadow — the book lying on a "table" */
+/* soft shadow â€” the book lying on a "table" */
 .open-book-wrap::after {
   content: '';
   position: absolute;
@@ -2089,7 +2089,7 @@
 .book-flip-next {
   left: 50%;
   transform-origin: left center;
-  /* slow, physical page turn — pehle halka uthna, phir girna */
+  /* slow, physical page turn â€” pehle halka uthna, phir girna */
   animation: page-flip-next 1.4s cubic-bezier(0.33, 0, 0.2, 1) forwards;
 }
 
@@ -2111,7 +2111,7 @@
   transform: rotateY(180deg);
 }
 
-/* light/shadow sweep on the turning page — like real light on paper */
+/* light/shadow sweep on the turning page â€” like real light on paper */
 .book-shade {
   position: absolute;
   inset: 0;

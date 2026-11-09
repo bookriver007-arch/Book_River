@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import useWishlist from '../hooks/useWishlist.js'
 import useCart from '../hooks/useCart.js'
+import { confirmAction } from '../utils/confirm.js'
 
 /** Wishlist page — jo books heart ki hain wo yahan save rehti hain. */
 export default function Wishlist() {
@@ -27,7 +28,13 @@ export default function Wishlist() {
     window.location.replace('/description')
   }
 
-  const removeItem = (item) => {
+  const removeItem = async (item) => {
+    const ok = await confirmAction({
+      title: 'Wishlist se hatao?',
+      message: `${item.title} wishlist se nikal jayegi.`,
+      confirmLabel: 'Haan, hatao',
+    })
+    if (!ok) return
     remove(item.id)
     notify.wishlist('Wishlist se hata di 💔', item.title)
   }
@@ -61,7 +68,13 @@ export default function Wishlist() {
           {items.length > 0 ? (
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
+                const ok = await confirmAction({
+                  title: 'Wishlist khali karein?',
+                  message: 'Saari saved books hat jayengi.',
+                  confirmLabel: 'Haan, khali karo',
+                })
+                if (!ok) return
                 clear()
                 notify.info('Wishlist khali kar di 🧺')
               }}

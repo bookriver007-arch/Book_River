@@ -383,6 +383,14 @@ export const UR = {
   'EasyPaisa': 'ایزی پیسہ',
   'JazzCash': 'جاز کیش',
 
+  /* ---------- old orders (track page) ---------- */
+  'Old orders': 'پرانے آرڈرز',
+  'Abhi koi purana order nahi': 'ابھی کوئی پرانا آرڈر نہیں',
+  'Jab bhi koi order track karoge (ya order place karoge), wo yahan save ho jayega — baad me yahin se check kar lena.':
+    'جب بھی کوئی آرڈر ٹریک یا پلیس کریں گے، وہ یہاں محفوظ ہو جائے گا — بعد میں یہیں سے دیکھ لیں۔',
+  'List se hatao': 'لسٹ سے ہٹائیں',
+  'Old orders list khali kar di 🗑️': 'پرانی آرڈر لسٹ خالی کر دی 🗑️',
+
   /* ---------- checkout (cart page) ---------- */
   'Delivery details': 'ڈیلیوری کی تفصیل',
   'Ye pata order ke saath admin ko jayega — Settings se bhi aa jata hai.':
@@ -423,6 +431,15 @@ export const UR = {
   'CVV 3 ya 4 digit': 'CVV 3 یا 4 ہندسے',
   'Mobile number 03xx xxxxxxx': 'موبائل نمبر 03xx xxxxxxx',
   'Transaction ID / reference likho': 'ٹرانزیکشن آئی ڈی / ریفرنس لکھیں',
+
+  /* ---------- checkout steps ---------- */
+  'Order review': 'آرڈر کا جائزہ',
+  'Books check karo': 'کتابیں دیکھ لیں',
+  'Kahan bhejna hai': 'کہاں بھیجنا ہے',
+  'Kaise dena hai': 'کیسے دینا ہے',
+  'Edit cart': 'کارٹ میں تبدیلی کریں',
+  'Continue ·': 'جاری رکھیں ·',
+  'Place order ·': 'آرڈر کریں ·',
 }
 
 /**
@@ -436,4 +453,5 @@ export const UR_PATTERNS = [
   [/^Wishlist \((\d+) books?\)$/i, (m) => `وِش لسٹ (${m[1]} کتابیں)`],
   [/^Cart \((\d+) items?\)$/i, (m) => `کارٹ (${m[1]} اشیاء)`],
   [/^Save hua · (.+)$/i, (m) => `محفوظ ہوا · ${m[1]}`],
+  [/^Step (\d+)$/i, (m) => `مرحلہ ${m[1]}`],
 ]
