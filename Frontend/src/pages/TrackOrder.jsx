@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
@@ -30,6 +30,8 @@ import {
 import { confirmAction } from '../utils/confirm.js'
 
 /** tracking ke 4 steps */
+const FINAL_STATUSES = ['delivered', 'rejected']
+
 const STEPS = [
   { key: 'pending', label: 'Order place', note: 'Aapka order mil gaya', icon: Package },
   { key: 'approved', label: 'Approved', note: 'Admin ne approve kar diya', icon: CheckCircle2 },
@@ -266,7 +268,7 @@ export default function TrackOrder() {
     return () => document.removeEventListener('visibilitychange', onVisible)
   }, [syncHistory])
 
-  // URL ya last order se apne aap track
+  // URL ya last order se apne aap track (complete order apne aap na khule)
   useEffect(() => {
     let last = ''
     try {
@@ -277,6 +279,14 @@ export default function TrackOrder() {
     const initial = urlCode || last
     if (!initial) return
     setCode(initial)
+
+    /* jo order complete ho chuka hai wo page khulte hi na khule —
+       wo "Old orders" list me rehta hai, wahan se khol lo */
+    if (!urlCode) {
+      const saved = readOrderHistory().find((entry) => entry.code === initial)
+      if (saved && FINAL_STATUSES.includes(saved.status)) return
+    }
+
     track(initial)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlCode])
@@ -291,11 +301,26 @@ export default function TrackOrder() {
   const meta = order ? STATUS_META[order.status] || STATUS_META.pending : null
   const stepIndex = order ? STEPS.findIndex((step) => step.key === order.status) : -1
 
-  /* jo order abhi khula hua hai wo "Old orders" list me dobara na dikhe */
-  const otherHistory = useMemo(
-    () => history.filter((entry) => entry.code !== order?.code),
-    [history, order],
-  )
+  /* complete (delivered / rejected) order ka bara tracking card nahi dikhta —
+     wo "Old orders" list me hi khulta hai (styled detail ke saath) */
+  const isComplete = Boolean(order && FINAL_STATUSES.includes(order.status))
+  const savedEntry = order ? history.find((entry) => entry.code === order.code) : null
+  const showCompletedPanel = isComplete && !savedEntry
+
+  /* completed order list me row expand ho jaye (ek dafa — band karne par band hi rahe) */
+  const autoOpenedRef = useRef('')
+  useEffect(() => {
+    if (!isComplete || !savedEntry) return
+    if (autoOpenedRef.current === order.code) return
+    autoOpenedRef.current = order.code
+    setOpenDetail(order.code)
+
+    /* row tak scroll — taake complete order kahan hai ye dikhe */
+    window.setTimeout(() => {
+      const row = document.querySelector(`[data-order-code="${order.code}"]`)
+      row?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 120)
+  }, [isComplete, savedEntry, order])
 
   const copyCode = async () => {
     try {
@@ -378,14 +403,14 @@ export default function TrackOrder() {
           </button>
         </form>
 
-        {/* ---------- old orders (saved / jo order khula hai wo chhod kar) ---------- */}
-        {otherHistory.length ? (
+        {/* ---------- old orders (saved) ---------- */}
+        {history.length ? (
           <section className="mt-4 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.04]">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="flex items-center gap-1.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                 <History className="h-3.5 w-3.5" /> Old orders
                 <span className="font-normal normal-case tracking-normal text-slate-400 dark:text-slate-500">
-                  ({otherHistory.length})
+                  ({history.length})
                 </span>
               </h2>
               <div className="flex items-center gap-3">
@@ -409,13 +434,14 @@ export default function TrackOrder() {
             </div>
 
             <ul className="mt-3 space-y-2">
-              {otherHistory.map((entry) => {
+              {history.map((entry) => {
                 const entryMeta = STATUS_META[entry.status] || STATUS_META.pending
                 const open = openDetail === entry.code
 
                 return (
                   <li
                     key={entry.code}
+                    data-order-code={entry.code}
                     className="rounded-2xl border border-slate-200 bg-white transition hover:border-brand-300 dark:border-white/10 dark:bg-white/5"
                   >
                     <div className="flex flex-wrap items-center gap-2 px-3 py-2">
@@ -469,6 +495,39 @@ export default function TrackOrder() {
 
                     {open ? (
                       <div className="border-t border-slate-200 px-3 py-3 dark:border-white/10">
+                        {FINAL_STATUSES.includes(entry.status) ? (
+                          <div
+                            className={`mb-3 flex flex-wrap items-center gap-2 rounded-2xl px-3 py-2 ring-1 ${
+                              entry.status === 'rejected'
+                                ? 'bg-rose-50/90 ring-rose-200 dark:bg-rose-500/10 dark:ring-rose-400/25'
+                                : 'bg-emerald-50/90 ring-emerald-200 dark:bg-emerald-500/10 dark:ring-emerald-400/25'
+                            }`}
+                          >
+                            <span
+                              className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-white ${
+                                entry.status === 'rejected' ? 'bg-rose-500' : 'bg-emerald-600'
+                              }`}
+                            >
+                              {entry.status === 'rejected' ? (
+                                <Ban className="h-3.5 w-3.5" />
+                              ) : (
+                                <PackageCheck className="h-3.5 w-3.5" />
+                              )}
+                            </span>
+                            <p
+                              className={`text-[0.66rem] font-extrabold uppercase tracking-[0.14em] ${
+                                entry.status === 'rejected'
+                                  ? 'text-rose-700 dark:text-rose-200'
+                                  : 'text-emerald-800 dark:text-emerald-200'
+                              }`}
+                            >
+                              {entry.status === 'rejected' ? 'Order closed' : 'Order complete'}
+                            </p>
+                            <span className="ml-auto text-[0.66rem] font-semibold text-slate-500 dark:text-slate-400">
+                              {when(entry.detail?.decidedAt || entry.at)}
+                            </span>
+                          </div>
+                        ) : null}
                         <HistoryDetail
                           info={entry.detail}
                           onTrack={() => {
@@ -514,7 +573,66 @@ export default function TrackOrder() {
           </div>
         ) : null}
 
-        {order ? (
+        {/* ---------- complete order (list me save nahi hai) — compact styled card ---------- */}
+        {showCompletedPanel ? (
+          <section
+            className={`mt-5 overflow-hidden rounded-3xl border shadow-sm ${
+              order.status === 'rejected'
+                ? 'border-rose-200/90 bg-white dark:border-rose-400/25 dark:bg-white/[0.04]'
+                : 'border-emerald-200/90 bg-white dark:border-emerald-400/25 dark:bg-white/[0.04]'
+            }`}
+          >
+            <div
+              className={`flex flex-wrap items-center gap-3 px-5 py-4 ${
+                order.status === 'rejected'
+                  ? 'bg-rose-50/90 dark:bg-rose-500/10'
+                  : 'bg-emerald-50/90 dark:bg-emerald-500/10'
+              }`}
+            >
+              <span
+                className={`grid h-10 w-10 shrink-0 place-items-center rounded-full text-white ${
+                  order.status === 'rejected' ? 'bg-rose-500' : 'bg-emerald-600'
+                }`}
+              >
+                {order.status === 'rejected' ? (
+                  <Ban className="h-4 w-4" />
+                ) : (
+                  <PackageCheck className="h-4 w-4" />
+                )}
+              </span>
+              <div className="min-w-0">
+                <p
+                  className={`text-[0.58rem] font-bold uppercase tracking-[0.18em] ${
+                    order.status === 'rejected'
+                      ? 'text-rose-700/80 dark:text-rose-200/80'
+                      : 'text-emerald-700/80 dark:text-emerald-200/80'
+                  }`}
+                >
+                  {order.status === 'rejected' ? 'Order closed' : 'Order complete'}
+                </p>
+                <p className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">
+                  {order.code}
+                </p>
+              </div>
+              <div className="ml-auto text-right">
+                <span
+                  className={`inline-block rounded-full px-3 py-1 text-[0.62rem] font-extrabold uppercase tracking-wider ring-1 ${meta.pill}`}
+                >
+                  {meta.label}
+                </span>
+                <p className="mt-1 text-[0.66rem] font-semibold text-slate-500 dark:text-slate-400">
+                  {when(order.decidedAt || order.updatedAt || order.createdAt)}
+                </p>
+              </div>
+            </div>
+
+            <div className="px-5 py-4">
+              <HistoryDetail info={order} onTrack={() => track(order.code)} />
+            </div>
+          </section>
+        ) : null}
+
+        {order && !isComplete ? (
           <section className="mt-5 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_19rem]">
             {/* ---------- status + timeline ---------- */}
             <div className="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.04]">
