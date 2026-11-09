@@ -40,6 +40,14 @@ const userSchema = new mongoose.Schema(
 
     /* kab password change hua (Settings → Security) */
     passwordChangedAt: { type: Date },
+
+    /* two-factor authentication — Google Authenticator (TOTP) */
+    twoFactor: {
+      enabled: { type: Boolean, default: false },
+      /* secret kabhi API se bahar nahi jata (select: false) */
+      secret: { type: String, default: '', select: false },
+      enabledAt: { type: Date, default: null },
+    },
   },
   { timestamps: true },
 )
@@ -75,6 +83,8 @@ userSchema.methods.toPublic = function toPublic() {
       numberFormat: this.prefs?.numberFormat || 'pk',
     },
     passwordChangedAt: this.passwordChangedAt || null,
+    twoFactorEnabled: Boolean(this.twoFactor?.enabled),
+    twoFactorEnabledAt: this.twoFactor?.enabledAt || null,
     createdAt: this.createdAt,
   }
 }
