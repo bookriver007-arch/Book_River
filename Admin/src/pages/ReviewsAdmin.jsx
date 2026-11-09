@@ -8,7 +8,7 @@ import Spinner from '../components/Spinner'
 
 const EMPTY = { name: '', rating: 5, text: '' }
 
-/** Reviews — Frontend par right → left scroll hone wala slider. */
+/** Reviews — the slider that scrolls right → left on the frontend. */
 export default function ReviewsAdmin() {
   const { items, loading, busyId, saving, create, remove, move, update } = useCollection(
     ENDPOINTS.reviews,
@@ -18,12 +18,12 @@ export default function ReviewsAdmin() {
 
   const submit = async (e) => {
     e.preventDefault()
-    if (!form.name.trim()) return toast.error('Reader ka naam likho')
-    if (!form.text.trim()) return toast.error('Review likho')
+    if (!form.name.trim()) return toast.error('Enter the reader name')
+    if (!form.text.trim()) return toast.error('Write the review')
 
     const ok = await create(
       { name: form.name.trim(), rating: Number(form.rating), text: form.text.trim() },
-      { success: 'Review add ho gayi ✅' },
+      { success: 'Review added ✅' },
     )
     if (ok) setForm(EMPTY)
   }
@@ -44,20 +44,20 @@ export default function ReviewsAdmin() {
       <PageHeader
         eyebrow="Social proof"
         title="Reviews — Slider"
-        subtitle="Frontend par yeh reviews right → left scroll karti hain."
+        subtitle="On the frontend these reviews scroll right → left."
       />
 
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <Plus className="h-4 w-4 text-brand-600" /> Nayi review
+            <Plus className="h-4 w-4 text-brand-600" /> New review
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
         <form onSubmit={submit} className="card-body grid gap-4 sm:grid-cols-3">
           <div>
             <label className="label" htmlFor="rev-name">
-              Reader ka naam
+              Reader name
             </label>
             <input
               id="rev-name"
@@ -92,7 +92,7 @@ export default function ReviewsAdmin() {
               id="rev-text"
               value={form.text}
               onChange={(e) => setForm({ ...form, text: e.target.value })}
-              placeholder="Books bohat achi thi aur delivery fast…"
+              placeholder="The books were great and delivery was fast…"
               className="input"
             />
           </div>
@@ -112,7 +112,7 @@ export default function ReviewsAdmin() {
             <span className="count-pill">{items.length}</span>
           </h2>
           <span className="text-xs text-slate-400">
-            Naam / review par click karke edit — blur par save
+            Click a name/review to edit — it saves on blur
           </span>
         </div>
         <div className="card-body">
@@ -120,8 +120,7 @@ export default function ReviewsAdmin() {
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi review nahi hai — Frontend par demo reviews dikh rahi hain. Upar se review
-              add karo.
+              No reviews yet — demo reviews are showing on the frontend. Add a review above.
             </p>
           ) : (
             <ul className="space-y-2">
@@ -136,7 +135,7 @@ export default function ReviewsAdmin() {
                         if (e.key === 'Enter') e.currentTarget.blur()
                       }}
                       className="input"
-                      title="Naam"
+                      title="Name"
                     />
                     <select
                       defaultValue={review.rating}

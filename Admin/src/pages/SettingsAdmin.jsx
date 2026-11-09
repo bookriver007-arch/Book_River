@@ -37,7 +37,7 @@ export default function SettingsAdmin() {
       <PageHeader
         eyebrow="Admin"
         title="Settings"
-        subtitle="Frontend ka address, backend ki health aur admin panel ki info."
+        subtitle="Frontend address, backend health and admin panel info."
         actions={
           <button type="button" onClick={check} disabled={health.loading} className="btn-outline">
             {health.loading ? (
@@ -73,7 +73,7 @@ export default function SettingsAdmin() {
               </p>
             </div>
             <a href={FRONTEND_URL} target="_blank" rel="noreferrer" className="btn-primary">
-              <ExternalLink className="h-4 w-4" /> Frontend kholo
+              <ExternalLink className="h-4 w-4" /> Open frontend
             </a>
           </div>
         </section>
@@ -99,7 +99,7 @@ export default function SettingsAdmin() {
           <div className="card-body space-y-3">
             {health.loading ? (
               <p className="flex items-center gap-2 text-sm text-slate-500">
-                <Loader2 className="h-4 w-4 animate-spin" /> Backend check ho raha hai…
+                <Loader2 className="h-4 w-4 animate-spin" /> Checking backend…
               </p>
             ) : health.ok ? (
               <ul className="space-y-2 text-sm text-slate-700">
@@ -124,12 +124,11 @@ export default function SettingsAdmin() {
               </ul>
             ) : (
               <p className="empty">
-                Backend se baat nahi ho rahi — port 5000 par server chalu hai? ({health.error})
+                Cannot reach the backend — is the server running on port 5000? ({health.error})
               </p>
             )}
             <p className="hint">
-              API base: <code>/api</code> — Vite proxy se <code>http://localhost:5000</code> par
-              jaata hai.
+              API base: <code>/api</code> — proxied by Vite to <code>http://localhost:5000</code>.
             </p>
           </div>
         </section>
@@ -161,8 +160,10 @@ export default function SettingsAdmin() {
               <p className="text-[0.68rem] font-bold uppercase tracking-[0.1em] text-slate-500">
                 Login
               </p>
-              <p className="mt-1 text-sm font-bold text-brand-900">Abhi nahi</p>
-              <p className="text-[0.72rem] text-slate-500">Admin panel bina login khulta hai</p>
+              <p className="mt-1 text-sm font-bold text-brand-900">Admin login ON</p>
+              <p className="text-[0.72rem] text-slate-500">
+                Opening the panel asks for email + password
+              </p>
             </div>
           </div>
         </section>

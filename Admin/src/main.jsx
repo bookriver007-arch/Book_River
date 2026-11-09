@@ -3,12 +3,16 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import App from './App.jsx'
+import AutoEnglish from './components/AutoEnglish.jsx'
+import ConfirmDialog from './components/ConfirmDialog.jsx'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <App />
+      <ConfirmDialog />
+      <AutoEnglish />
       <Toaster
         position="top-right"
         toastOptions={{

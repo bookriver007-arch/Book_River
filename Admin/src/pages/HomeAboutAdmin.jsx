@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { BookOpen, ExternalLink, ImagePlus, Loader2, RefreshCw, RotateCcw, Save } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { ENDPOINTS, apiDelete, apiList, apiSend, frontendUrl } from '../lib/api'
+import { confirmAction } from '../lib/confirm'
 import PageHeader from '../components/PageHeader'
 
 const PAGE_LABELS = ['Page 1 — picture LEFT', 'Page 2 — picture RIGHT', 'Page 3 — picture LEFT']
@@ -66,7 +67,7 @@ export default function HomeAboutAdmin() {
     setSaving(true)
     try {
       await apiSend(`${ENDPOINTS.homeAbout}/${pageNo}`, { method: 'PATCH', form: fd })
-      toast.success(`Page ${pageNo} save ho gaya ✅`)
+      toast.success(`Page ${pageNo} saved ✅`)
       clearFileInputs()
       await load()
     } catch (err) {
@@ -78,10 +79,15 @@ export default function HomeAboutAdmin() {
 
   const reset = async () => {
     if (!current) return
-    if (!window.confirm(`Page ${pageNo} reset karein? (picture bhi delete hogi)`)) return
+    const ok = await confirmAction({
+      title: 'Reset page?',
+      message: `Page ${pageNo}'s picture and text will be deleted permanently.`,
+      confirmLabel: 'Yes, reset',
+    })
+    if (!ok) return
     try {
       await apiDelete(`${ENDPOINTS.homeAbout}/${pageNo}`)
-      toast.success(`Page ${pageNo} reset ho gaya`)
+      toast.success(`Page ${pageNo} reset`)
       await load()
     } catch (err) {
       toast.error(err.message)
@@ -93,14 +99,14 @@ export default function HomeAboutAdmin() {
       <PageHeader
         eyebrow="Home page"
         title="Home Page — About Book"
-        subtitle="Home page ki About kitaab ke 3 pages. Har page par heading, description aur picture yahan se set karo."
+        subtitle="The 3 pages of the Home About book. Set each page's heading, description and picture here."
         actions={
           <>
             <button type="button" onClick={load} className="btn-outline">
               <RefreshCw className="h-4 w-4" /> Refresh
             </button>
             <a href={frontendUrl('/home')} target="_blank" rel="noreferrer" className="btn-primary">
-              <ExternalLink className="h-4 w-4" /> Home dekho
+              <ExternalLink className="h-4 w-4" /> View Home
             </a>
           </>
         }
@@ -133,7 +139,7 @@ export default function HomeAboutAdmin() {
             <h2 className="card-title">
               <ImagePlus className="h-4 w-4 text-brand-600" /> {PAGE_LABELS[pageNo - 1]}
             </h2>
-            <span className="count-pill">{current?.imageUrl ? 'set' : 'khali'}</span>
+            <span className="count-pill">{current?.imageUrl ? 'set' : 'empty'}</span>
           </div>
 
           <form onSubmit={save} className="card-body space-y-4">
@@ -166,7 +172,7 @@ export default function HomeAboutAdmin() {
 
             <div className="grid gap-3 sm:grid-cols-3">
               {[
-                { key: 'image', label: 'Picture 1 (badi)' },
+                { key: 'image', label: 'Picture 1 (large)' },
                 { key: 'image2', label: 'Picture 2 (overlap)' },
                 { key: 'image3', label: 'Picture 3 (polaroid)' },
               ].map((slot) => (
@@ -187,8 +193,7 @@ export default function HomeAboutAdmin() {
               ))}
             </div>
             <p className="hint">
-              Har page par 3 pictures hoti hain (modern collage). Jo picture na chuno, uski purani
-              picture waisi hi rahegi. Max 5 MB each.
+              Each page holds 3 pictures (modern collage). If you do not choose a picture, its old one stays as is. Max 5 MB each.
             </p>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -198,7 +203,7 @@ export default function HomeAboutAdmin() {
                 ) : (
                   <Save className="h-4 w-4" />
                 )}
-                {saving ? 'Saving…' : `Page ${pageNo} save karo`}
+                {saving ? 'Saving…' : `Save page ${pageNo}`}
               </button>
               <button
                 type="button"
@@ -214,7 +219,7 @@ export default function HomeAboutAdmin() {
 
         <section className="card">
           <div className="card-head">
-            <h2 className="card-title">Page {pageNo} — abhi ka look</h2>
+            <h2 className="card-title">Page {pageNo} — current look</h2>
             {loading ? <span className="count-pill">loading…</span> : null}
           </div>
           <div className="card-body">
@@ -234,7 +239,7 @@ export default function HomeAboutAdmin() {
                         />
                       ) : (
                         <div className="grid h-24 place-items-center text-[0.6rem] font-bold uppercase text-slate-400">
-                          khali
+                          empty
                         </div>
                       )}
                       <p className="mt-1 text-center text-[0.6rem] font-bold uppercase tracking-wider text-slate-400">
@@ -252,8 +257,7 @@ export default function HomeAboutAdmin() {
               </div>
             ) : (
               <p className="empty">
-                Is page par abhi kuch set nahi — Home par default content dikhega. Upar se picture +
-                heading + description save karo.
+                Nothing set on this page yet — default content shows on Home. Save a picture, heading and description above.
               </p>
             )}
           </div>

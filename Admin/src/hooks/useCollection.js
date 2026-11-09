@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { apiDelete, apiList, apiSend, swapOrder } from '../lib/api'
+import { confirmAction } from '../lib/confirm'
 
 /**
  * Ek collection (slides / books / products …) ke liye chhota sa CRUD hook.
@@ -17,7 +18,7 @@ export default function useCollection(url, { label = 'Data' } = {}) {
       const data = await apiList(url)
       setItems(Array.isArray(data) ? data : [])
     } catch {
-      toast.error(`${label} load nahi hui — backend (port 5000) chalu hai?`)
+      toast.error(`${label} did not load — is the backend (port 5000) running?`)
     } finally {
       setLoading(false)
     }
@@ -28,7 +29,7 @@ export default function useCollection(url, { label = 'Data' } = {}) {
   }, [reload])
 
   /** add — body JSON ya FormData (isForm: true) */
-  const create = async (body, { isForm = false, success = 'Add ho gaya ✅' } = {}) => {
+  const create = async (body, { isForm = false, success = 'Added ✅' } = {}) => {
     setSaving(true)
     try {
       await apiSend(url, isForm ? { form: body } : { body })
@@ -60,11 +61,16 @@ export default function useCollection(url, { label = 'Data' } = {}) {
   }
 
   const remove = async (item, name) => {
-    if (!window.confirm(`"${name}" delete karein?`)) return
+    const ok = await confirmAction({
+      title: 'Delete?',
+      message: `"${name}" will be deleted permanently.`,
+      confirmLabel: 'Yes, delete',
+    })
+    if (!ok) return
     setBusyId(item._id)
     try {
       await apiDelete(`${url}/${item._id}`)
-      toast.success('Delete ho gaya')
+      toast.success('Deleted')
       await reload()
     } catch (err) {
       toast.error(err.message)
@@ -73,7 +79,7 @@ export default function useCollection(url, { label = 'Data' } = {}) {
     }
   }
 
-  /** dir = -1 (upar) ya +1 (neeche) */
+  /** dir = -1 (up) or +1 (down) */
   const move = async (item, dir) => {
     const i = items.findIndex((x) => x._id === item._id)
     const neighbour = items[i + dir]

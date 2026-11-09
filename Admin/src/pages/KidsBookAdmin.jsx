@@ -2,10 +2,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Baby, ImagePlus, Loader2, Save, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { ENDPOINTS, apiDelete, apiList, apiSend } from '../lib/api'
+import { confirmAction } from '../lib/confirm'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
 
-/** Kids Book — pehli book ke right wali standing kids-book ka cover. */
+/** Kids Book — cover of the standing kids book to the right of the first book. */
 export default function KidsBookAdmin() {
   const [book, setBook] = useState(null)
   const [caption, setCaption] = useState('')
@@ -20,7 +21,7 @@ export default function KidsBookAdmin() {
       setBook(current)
       setCaption(current?.title || '')
     } catch {
-      toast.error('Kids book load nahi hui — backend chalu hai?')
+      toast.error('Kids book did not load — is the backend running?')
     } finally {
       setLoading(false)
     }
@@ -33,7 +34,7 @@ export default function KidsBookAdmin() {
   const upload = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Cover picture select karo')
+    if (!file) return toast.error('Select a cover picture')
 
     const fd = new FormData()
     fd.append('image', file)
@@ -42,7 +43,7 @@ export default function KidsBookAdmin() {
     setBusy(true)
     try {
       await apiSend(ENDPOINTS.kids, { form: fd })
-      toast.success(book ? 'Cover replace ho gaya ✅' : 'Cover upload ho gaya ✅')
+      toast.success(book ? 'Cover replaced ✅' : 'Cover uploaded ✅')
       if (fileRef.current) fileRef.current.value = ''
       await load()
     } catch (err) {
@@ -59,7 +60,7 @@ export default function KidsBookAdmin() {
     setBusy(true)
     try {
       await apiSend(ENDPOINTS.kids, { method: 'PATCH', body: { title: clean } })
-      toast.success('Caption save ho gaya ✅')
+      toast.success('Caption saved ✅')
       await load()
     } catch (err) {
       toast.error(err.message)
@@ -69,11 +70,16 @@ export default function KidsBookAdmin() {
   }
 
   const removeCover = async () => {
-    if (!window.confirm('Kids book cover delete karein?')) return
+    const ok = await confirmAction({
+      title: 'Delete cover?',
+      message: 'The kids book cover will be deleted permanently.',
+      confirmLabel: 'Yes, delete',
+    })
+    if (!ok) return
     setBusy(true)
     try {
       await apiDelete(ENDPOINTS.kids)
-      toast.success('Delete ho gaya')
+      toast.success('Deleted')
       await load()
     } catch (err) {
       toast.error(err.message)
@@ -87,21 +93,21 @@ export default function KidsBookAdmin() {
       <PageHeader
         eyebrow="New Launches"
         title="Kids Book — Cover"
-        subtitle="Frontend par pehli book ke right wale standing kids-book ka cover yahan se aata hai."
+        subtitle="The standing kids book to the right of the first book on the frontend gets its cover from here."
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="card">
           <div className="card-head">
             <h2 className="card-title">
-              <Baby className="h-4 w-4 text-brand-600" /> Abhi ka cover
+              <Baby className="h-4 w-4 text-brand-600" /> Current cover
             </h2>
           </div>
           <div className="card-body">
             {loading ? (
               <Spinner />
             ) : !book ? (
-              <p className="empty">Abhi koi cover nahi hai — Frontend par ye card chhupa hua hai.</p>
+              <p className="empty">No cover yet — this card is hidden on the frontend.</p>
             ) : (
               <div className="flex flex-wrap items-start gap-4">
                 <img
@@ -112,7 +118,7 @@ export default function KidsBookAdmin() {
                 />
                 <div className="min-w-[12rem] flex-1">
                   <label className="label" htmlFor="kids-caption">
-                    Caption (cover ke neeche)
+                    Caption (below the cover)
                   </label>
                   <input
                     id="kids-caption"
@@ -124,7 +130,7 @@ export default function KidsBookAdmin() {
                     className="input"
                     placeholder="10 Little Penguins"
                   />
-                  <p className="hint">Enter ya Save caption dabao — update ho jayega.</p>
+                  <p className="hint">Press Enter or Save caption — it will update.</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       type="button"
@@ -157,7 +163,7 @@ export default function KidsBookAdmin() {
         <section className="card">
           <div className="card-head">
             <h2 className="card-title">
-              <ImagePlus className="h-4 w-4 text-brand-600" /> Naya cover (replace)
+              <ImagePlus className="h-4 w-4 text-brand-600" /> New cover (replace)
             </h2>
           </div>
           <form onSubmit={upload} className="card-body grid gap-3">

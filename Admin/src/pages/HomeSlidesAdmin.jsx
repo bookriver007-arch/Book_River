@@ -22,13 +22,13 @@ export default function HomeSlidesAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Pehle picture select karo')
+    if (!file) return toast.error('Select a picture first')
 
     const fd = new FormData()
     fd.append('image', file)
     fd.append('title', title)
 
-    const ok = await create(fd, { isForm: true, success: 'Home slide upload ho gayi ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Home slide uploaded ✅' })
     if (ok) {
       setTitle('')
       if (fileRef.current) fileRef.current.value = ''
@@ -40,14 +40,14 @@ export default function HomeSlidesAdmin() {
       <PageHeader
         eyebrow="Home page"
         title="Home Page — Slides"
-        subtitle="Sirf Home page ka apna slideshow. Description page ke slides se alag — yahan upload karoge to sirf Home par dikhega."
+        subtitle="Home page has its own slideshow. Separate from the Description page slides — anything uploaded here shows on Home only."
         actions={
           <>
             <button type="button" onClick={reload} className="btn-outline">
               <RefreshCw className="h-4 w-4" /> Refresh
             </button>
             <a href={frontendUrl('/home')} target="_blank" rel="noreferrer" className="btn-primary">
-              <ExternalLink className="h-4 w-4" /> Home dekho
+              <ExternalLink className="h-4 w-4" /> View Home
             </a>
           </>
         }
@@ -56,7 +56,7 @@ export default function HomeSlidesAdmin() {
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <ImagePlus className="h-4 w-4 text-brand-600" /> Nayi home slide upload karo
+            <ImagePlus className="h-4 w-4 text-brand-600" /> Upload a new home slide
           </h2>
         </div>
         <form onSubmit={submit} className="card-body grid gap-4 sm:grid-cols-2">
@@ -102,15 +102,14 @@ export default function HomeSlidesAdmin() {
           <h2 className="card-title">
             Home slides <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Home par isi order me dikhengi</span>
+          <span className="text-xs text-slate-400">They appear on Home in this order</span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi home slide nahi hai — Home par built-in banners dikh rahe hain. Upar se
-              picture upload karo.
+              No home slides yet — built-in banners are showing on Home. Upload a picture above.
             </p>
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -159,7 +158,7 @@ export default function HomeSlidesAdmin() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => remove(slide, slide.title || 'Yeh picture')}
+                        onClick={() => remove(slide, slide.title || 'This picture')}
                         disabled={busyId !== null}
                         className="icon-btn icon-btn--danger"
                         title="Delete"

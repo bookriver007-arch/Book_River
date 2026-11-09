@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ExternalLink, ImagePlus, Loader2, RefreshCw, Save, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { ENDPOINTS, apiDelete, apiList, apiSend, frontendUrl } from '../lib/api'
+import { confirmAction } from '../lib/confirm'
 import PageHeader from '../components/PageHeader'
 
 /**
@@ -37,7 +38,7 @@ export default function HomeHangingBookAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Pehle cover picture select karo')
+    if (!file) return toast.error('Select the cover picture first')
 
     const fd = new FormData()
     fd.append('image', file)
@@ -46,7 +47,7 @@ export default function HomeHangingBookAdmin() {
     setSaving(true)
     try {
       await apiSend(ENDPOINTS.homeHangingBook, { form: fd })
-      toast.success('Hanging book cover upload ho gaya ✅')
+      toast.success('Hanging book cover uploaded ✅')
       if (fileRef.current) fileRef.current.value = ''
       await load()
     } catch (err) {
@@ -61,7 +62,7 @@ export default function HomeHangingBookAdmin() {
     setSavingTitle(true)
     try {
       await apiSend(ENDPOINTS.homeHangingBook, { method: 'PATCH', body: { title: title.trim() } })
-      toast.success('Caption save ho gaya ✅')
+      toast.success('Caption saved ✅')
       await load()
     } catch (err) {
       toast.error(err.message)
@@ -71,10 +72,15 @@ export default function HomeHangingBookAdmin() {
   }
 
   const removeCover = async () => {
-    if (!window.confirm('Hanging book ka cover delete karein?')) return
+    const ok = await confirmAction({
+      title: 'Delete cover?',
+      message: 'The hanging book cover will be deleted permanently.',
+      confirmLabel: 'Yes, delete',
+    })
+    if (!ok) return
     try {
       await apiDelete(ENDPOINTS.homeHangingBook)
-      toast.success('Cover delete ho gaya')
+      toast.success('Cover deleted')
       await load()
     } catch (err) {
       toast.error(err.message)
@@ -86,14 +92,14 @@ export default function HomeHangingBookAdmin() {
       <PageHeader
         eyebrow="Home page"
         title="Home Page — Hanging Book"
-        subtitle="Home page ke category sections me rope se latakti kitaab. Cover yahan se upload karo — Description wali kids-book se alag hai."
+        subtitle="The book hanging from a rope in the Home page category sections. Upload the cover here — different from the kids book on the Description page."
         actions={
           <>
             <button type="button" onClick={load} className="btn-outline">
               <RefreshCw className="h-4 w-4" /> Refresh
             </button>
             <a href={frontendUrl('/home')} target="_blank" rel="noreferrer" className="btn-primary">
-              <ExternalLink className="h-4 w-4" /> Home dekho
+              <ExternalLink className="h-4 w-4" /> View Home
             </a>
           </>
         }
@@ -104,9 +110,9 @@ export default function HomeHangingBookAdmin() {
         <section className="card">
           <div className="card-head">
             <h2 className="card-title">
-              <ImagePlus className="h-4 w-4 text-brand-600" /> Cover upload / replace karo
+              <ImagePlus className="h-4 w-4 text-brand-600" /> Upload / replace cover
             </h2>
-            <span className="count-pill">{book ? '1 cover' : 'khali'}</span>
+            <span className="count-pill">{book ? '1 cover' : 'empty'}</span>
           </div>
           <form onSubmit={submit} className="card-body space-y-4">
             <div>
@@ -123,30 +129,30 @@ export default function HomeHangingBookAdmin() {
                 id="hb-title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Jaise: Spider-Man — Cosmic Chaos"
+                placeholder="e.g. Spider-Man — Cosmic Chaos"
                 className="input"
               />
             </div>
             <button type="submit" disabled={saving} className="btn-primary">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-              {saving ? 'Uploading…' : 'Upload karo'}
+              {saving ? 'Uploading…' : 'Upload'}
             </button>
             <p className="hint">
-              Naya cover upload karoge to purana cover (aur uski file) apne aap replace ho jaayega.
+              If you upload a new cover, the old cover (and its file) is replaced automatically.
             </p>
           </form>
         </section>
 
-        {/* ---- abhi ka cover ---- */}
+        {/* ---- current cover ---- */}
         <section className="card">
           <div className="card-head">
-            <h2 className="card-title">Abhi ka cover</h2>
+            <h2 className="card-title">Current cover</h2>
             {book ? <span className="count-pill">live</span> : null}
           </div>
           <div className="card-body">
             {loading ? (
               <p className="flex items-center gap-2 text-sm text-slate-500">
-                <Loader2 className="h-4 w-4 animate-spin" /> Load ho raha hai…
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading…
               </p>
             ) : book ? (
               <div className="space-y-3">
@@ -178,12 +184,11 @@ export default function HomeHangingBookAdmin() {
                     <Trash2 className="h-4 w-4" /> Delete
                   </button>
                 </div>
-                <p className="hint">Caption upar wale form me likh ke “Caption save” dabao.</p>
+                <p className="hint">Write the caption in the form above and press “Save caption”.</p>
               </div>
             ) : (
               <p className="empty">
-                Abhi koi cover upload nahi hai — Home page par latakti kitaab nahi dikhegi. Upar se
-                picture upload karo.
+                No cover uploaded yet — the hanging book will not show on the Home page. Upload a picture above.
               </p>
             )}
           </div>

@@ -30,7 +30,7 @@ export default function HomeAdmin() {
       <PageHeader
         eyebrow="Dashboard"
         title="Admin Home"
-        subtitle="Home page ka slideshow yahan se manage hota hai."
+        subtitle="The Home page slideshow is managed here."
         actions={
           <a href={FRONTEND_URL} target="_blank" rel="noreferrer" className="btn-primary">
             <ExternalLink className="h-4 w-4" /> View Frontend
@@ -38,22 +38,22 @@ export default function HomeAdmin() {
         }
       />
 
-      {/* ---- Home page ke sections (Description se alag) ---- */}
+      {/* ---- Home page sections (separate from Description) ---- */}
       <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
         <div className="card">
           <div className="card-head">
             <h2 className="card-title">
               <Images className="h-4 w-4 text-brand-600" /> Home page — Slides
             </h2>
-            <span className="count-pill">alag slideshow</span>
+            <span className="count-pill">separate slideshow</span>
           </div>
           <div className="card-body flex flex-wrap items-center justify-between gap-3">
             <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-              Home page ka slideshow Description page se <strong>alag</strong> hai. Home ki pictures
-              yahan se manage karo — upload, order badlo, delete karo.
+              The Home page slideshow is <strong>separate</strong> from the Description page one. Manage
+              the Home pictures here — upload, reorder, delete.
             </p>
             <Link to={HOME_SLIDES_PATH} className="btn-primary">
-              <Images className="h-4 w-4" /> Home slides manage karo
+              <Images className="h-4 w-4" /> Manage home slides
             </Link>
           </div>
         </div>
@@ -67,11 +67,10 @@ export default function HomeAdmin() {
           </div>
           <div className="card-body flex flex-wrap items-center justify-between gap-3">
             <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-              Slideshow ke neeche “Deal” section ke 4 cards — purani price (cross) aur nayi
-              discounted price. Yahan se upload, price badlo, delete karo.
+              4 cards of the “Deal” section below the slideshow — old price (struck) and the new discounted price. Upload, change prices and delete from here.
             </p>
             <Link to={HOME_DEALS_PATH} className="btn-primary">
-              <BadgePercent className="h-4 w-4" /> Deal cards manage karo
+              <BadgePercent className="h-4 w-4" /> Manage deal cards
             </Link>
           </div>
         </div>
@@ -85,8 +84,8 @@ export default function HomeAdmin() {
           </div>
           <div className="card-body space-y-3">
             <p className="text-sm leading-relaxed text-slate-600">
-              Har category ka <strong>apna page</strong> hai — usi category ki books (cover, title,
-              price) wahan se upload karo.
+              Each category has its <strong>own page</strong> — upload that category's books (cover,
+              title, price) from there.
             </p>
             <div className="flex flex-wrap gap-2">
               {CATEGORY_PAGES.map((category) => (
@@ -111,11 +110,10 @@ export default function HomeAdmin() {
           </div>
           <div className="card-body flex flex-wrap items-center justify-between gap-3">
             <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-              Category sections me rope se latakti kitaab. Cover yahan se upload karo — Description
-              wali kids-book se alag hai.
+              The book hanging from a rope in the category sections. Upload the cover here — this is different from the kids book on the Description page.
             </p>
             <Link to={HOME_HANGING_PATH} className="btn-primary">
-              <Anchor className="h-4 w-4" /> Hanging book upload karo
+              <Anchor className="h-4 w-4" /> Upload hanging book
             </Link>
           </div>
         </div>
@@ -129,11 +127,10 @@ export default function HomeAdmin() {
           </div>
           <div className="card-body flex flex-wrap items-center justify-between gap-3">
             <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-              About kitaab ke 3 pages — har page ki heading, description aur picture yahan se set
-              karo.
+              The 3 pages of the About book — set each page's heading, description and picture here.
             </p>
             <Link to={HOME_ABOUT_PATH} className="btn-primary">
-              <Layers className="h-4 w-4" /> About book manage karo
+              <Layers className="h-4 w-4" /> Manage about book
             </Link>
           </div>
         </div>
@@ -143,15 +140,15 @@ export default function HomeAdmin() {
             <h2 className="card-title">
               <ClipboardList className="h-4 w-4 text-brand-600" /> Orders — Cart
             </h2>
-            <span className="count-pill">approve karo</span>
+            <span className="count-pill">to approve</span>
           </div>
           <div className="card-body flex flex-wrap items-center justify-between gap-3">
             <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-              Frontend par customer cart se <strong>Place order</strong> karta hai — wo order yahan
-              aata hai. Approve / Reject / Ship / Delivered sab wahin se hota hai.
+              The frontend customer presses <strong>Place order</strong> in the cart — that order comes
+              here. Approve / Reject / Ship / Delivered all happen from there.
             </p>
             <Link to={ORDERS_PATH} className="btn-primary">
-              <ClipboardList className="h-4 w-4" /> Orders kholo
+              <ClipboardList className="h-4 w-4" /> Open orders
             </Link>
           </div>
         </div>

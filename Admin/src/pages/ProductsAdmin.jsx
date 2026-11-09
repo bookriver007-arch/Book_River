@@ -8,7 +8,7 @@ import Spinner from '../components/Spinner'
 
 const EMPTY = { title: '', author: '', tag: '', price: '', description: '' }
 
-/** Products — Frontend par ek row me 5 covers, click par book khulti hai. */
+/** Products — 5 covers per row on the frontend; clicking a cover opens the book. */
 export default function ProductsAdmin() {
   const { items, loading, busyId, saving, create, remove, move, update } = useCollection(
     ENDPOINTS.products,
@@ -22,14 +22,14 @@ export default function ProductsAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Cover picture select karo')
-    if (!form.title.trim()) return toast.error('Title likho')
+    if (!file) return toast.error('Select a cover picture')
+    if (!form.title.trim()) return toast.error('Write the title')
 
     const fd = new FormData()
     fd.append('image', file)
     Object.entries(form).forEach(([k, v]) => fd.append(k, v))
 
-    const ok = await create(fd, { isForm: true, success: 'Product add ho gaya ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Product added ✅' })
     if (ok) {
       setForm(EMPTY)
       if (fileRef.current) fileRef.current.value = ''
@@ -52,13 +52,13 @@ export default function ProductsAdmin() {
       <PageHeader
         eyebrow="Collection"
         title="Products — Grid"
-        subtitle="Frontend par ek row me 5 covers dikhte hain; cover par click karne se book khulti hai."
+        subtitle="The frontend shows 5 covers per row; clicking a cover opens the book."
       />
 
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <ImagePlus className="h-4 w-4 text-brand-600" /> Naya product
+            <ImagePlus className="h-4 w-4 text-brand-600" /> New product
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
@@ -126,7 +126,7 @@ export default function ProductsAdmin() {
               rows={2}
               value={form.description}
               onChange={set('description')}
-              placeholder="Chhoti si description…"
+              placeholder="A short description…"
               className="input"
             />
           </div>
@@ -149,15 +149,14 @@ export default function ProductsAdmin() {
             <LayoutGrid className="h-4 w-4 text-brand-600" /> Products{' '}
             <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Field par click karke edit — blur par save</span>
+          <span className="text-xs text-slate-400">Click a field to edit — it saves on blur</span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi product nahi hai — Frontend par demo covers dikh rahe hain. Upar se cover +
-              title add karo.
+              No products yet — demo covers are showing on the frontend. Add a cover and title above.
             </p>
           ) : (
             <ul className="space-y-2">

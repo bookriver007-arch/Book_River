@@ -22,14 +22,14 @@ export default function BooksAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Left page ki picture select karo')
-    if (!form.title.trim()) return toast.error('Heading / Title likho')
+    if (!file) return toast.error('Select the left page picture')
+    if (!form.title.trim()) return toast.error('Write the heading / title')
 
     const fd = new FormData()
     fd.append('image', file)
     Object.entries(form).forEach(([k, v]) => fd.append(k, v))
 
-    const ok = await create(fd, { isForm: true, success: 'Book page add ho gaya ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Book page added ✅' })
     if (ok) {
       setForm(EMPTY)
       if (fileRef.current) fileRef.current.value = ''
@@ -52,13 +52,13 @@ export default function BooksAdmin() {
       <PageHeader
         eyebrow="New Launches"
         title="Open Book — Pages"
-        subtitle="Left page picture, right page heading + description. Frontend par page click karke palat'ta hai."
+        subtitle="Left page picture, right page heading + description. On the frontend you click the page to flip it."
       />
 
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <Plus className="h-4 w-4 text-brand-600" /> Naya book page
+            <Plus className="h-4 w-4 text-brand-600" /> New book page
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
@@ -126,7 +126,7 @@ export default function BooksAdmin() {
               rows={3}
               value={form.description}
               onChange={set('description')}
-              placeholder="Chhoti si description likho…"
+              placeholder="Write a short description…"
               className="input"
             />
           </div>
@@ -149,15 +149,14 @@ export default function BooksAdmin() {
             <BookOpen className="h-4 w-4 text-brand-600" /> Pages{' '}
             <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Field par click karke seedha edit — blur par save</span>
+          <span className="text-xs text-slate-400">Click a field to edit inline — it saves on blur</span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi book page nahi hai — Frontend par demo books dikh rahi hain. Upar se picture +
-              heading + description add karo.
+              No book page yet — demo books are showing on the frontend. Add a picture, heading and description above.
             </p>
           ) : (
             <ul className="space-y-2">

@@ -6,7 +6,7 @@ import useCollection from '../hooks/useCollection'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
 
-/** Category boxes — Frontend ke orange/gold ribbon me scroll hote hain. */
+/** Category boxes — they scroll inside the orange/gold ribbon on the frontend. */
 export default function CategoriesAdmin() {
   const { items, loading, busyId, saving, create, remove, move, update } = useCollection(
     ENDPOINTS.categories,
@@ -17,8 +17,8 @@ export default function CategoriesAdmin() {
   const add = async (e) => {
     e.preventDefault()
     const clean = name.trim()
-    if (!clean) return toast.error('Category ka naam likho')
-    const ok = await create({ name: clean }, { success: 'Box add ho gaya ✅' })
+    if (!clean) return toast.error('Enter the category name')
+    const ok = await create({ name: clean }, { success: 'Box added ✅' })
     if (ok) setName('')
   }
 
@@ -33,13 +33,13 @@ export default function CategoriesAdmin() {
       <PageHeader
         eyebrow="Ribbon"
         title="Category Boxes"
-        subtitle="Frontend par yehi boxes orange/gold ban ke right → left scroll karte hain."
+        subtitle="On the frontend these same boxes become orange/gold and scroll right → left."
       />
 
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <Tags className="h-4 w-4 text-brand-600" /> Naya box / category name
+            <Tags className="h-4 w-4 text-brand-600" /> New box / category name
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
@@ -68,15 +68,14 @@ export default function CategoriesAdmin() {
           <h2 className="card-title">
             Boxes <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Naam par click karke rename kar sakte ho</span>
+          <span className="text-xs text-slate-400">Click a name to rename it</span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi box nahi hai — Frontend par demo categories dikh rahi hain. Upar se naam add
-              karo.
+              No boxes yet — demo categories are showing on the frontend. Add a name above.
             </p>
           ) : (
             <ul className="space-y-2">

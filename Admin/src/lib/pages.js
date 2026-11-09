@@ -8,32 +8,32 @@ export const CATEGORY_PAGES = [
   {
     slug: 'board-books',
     label: 'Board Books',
-    tagline: 'Chhoti haathon ke liye mazboot board kitaabein',
+    tagline: 'Sturdy board books for little hands',
   },
   {
     slug: 'kids-story-books',
     label: 'Kids Story Books',
-    tagline: 'Mazedaar kahaniyaan jo bachon ko padhna sikhati hain',
+    tagline: 'Fun stories that teach kids to read',
   },
   {
     slug: 'knowledge-books',
     label: 'Knowledge Books',
-    tagline: 'Duniya ke baare mein jaanne ke liye',
+    tagline: 'To learn about the world',
   },
   {
     slug: 'activity-books',
     label: 'Activity Books',
-    tagline: 'Puzzles, mazes, coloring aur bahut kuch',
+    tagline: 'Puzzles, mazes, coloring and much more',
   },
   {
     slug: 'teen-fiction',
     label: 'Teen Fiction',
-    tagline: 'Teenagers ke liye novels — dosti, sapne aur suspense',
+    tagline: 'Novels for teens — friendship, dreams and suspense',
   },
   {
     slug: 'adult-novels',
     label: 'Adult Novels',
-    tagline: 'Bade padhne walon ke liye gehri aur tawil kahaniyaan',
+    tagline: 'Deeper, longer stories for grown-up readers',
   },
 ]
 
@@ -43,19 +43,24 @@ export const categoryPath = (slug) => `/category/${slug}`
 export const findCategory = (slug) =>
   CATEGORY_PAGES.find((c) => c.slug === String(slug || '').toLowerCase()) || null
 
-/* ---- admin ke apne pages ---- */
+/* ---- the admin's own pages ---- */
 export const DASHBOARD_PATH = '/home'
 export const DESCRIPTION_PATH = '/description'
 export const SETTINGS_PATH = '/settings'
-/** Home page ka apna slideshow editor */
+/** Checkout — payment methods + tax / shipping */
+export const CHECKOUT_PATH = '/checkout'
+/** Admin dashboard (stats) + login */
+export const ADMIN_DASHBOARD_PATH = '/dashboard'
+export const ADMIN_LOGIN_PATH = '/login'
+/** Home page slideshow editor */
 export const HOME_SLIDES_PATH = '/home-slides'
 /** Home page ka "Deal" section editor */
 export const HOME_DEALS_PATH = '/home-deals'
-/** Home page ke category sections ki books — har category ka apna page */
+/** Home page category-section books — each category has its own page */
 export const HOME_BOOKS_PATH = '/home-books'
 /** kisi category ke products ka admin page */
 export const homeBooksPath = (slug) => `${HOME_BOOKS_PATH}/${slug}`
-/** Home page ki latakti kitaab (hanging book) */
+/** Home page hanging book */
 export const HOME_HANGING_PATH = '/home-hanging-book'
 /** Home page ke About book ke 3 pages */
 export const HOME_ABOUT_PATH = '/home-about'
@@ -65,7 +70,7 @@ export const ORDERS_PATH = '/orders'
 /** Description page ke kisi section par jump karne ka link (/description#slides) */
 export const sectionHashPath = (anchor) => `${DESCRIPTION_PATH}#${anchor}`
 
-/** har page ka document title */
+/** document title for every page */
 export function pageTitle(pathname) {
   const section = findSection(pathname)
   if (section) return `${section.label} · Book River Admin`

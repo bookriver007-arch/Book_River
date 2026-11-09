@@ -6,7 +6,7 @@ import useCollection from '../hooks/useCollection'
 import PageHeader from '../components/PageHeader'
 import Spinner from '../components/Spinner'
 
-/** Hanging frames gallery — Frontend par rope se latke hue scroll karte hain. */
+/** Hanging frames gallery — they scroll from a rope on the frontend. */
 export default function FramesAdmin() {
   const { items, loading, busyId, saving, create, remove, move } = useCollection(
     ENDPOINTS.frames,
@@ -17,12 +17,12 @@ export default function FramesAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Picture select karo')
+    if (!file) return toast.error('Select a picture')
 
     const fd = new FormData()
     fd.append('image', file)
 
-    const ok = await create(fd, { isForm: true, success: 'Frame add ho gaya ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Frame added ✅' })
     if (ok && fileRef.current) fileRef.current.value = ''
   }
 
@@ -31,13 +31,13 @@ export default function FramesAdmin() {
       <PageHeader
         eyebrow="Gallery"
         title="Hanging Frames"
-        subtitle="Frontend par yeh frames rope se latke hue right → left scroll karte hain."
+        subtitle="On the frontend these frames hang from a rope and scroll right → left."
       />
 
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <ImagePlus className="h-4 w-4 text-brand-600" /> Naya frame
+            <ImagePlus className="h-4 w-4 text-brand-600" /> New frame
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
@@ -61,15 +61,14 @@ export default function FramesAdmin() {
             <Frame className="h-4 w-4 text-brand-600" /> Frames{' '}
             <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Order Frontend par scroll ka order hai</span>
+          <span className="text-xs text-slate-400">Order is the scroll order on the frontend</span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi frame nahi hai — Frontend par yeh section chhupa hua hai. 8 pictures upload
-              karo (ek-ek karke).
+              No frames yet — this section is hidden on the frontend. Upload 8 pictures (one by one).
             </p>
           ) : (
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

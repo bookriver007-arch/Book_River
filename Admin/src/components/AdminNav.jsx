@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
+  ChevronDown,
   ClipboardList,
-  ExternalLink,
+  CreditCard,
   House,
+  LayoutDashboard,
+  LogOut,
   ScrollText,
   Settings as SettingsIcon,
+  Tags,
 } from 'lucide-react'
-import { ENDPOINTS, FRONTEND_URL } from '../lib/api'
+import { ENDPOINTS } from '../lib/api'
+import { clearAdminSession, getAdmin } from '../lib/adminAuth'
 import {
+  ADMIN_DASHBOARD_PATH,
   CATEGORY_PAGES,
+  CHECKOUT_PATH,
   DASHBOARD_PATH,
   DESCRIPTION_PATH,
   ORDERS_PATH,
@@ -22,7 +29,7 @@ const linkClass = ({ isActive }) => (isActive ? 'anav-link active' : 'anav-link'
 /**
  * Admin navbar — frontend navbar jaisa hi (ek row).
  * [logo] | Board Books · Kids Story Books · Knowledge Books · Activity Books ·
- * Teen Fiction · Adult Novels | Description · Home · Settings | [Frontend ↗]
+ * Teen Fiction · Adult Novels | Dashboard · Description · Home · Settings · Orders · Checkout | Logout
  *
  * Slides, Categories, Open Book, Kids Book, Frames, Products, Reviews — ye sab
  * sirf Description page ke andar hain, isliye navbar me alag se nahi hain.
@@ -30,6 +37,29 @@ const linkClass = ({ isActive }) => (isActive ? 'anav-link active' : 'anav-link'
 export default function AdminNav() {
   // pending orders ka badge (approve karna baaki hai)
   const [pendingOrders, setPendingOrders] = useState(0)
+  const admin = getAdmin()
+  const menuRef = useRef(null)
+
+  /** close the pages dropdown */
+  const closeMenu = () => {
+    if (menuRef.current) menuRef.current.open = false
+  }
+
+  // bahar click karne par dropdown band
+  useEffect(() => {
+    const onDown = (event) => {
+      if (menuRef.current?.open && !menuRef.current.contains(event.target)) {
+        menuRef.current.open = false
+      }
+    }
+    document.addEventListener('pointerdown', onDown)
+    return () => document.removeEventListener('pointerdown', onDown)
+  }, [])
+
+  const logout = () => {
+    clearAdminSession()
+    window.location.reload()
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -71,24 +101,47 @@ export default function AdminNav() {
 
             <span className="mx-0.5 hidden h-6 w-px shrink-0 bg-slate-200 sm:block" />
 
-            <div className="anav-seg anav-seg--spread">
-              {CATEGORY_PAGES.map((category) => (
-                <NavLink
-                  key={category.slug}
-                  to={categoryPath(category.slug)}
-                  className={linkClass}
-                  title={category.tagline}
-                >
-                  {category.label}
-                </NavLink>
-              ))}
+            <div className="anav-seg">
+              {/* ---- shop pages (dropdown) ---- */}
+              <details className="anav-menu" ref={menuRef}>
+                <summary className="anav-link" title="Shop ke category pages">
+                  <Tags className="h-3.5 w-3.5" />
+                  <span className="hidden lg:inline">Pages</span>
+                  <ChevronDown className="h-3 w-3 opacity-70" />
+                </summary>
+
+                <div className="anav-menu-panel">
+                  <p className="anav-menu-title">Shop pages</p>
+                  {CATEGORY_PAGES.map((category) => (
+                    <NavLink
+                      key={category.slug}
+                      to={categoryPath(category.slug)}
+                      className="anav-menu-item"
+                      title={category.tagline}
+                      onClick={closeMenu}
+                    >
+                      {category.label}
+                    </NavLink>
+                  ))}
+                </div>
+              </details>
 
               <span className="mx-0.5 hidden h-5 w-px shrink-0 bg-slate-200 md:block" />
 
               <NavLink
+                to={ADMIN_DASHBOARD_PATH}
+                end
+                className={linkClass}
+                title="Dashboard — users, orders, revenue"
+              >
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                <span>Dashboard</span>
+              </NavLink>
+
+              <NavLink
                 to={DESCRIPTION_PATH}
                 className={linkClass}
-                title="Description page — saare sections ek jagah"
+                title="Description page — all sections in one place"
               >
                 <ScrollText className="h-3.5 w-3.5" />
                 <span>Description</span>
@@ -117,18 +170,25 @@ export default function AdminNav() {
                   </span>
                 ) : null}
               </NavLink>
+              <NavLink
+                to={CHECKOUT_PATH}
+                className={linkClass}
+                title="Payment methods + tax / shipping"
+              >
+                <CreditCard className="h-3.5 w-3.5" />
+                <span>Checkout</span>
+              </NavLink>
             </div>
 
-            <a
-              href={FRONTEND_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="anav-cta"
-              title="Frontend par dekho"
+            <button
+              type="button"
+              onClick={logout}
+              className="anav-link"
+              title={`Logout${admin?.email ? ` (${admin.email})` : ''}`}
             >
-              <ExternalLink className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Frontend</span>
-            </a>
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Logout</span>
+            </button>
           </div>
         </nav>
       </div>

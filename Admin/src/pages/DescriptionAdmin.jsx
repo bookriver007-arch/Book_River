@@ -32,8 +32,8 @@ export default function DescriptionAdmin() {
     <>
       <PageHeader
         eyebrow="Description page"
-        title="Description — sab kuch"
-        subtitle="Slides, Categories, Open Book, Kids Book, Frames, Products aur Reviews — frontend Description page ka poora content yahan ek hi jagah."
+        title="Description — everything"
+        subtitle="Slides, Categories, Open Book, Kids Book, Frames, Products and Reviews — the whole frontend Description page content in one place."
         actions={
           <a href={FRONTEND_URL} target="_blank" rel="noreferrer" className="btn-primary">
             <ExternalLink className="h-4 w-4" /> View Frontend

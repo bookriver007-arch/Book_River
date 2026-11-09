@@ -1,8 +1,11 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import AdminLayout from './components/AdminLayout.jsx'
 import { SECTIONS, findSection } from './lib/sections'
+import { isAdminLoggedIn } from './lib/adminAuth'
 import {
+  ADMIN_DASHBOARD_PATH,
+  CHECKOUT_PATH,
   DASHBOARD_PATH,
   DESCRIPTION_PATH,
   HOME_ABOUT_PATH,
@@ -29,6 +32,9 @@ const CategoryAdmin = lazy(() => import('./pages/CategoryAdmin.jsx'))
 const DescriptionAdmin = lazy(() => import('./pages/DescriptionAdmin.jsx'))
 const SettingsAdmin = lazy(() => import('./pages/SettingsAdmin.jsx'))
 const OrdersAdmin = lazy(() => import('./pages/OrdersAdmin.jsx'))
+const CheckoutAdmin = lazy(() => import('./pages/CheckoutAdmin.jsx'))
+const DashboardAdmin = lazy(() => import('./pages/DashboardAdmin.jsx'))
+const AdminLogin = lazy(() => import('./pages/AdminLogin.jsx'))
 
 // Slides, Categories, Open Book, Kids Book, Frames, Products, Reviews —
 // sab sirf Description page ke andar hain (alag pages nahi).
@@ -55,14 +61,29 @@ function LegacyRedirect() {
 }
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(isAdminLoggedIn)
+
+  /* admin login ke bina panel nahi khulta */
+  if (!loggedIn) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AdminLogin onLogin={() => setLoggedIn(true)} />
+      </Suspense>
+    )
+  }
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* splash — frontend ke logo page jaisa, admin khulte hi dikhta hai */}
-        <Route path="/" element={<LogoAdmin />} />
+        {/* admin khulte hi dashboard */}
+        <Route path="/" element={<Navigate to={ADMIN_DASHBOARD_PATH} replace />} />
+        <Route path="/logo" element={<LogoAdmin />} />
 
         <Route element={<AdminLayout />}>
-          {/* dashboard */}
+          {/* dashboard — users / orders / pending / revenue */}
+          <Route path={ADMIN_DASHBOARD_PATH} element={<DashboardAdmin />} />
+
+          {/* home page ka content editor */}
           <Route path={DASHBOARD_PATH} element={<HomeAdmin />} />
 
           {/* frontend ke pages */}
@@ -74,6 +95,7 @@ export default function App() {
           <Route path={SETTINGS_PATH} element={<SettingsAdmin />} />
           {/* frontend cart se aaye orders — approve / reject / ship */}
           <Route path={ORDERS_PATH} element={<OrdersAdmin />} />
+          <Route path={CHECKOUT_PATH} element={<CheckoutAdmin />} />
           <Route path="/category/:slug" element={<CategoryAdmin />} />
 
           {/* har category ke products ka apna page */}

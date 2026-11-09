@@ -23,7 +23,7 @@ export default function LogoAdmin() {
     <div className="logo-page flex min-h-screen items-center justify-center px-5 py-16">
       <div className="flex flex-col items-center text-center">
         {/* ---- Logo (clickable -> Admin Home) ---- */}
-        <Link to={DASHBOARD_PATH} className="inline-block" aria-label="Admin dashboard kholein">
+        <Link to={DASHBOARD_PATH} className="inline-block" aria-label="Open the admin dashboard">
           <img
             src="/logo.png"
             alt="Book River logo — an open book under a rising sun"
@@ -82,11 +82,11 @@ export default function LogoAdmin() {
           style={{ animationDelay: '0.65s' }}
         >
           <Link to={DASHBOARD_PATH} className="btn-gold px-5 py-2.5">
-            Dashboard kholein
+            Open dashboard
             <ArrowRight className="h-4 w-4" />
           </Link>
           <p className="text-[0.72rem] font-medium text-brand-800/60">
-            Ya logo / naam par click karo
+            Or click the logo / name
           </p>
         </div>
       </div>

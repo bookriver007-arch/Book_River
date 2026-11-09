@@ -18,13 +18,13 @@ export default function SlidesAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Pehle picture select karo')
+    if (!file) return toast.error('Select a picture first')
 
     const fd = new FormData()
     fd.append('image', file)
     fd.append('title', title)
 
-    const ok = await create(fd, { isForm: true, success: 'Picture upload ho gayi ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Picture uploaded ✅' })
     if (ok) {
       setTitle('')
       if (fileRef.current) fileRef.current.value = ''
@@ -36,7 +36,7 @@ export default function SlidesAdmin() {
       <PageHeader
         eyebrow="Description page"
         title="Image Slides"
-        subtitle="Jo pictures yahan upload karoge, wahi Frontend ke Description page par dikhengi."
+        subtitle="The pictures you upload here are the ones shown on the frontend Description page."
         actions={
           <>
             <button type="button" onClick={reload} className="btn-outline">
@@ -52,7 +52,7 @@ export default function SlidesAdmin() {
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <ImagePlus className="h-4 w-4 text-brand-600" /> Nayi picture upload karo
+            <ImagePlus className="h-4 w-4 text-brand-600" /> Upload a new picture
           </h2>
         </div>
         <form onSubmit={submit} className="card-body grid gap-4 sm:grid-cols-2">
@@ -92,15 +92,16 @@ export default function SlidesAdmin() {
           <h2 className="card-title">
             Slides <span className="count-pill">{items.length}</span>
           </h2>
-          <span className="text-xs text-slate-400">Frontend par isi order me dikhengi</span>
+          <span className="text-xs text-slate-400">
+            They appear on the frontend in this order
+          </span>
         </div>
         <div className="card-body">
           {loading ? (
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi picture upload nahi hui — Frontend par built-in 5 banners dikh rahe hain. Upar
-              se picture upload karo.
+              No pictures uploaded yet — the 5 built-in banners are showing on the frontend. Upload a picture above.
             </p>
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -149,7 +150,7 @@ export default function SlidesAdmin() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => remove(slide, slide.title || 'Yeh picture')}
+                        onClick={() => remove(slide, slide.title || 'This picture')}
                         disabled={busyId !== null}
                         className="icon-btn icon-btn--danger"
                         title="Delete"

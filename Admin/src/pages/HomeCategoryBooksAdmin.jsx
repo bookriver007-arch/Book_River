@@ -52,8 +52,8 @@ export default function HomeCategoryBooksAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Book ka cover select karo')
-    if (!form.title.trim()) return toast.error('Book ka title likho')
+    if (!file) return toast.error('Select the book cover')
+    if (!form.title.trim()) return toast.error('Enter the book title')
 
     const fd = new FormData()
     fd.append('image', file)
@@ -63,7 +63,7 @@ export default function HomeCategoryBooksAdmin() {
     fd.append('price', form.price.trim())
     fd.append('description', form.description.trim())
 
-    const ok = await create(fd, { isForm: true, success: `${category.label} me book add ho gayi ✅` })
+    const ok = await create(fd, { isForm: true, success: `Book added to ${category.label} ✅` })
     if (ok) {
       setForm(EMPTY)
       if (fileRef.current) fileRef.current.value = ''
@@ -110,12 +110,12 @@ export default function HomeCategoryBooksAdmin() {
             rel="noreferrer"
             className="btn-primary"
           >
-            <ExternalLink className="h-4 w-4" /> Page dekho
+            <ExternalLink className="h-4 w-4" /> View page
           </a>
         }
       />
 
-      {/* ---- har category ka apna page ---- */}
+      {/* ---- each category has its own page ---- */}
       <div className="mb-4 flex flex-wrap gap-2">
         {CATEGORY_PAGES.map((cat) => (
           <NavLink
@@ -132,7 +132,7 @@ export default function HomeCategoryBooksAdmin() {
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <Plus className="h-4 w-4 text-brand-600" /> {category.label} me nayi book add karo
+            <Plus className="h-4 w-4 text-brand-600" /> Add a new book in {category.label}
           </h2>
           <span className="count-pill">{books.length}</span>
         </div>
@@ -169,7 +169,7 @@ export default function HomeCategoryBooksAdmin() {
           </div>
           <div>
             <label className="label" htmlFor="cb-price">
-              Price (jaise Rs. 450)
+              Price (e.g. Rs. 450)
             </label>
             <input
               id="cb-price"
@@ -181,21 +181,21 @@ export default function HomeCategoryBooksAdmin() {
           </div>
           <div className="sm:col-span-2">
             <label className="label" htmlFor="cb-desc">
-              Description (click par detail me dikhegi)
+              Description (shown on click)
             </label>
             <textarea
               id="cb-desc"
               rows={3}
               value={form.description}
               onChange={set('description')}
-              placeholder="Chhoti si description — rang, shape aur pehle alfaz…"
+              placeholder="A short description — colours, shapes and first words…"
               className="input"
             />
           </div>
           <div className="flex items-end">
             <button type="submit" disabled={saving} className="btn-primary">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-              {saving ? 'Saving…' : 'Book add karo'}
+              {saving ? 'Saving…' : 'Add book'}
             </button>
           </div>
         </form>
@@ -207,7 +207,7 @@ export default function HomeCategoryBooksAdmin() {
             {category.label} — books <span className="count-pill">{books.length}</span>
           </h2>
           <span className="text-xs text-slate-400">
-            Home par isi order me dikhengi — title/price par click karke badal sakte ho
+            They appear on Home in this order — click a title/price to change it
           </span>
         </div>
         <div className="card-body">
@@ -215,8 +215,7 @@ export default function HomeCategoryBooksAdmin() {
             <Spinner />
           ) : books.length === 0 ? (
             <p className="empty">
-              Is category me abhi koi book nahi — Home par demo books dikh rahi hain. Upar se cover +
-              title add karo.
+              No books in this category yet — demo books are showing on Home. Add a cover and title above.
             </p>
           ) : (
             <ul className="space-y-2">

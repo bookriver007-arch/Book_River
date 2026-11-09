@@ -57,7 +57,7 @@ export default function HomeDealsAdmin() {
           offerTag: data.offerTag || '',
         })
       })
-      .catch(() => toast.error('Section ke texts load nahi hue'))
+      .catch(() => toast.error('Section texts did not load'))
       .finally(() => {
         if (!cancelled) setLoadingTexts(false)
       })
@@ -73,7 +73,7 @@ export default function HomeDealsAdmin() {
     setSavingTexts(true)
     try {
       await apiSend(`${ENDPOINTS.homeDeals}/settings`, { method: 'PATCH', body: texts })
-      toast.success('Section ke texts save ho gaye ✅')
+      toast.success('Section texts saved ✅')
     } catch (err) {
       toast.error(err.message)
     } finally {
@@ -86,10 +86,10 @@ export default function HomeDealsAdmin() {
   const submit = async (e) => {
     e.preventDefault()
     const file = fileRef.current?.files?.[0]
-    if (!file) return toast.error('Cover picture select karo')
-    if (!form.title.trim()) return toast.error('Book ka title likho')
+    if (!file) return toast.error('Select a cover picture')
+    if (!form.title.trim()) return toast.error('Enter the book title')
     if (!Number(form.oldPrice) || !Number(form.price)) {
-      return toast.error('Purani price aur nayi price dono likho')
+      return toast.error('Write both the old price and the new price')
     }
 
     const fd = new FormData()
@@ -99,7 +99,7 @@ export default function HomeDealsAdmin() {
     fd.append('oldPrice', String(Number(form.oldPrice)))
     fd.append('price', String(Number(form.price)))
 
-    const ok = await create(fd, { isForm: true, success: 'Deal add ho gayi ✅' })
+    const ok = await create(fd, { isForm: true, success: 'Deal added ✅' })
     if (ok) {
       setForm(EMPTY)
       if (fileRef.current) fileRef.current.value = ''
@@ -124,10 +124,10 @@ export default function HomeDealsAdmin() {
       <PageHeader
         eyebrow="Home page"
         title="Home Page — Deal Section"
-        subtitle="Home page par slideshow ke neeche 4 deal cards. Purani price par cross lagta hai, nayi price highlight hoti hai."
+        subtitle="4 deal cards below the slideshow on Home. The old price is struck through and the new price is highlighted."
         actions={
           <a href={frontendUrl('/home')} target="_blank" rel="noreferrer" className="btn-primary">
-            <ExternalLink className="h-4 w-4" /> Home dekho
+            <ExternalLink className="h-4 w-4" /> View Home
           </a>
         }
       />
@@ -136,14 +136,14 @@ export default function HomeDealsAdmin() {
       <section className="card mb-4">
         <div className="card-head">
           <h2 className="card-title">
-            <Type className="h-4 w-4 text-brand-600" /> Heading, description aur offer tag
+            <Type className="h-4 w-4 text-brand-600" /> Heading, description and offer tag
           </h2>
           <span className="count-pill">Home page</span>
         </div>
         <form onSubmit={saveTexts} className="card-body grid gap-4 sm:grid-cols-2">
           <div>
             <label className="label" htmlFor="deal-eyebrow">
-              Chhota badge text
+              Short badge text
             </label>
             <input
               id="deal-eyebrow"
@@ -176,14 +176,14 @@ export default function HomeDealsAdmin() {
               rows={3}
               value={texts.description}
               onChange={setText('description')}
-              placeholder="Chuni hui kitaabein — Rs. 1,200 ki jagah sirf Rs. 800…"
+              placeholder="Handpicked books — Rs. 800 instead of Rs. 1,200…"
               className="input"
               disabled={loadingTexts}
             />
           </div>
           <div>
             <label className="label" htmlFor="deal-offer">
-              Offer tag (laal sticker par)
+              Offer tag (red sticker)
             </label>
             <input
               id="deal-offer"
@@ -193,7 +193,7 @@ export default function HomeDealsAdmin() {
               className="input"
               disabled={loadingTexts}
             />
-            <p className="hint">Ye text Home page ke laal sunburst tag ke andar dikhta hai.</p>
+            <p className="hint">This text appears inside the red sunburst tag on the Home page.</p>
           </div>
           <div className="flex items-end">
             <button type="submit" disabled={savingTexts || loadingTexts} className="btn-primary">
@@ -202,7 +202,7 @@ export default function HomeDealsAdmin() {
               ) : (
                 <Save className="h-4 w-4" />
               )}
-              {savingTexts ? 'Saving…' : 'Texts save karo'}
+              {savingTexts ? 'Saving…' : 'Save texts'}
             </button>
           </div>
         </form>
@@ -211,7 +211,7 @@ export default function HomeDealsAdmin() {
       <section className="card">
         <div className="card-head">
           <h2 className="card-title">
-            <Plus className="h-4 w-4 text-brand-600" /> Nayi deal add karo
+            <Plus className="h-4 w-4 text-brand-600" /> Add a new deal
           </h2>
           <span className="count-pill">{items.length}</span>
         </div>
@@ -248,7 +248,7 @@ export default function HomeDealsAdmin() {
           </div>
           <div>
             <label className="label" htmlFor="deal-old">
-              Purani price (cross wali)
+              Old price (struck through)
             </label>
             <input
               id="deal-old"
@@ -262,7 +262,7 @@ export default function HomeDealsAdmin() {
           </div>
           <div>
             <label className="label" htmlFor="deal-new">
-              Nayi price (discount ke baad)
+              New price (after discount)
             </label>
             <input
               id="deal-new"
@@ -277,7 +277,7 @@ export default function HomeDealsAdmin() {
           <div className="sm:col-span-2 flex items-center gap-3">
             <button type="submit" disabled={saving} className="btn-primary">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-              {saving ? 'Saving…' : 'Deal add karo'}
+              {saving ? 'Saving…' : 'Add deal'}
             </button>
             {Number(form.oldPrice) > Number(form.price) && Number(form.price) > 0 ? (
               <span className="text-[0.72rem] font-bold text-emerald-700">
@@ -295,7 +295,7 @@ export default function HomeDealsAdmin() {
             <span className="count-pill">{items.length}</span>
           </h2>
           <span className="text-xs text-slate-400">
-            Home par pehli 4 cards dikhengi — naam/prices par click karke badal sakte ho
+            The first 4 cards appear on Home — click a name/price to change it
           </span>
         </div>
         <div className="card-body">
@@ -303,8 +303,7 @@ export default function HomeDealsAdmin() {
             <Spinner />
           ) : items.length === 0 ? (
             <p className="empty">
-              Abhi koi deal nahi hai — Home par demo deals dikh rahi hain. Upar se picture + prices
-              add karo.
+              No deals yet — demo deals are showing on Home. Add a picture and prices above.
             </p>
           ) : (
             <ul className="space-y-2">
@@ -347,7 +346,7 @@ export default function HomeDealsAdmin() {
                           onBlur={onBlurSave(deal, 'oldPrice')}
                           onKeyDown={onEnterBlur}
                           className="input line-through decoration-rose-500/60"
-                          title="Purani price (cross)"
+                          title="Old price (struck through)"
                         />
                       </label>
                       <label className="flex items-center gap-1.5">
@@ -361,7 +360,7 @@ export default function HomeDealsAdmin() {
                           onBlur={onBlurSave(deal, 'price')}
                           onKeyDown={onEnterBlur}
                           className="input font-semibold text-brand-800"
-                          title="Nayi price"
+                          title="New price"
                         />
                       </label>
                     </div>

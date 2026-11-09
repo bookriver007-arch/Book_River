@@ -13,7 +13,7 @@ export const SECTIONS = [
     anchor: 'slides',
     label: 'Slides',
     icon: Images,
-    blurb: 'Slideshow ki pictures — upload, order badlo, delete karo.',
+    blurb: 'Slideshow pictures — upload, reorder, delete.',
   },
   {
     key: 'categories',
@@ -21,7 +21,7 @@ export const SECTIONS = [
     anchor: 'categories',
     label: 'Categories',
     icon: Tags,
-    blurb: 'Ribbon ke orange/gold boxes jo right → left scroll karte hain.',
+    blurb: 'The orange/gold ribbon boxes that scroll right → left.',
   },
   {
     key: 'books',
@@ -37,7 +37,7 @@ export const SECTIONS = [
     anchor: 'kids-book',
     label: 'Kids Book',
     icon: Baby,
-    blurb: 'Standing kids-book cover aur uske neeche caption.',
+    blurb: 'Standing kids book cover and its caption below.',
   },
   {
     key: 'frames',
@@ -45,7 +45,7 @@ export const SECTIONS = [
     anchor: 'frames',
     label: 'Frames',
     icon: Frame,
-    blurb: 'Hanging frames gallery (rope se latke hue).',
+    blurb: 'Hanging frames gallery (hanging from a rope).',
   },
   {
     key: 'products',
@@ -53,7 +53,7 @@ export const SECTIONS = [
     anchor: 'products',
     label: 'Products',
     icon: LayoutGrid,
-    blurb: 'Products grid — ek row me 5 covers.',
+    blurb: 'Products grid — 5 covers per row.',
   },
   {
     key: 'reviews',
@@ -61,7 +61,7 @@ export const SECTIONS = [
     anchor: 'reviews',
     label: 'Reviews',
     icon: Star,
-    blurb: 'Readers ke reviews — slider me scroll hote hain.',
+    blurb: 'Reader reviews — they scroll in a slider.',
   },
 ]
 
