@@ -1,13 +1,15 @@
 import { Baby, BookOpen, Frame, Images, LayoutGrid, Star, Tags } from 'lucide-react'
 
 /**
- * Admin page ke sections — sab EK page par stack hote hain.
- * `anchor` = scroll target (navbar link `#anchor` par jata hai)
- * `key` = ENDPOINTS ke key se match karta hai
+ * Admin ke pages — har section ka apna page (frontend navbar ki tarah).
+ * `path`   = navbar link / apna route (/slides, /open-book …)
+ * `anchor` = purane #hash links ke liye (backwards compatible)
+ * `key`    = ENDPOINTS ke key se match karta hai
  */
 export const SECTIONS = [
   {
     key: 'slides',
+    path: '/slides',
     anchor: 'slides',
     label: 'Slides',
     icon: Images,
@@ -15,6 +17,7 @@ export const SECTIONS = [
   },
   {
     key: 'categories',
+    path: '/categories',
     anchor: 'categories',
     label: 'Categories',
     icon: Tags,
@@ -22,6 +25,7 @@ export const SECTIONS = [
   },
   {
     key: 'books',
+    path: '/open-book',
     anchor: 'open-book',
     label: 'Open Book',
     icon: BookOpen,
@@ -29,6 +33,7 @@ export const SECTIONS = [
   },
   {
     key: 'kids',
+    path: '/kids-book',
     anchor: 'kids-book',
     label: 'Kids Book',
     icon: Baby,
@@ -36,6 +41,7 @@ export const SECTIONS = [
   },
   {
     key: 'frames',
+    path: '/frames',
     anchor: 'frames',
     label: 'Frames',
     icon: Frame,
@@ -43,6 +49,7 @@ export const SECTIONS = [
   },
   {
     key: 'products',
+    path: '/products',
     anchor: 'products',
     label: 'Products',
     icon: LayoutGrid,
@@ -50,10 +57,33 @@ export const SECTIONS = [
   },
   {
     key: 'reviews',
+    path: '/reviews',
     anchor: 'reviews',
     label: 'Reviews',
     icon: Star,
     blurb: 'Readers ke reviews — slider me scroll hote hain.',
   },
 ]
+
+/**
+ * Purane URL / hash (`/books`, `/kids`, `#reviews`, `/open-book` …) ko
+ * sahi section se match karta hai. Kuch match na ho to null.
+ */
+export function findSection(value) {
+  const clean = String(value || '')
+    .replace(/^[#/]+/, '')
+    .trim()
+    .toLowerCase()
+  if (!clean) return null
+
+  return (
+    SECTIONS.find(
+      (s) =>
+        s.key === clean ||
+        s.anchor === clean ||
+        s.path.replace(/^\//, '').toLowerCase() === clean,
+    ) || null
+  )
+}
+
 

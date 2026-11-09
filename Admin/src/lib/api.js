@@ -1,15 +1,25 @@
 /** Admin panel ke saare API endpoints + chhote fetch helpers. */
 export const ENDPOINTS = {
   slides: '/api/description-admin',
+  homeSlides: '/api/home-slides',
+  homeDeals: '/api/home-deals',
+  homeCategoryBooks: '/api/home-category-books',
+  homeHangingBook: '/api/home-hanging-book',
+  homeAbout: '/api/home-about',
   categories: '/api/description-admin/categories',
   books: '/api/description-admin/books',
   kids: '/api/description-admin/kids-book',
   frames: '/api/description-admin/frames',
   products: '/api/description-admin/products',
   reviews: '/api/description-admin/reviews',
+  orders: '/api/orders',
 }
 
-export const FRONTEND_URL = 'http://localhost:5173/description'
+/** Frontend ka base URL + kisi bhi frontend page ka link */
+export const FRONTEND_BASE = 'http://localhost:5173'
+export const frontendUrl = (path = '/description') => `${FRONTEND_BASE}${path}`
+
+export const FRONTEND_URL = frontendUrl('/description')
 
 /** GET — list */
 export async function apiList(url) {
