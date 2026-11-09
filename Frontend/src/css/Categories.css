@@ -1,0 +1,437 @@
+/* ============================================================
+   HOME — CATEGORY SECTIONS
+   Heading + description center, left/right arrows, aur books ki row
+   jo SIRF arrow click par chalti hai (koi auto scroll nahi).
+   Book shape `.deal-book` (Deals.css) se aata hai.
+   ============================================================ */
+
+.cat-wrap {
+  width: 100%;
+  max-width: 80rem;
+  margin: 2.5rem auto 0;
+  padding: 0 1rem;
+}
+
+.cat-section {
+  padding: 2.25rem 0;
+}
+
+/* do sections ke beech patli gold dashed line */
+.cat-section + .cat-section {
+  border-top: 1px dashed rgba(176, 129, 63, 0.3);
+}
+
+.cat-head {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cat-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-brand-900);
+}
+
+.cat-sub {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(29, 56, 100, 0.65);
+}
+
+/* books row + (agar ho) dono side latakti kitaabein — ek hi line par */
+.cat-rail-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.1rem;
+}
+
+.cat-rail-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* books ki row — scroll sirf arrows se (user drag bhi kar sakta hai) */
+.cat-rail {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0.35rem 0.25rem 0.7rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cat-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-book {
+  flex: 0 0 auto;
+  /* ek waqt me 2 books (mobile) — arrow dabane par ek ek book aage badhti hai */
+  width: calc((100% - 1rem) / 2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+  transform: translateZ(0);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1),
+    filter 0.3s ease;
+}
+
+/* hover / focus — book thodi badi hoti hai; mouse hatane par wapas same jagah */
+.cat-book:hover,
+.cat-book:focus-visible {
+  z-index: 2;
+  transform: translateY(-6px) scale(1.05);
+  filter: drop-shadow(0 18px 26px rgba(29, 56, 100, 0.25));
+}
+
+.cat-book:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 4px;
+  border-radius: 0.9rem;
+}
+
+/* same real-book hover jo deal cards par hai */
+.cat-book:hover .deal-book-inner {
+  transform: rotateY(-5deg) rotateX(2deg) rotateZ(-0.4deg) translateY(-6px);
+  filter: drop-shadow(0 30px 30px rgba(29, 56, 100, 0.45));
+}
+
+.cat-book-title {
+  display: -webkit-box;
+  margin-top: 0.85rem;
+  overflow: hidden;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--color-brand-900);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cat-book-author {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  color: rgba(29, 56, 100, 0.6);
+}
+
+/* price — modern pill */
+.cat-book-price {
+  display: inline-block;
+  margin-top: 0.45rem;
+  padding: 0.12rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  background-image: linear-gradient(100deg, #2c5698, #486f9f 60%, #c89859);
+  box-shadow: 0 8px 16px -10px rgba(44, 86, 152, 0.95);
+}
+
+/* ---- arrows ---- */
+.cat-arrow {
+  position: absolute;
+  top: 42%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 9999px;
+  color: #fff;
+  background-image: linear-gradient(135deg, #2c5698, #486f9f 60%, #c89859);
+  box-shadow:
+    0 14px 26px -14px rgba(29, 56, 100, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transform: translateY(-50%);
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.cat-arrow:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.cat-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.cat-arrow--prev {
+  left: -0.4rem;
+}
+
+.cat-arrow--next {
+  right: -0.4rem;
+}
+
+@media (min-width: 640px) {
+  .cat-wrap {
+    padding: 0 1.5rem;
+  }
+  .cat-title {
+    font-size: 1.9rem;
+  }
+  /* 3 books ek view me */
+  .cat-book {
+    width: calc((100% - 2rem) / 3);
+  }
+  /* latakti kitaab arrow se thodi door */
+  .cat-rail-row {
+    gap: 1.6rem;
+  }
+  .cat-arrow {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+  .cat-arrow--prev {
+    left: -1rem;
+  }
+  .cat-arrow--next {
+    right: -1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cat-section {
+    padding: 3rem 0;
+  }
+  .cat-title {
+    font-size: 2.1rem;
+  }
+  /* 4 books ek view me */
+  .cat-book {
+    width: calc((100% - 3rem) / 4);
+  }
+  /* latakti kitaab arrow se thodi door */
+  .cat-rail-row {
+    gap: 2.4rem;
+  }
+}
+
+/* ---- dark mode ---- */
+.dark .cat-title {
+  color: #fff;
+}
+.dark .cat-sub {
+  color: rgba(255, 255, 255, 0.6);
+}
+.dark .cat-book-title {
+  color: #fff;
+}
+.dark .cat-book-author {
+  color: rgba(255, 255, 255, 0.55);
+}
+.dark .cat-book-price {
+  color: #fff;
+}
+.dark .cat-section + .cat-section {
+  border-top-color: rgba(215, 165, 88, 0.22);
+}
+
+/* ============================================================
+   BOOK DETAIL MODAL — book par click karne se khulti hai
+   (naam + description + price + category page ka link)
+   ============================================================ */
+.cat-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.cat-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: rgba(9, 17, 30, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.cat-modal-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.1rem;
+  width: 100%;
+  max-width: 22rem;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 1.25rem;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 40px 80px -40px rgba(9, 17, 30, 0.85);
+  animation: cat-modal-in 0.28s ease-out;
+}
+
+.dark .cat-modal-panel {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(13, 21, 35, 0.97);
+}
+
+.cat-modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(29, 56, 100, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-brand-800);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+.cat-modal-close:hover {
+  transform: rotate(90deg);
+  background: #fff;
+}
+.dark .cat-modal-close {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.cat-modal-cover {
+  width: 9.5rem;
+  margin: 0.3rem auto 0;
+}
+
+.cat-modal-tag {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.18rem 0.7rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background-image: linear-gradient(100deg, #2c5698, #486f9f 60%, #c89859);
+}
+
+.cat-modal-title {
+  margin-top: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-brand-900);
+}
+.dark .cat-modal-title {
+  color: #fff;
+}
+
+.cat-modal-author {
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: rgba(29, 56, 100, 0.6);
+}
+.dark .cat-modal-author {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cat-modal-price {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--color-brand-700);
+}
+.dark .cat-modal-price {
+  color: var(--color-gold-300);
+}
+
+.cat-modal-desc {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(29, 56, 100, 0.72);
+}
+.dark .cat-modal-desc {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cat-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cat-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background-image: linear-gradient(100deg, #2c5698, #3867a6);
+  box-shadow: 0 12px 24px -14px rgba(44, 86, 152, 0.95);
+  transition: transform 0.2s ease;
+}
+.cat-modal-btn:hover {
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .cat-modal-panel {
+    max-width: 34rem;
+    grid-template-columns: 10.5rem 1fr;
+    align-items: flex-start;
+    gap: 1.35rem;
+    padding: 1.5rem;
+  }
+  .cat-modal-cover {
+    margin-top: 0.2rem;
+  }
+}
+
+@keyframes cat-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-rail {
+    scroll-behavior: auto;
+  }
+  .cat-book,
+  .cat-book:hover {
+    transform: none;
+  }
+}

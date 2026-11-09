@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion as Motion } from 'framer-motion'
 import { Lock, LogIn, Mail, User, UserPlus } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { notify } from '../utils/notify.jsx'
 import Navbar from '../components/Navbar.jsx'
 import '../css/Auth.css'
 
@@ -63,11 +63,10 @@ export default function Auth() {
         password: signup.password,
       })
       saveSession(data)
-      toast.success(`Welcome ${data.user.name}! Account ban gaya 🎉`)
       setSignup({ name: '', email: '', password: '' })
       navigate('/home')
     } catch (err) {
-      toast.error(err.message)
+      notify.error('Signup nahi hua', err.message)
     } finally {
       setBusy('')
     }
@@ -80,11 +79,10 @@ export default function Auth() {
     try {
       const data = await post('/login', { email: login.email, password: login.password })
       saveSession(data)
-      toast.success(`Welcome back, ${data.user.name}! 🔐`)
       setLogin({ email: '', password: '' })
       navigate('/home')
     } catch (err) {
-      toast.error(err.message)
+      notify.error('Login nahi hua', err.message)
     } finally {
       setBusy('')
     }
@@ -315,7 +313,7 @@ export default function Auth() {
 
   return (
     <div className="book-page auth-page">
-      <Navbar back />
+      <Navbar back shopIcons={false} />
 
       <main className="auth-main">
         <Motion.div

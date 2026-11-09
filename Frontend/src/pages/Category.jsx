@@ -1,19 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, BookOpen } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
-
-const COVERS = [
-  '/banners/fiction.svg',
-  '/banners/poetry.svg',
-  '/banners/history.svg',
-  '/banners/science.svg',
-  '/banners/business.svg',
-]
+import Footer from '../components/Footer.jsx'
+import CategoryProducts from '../components/CategoryProducts.jsx'
 
 /**
  * Har category ka data (navbar ke slugs se match karta hai).
- * titles: [title, author, price]
+ * Books ab admin se aati hain — `CategoryProducts` dekhta hai.
  */
 const CATEGORIES = {
   'board-books': {
@@ -84,14 +78,6 @@ const CATEGORIES = {
   },
 }
 
-const booksOf = (slug) =>
-  (CATEGORIES[slug]?.titles ?? []).map(([title, author, price], i) => ({
-    title,
-    author,
-    price,
-    image: COVERS[i % COVERS.length],
-  }))
-
 /** Category page — navbar ke har category link ka apna page (/category/:slug). */
 export default function Category() {
   const { slug } = useParams()
@@ -117,10 +103,9 @@ export default function Category() {
   }
 
   const data = CATEGORIES[slug]
-  const books = booksOf(slug)
 
   return (
-    <div className="book-page min-h-screen pb-14">
+    <div className="book-page min-h-screen">
       <Navbar categories wide user={user ?? { name: 'Reader' }} onLogout={logout} />
 
       <main className="mx-auto max-w-7xl px-4 pt-8 sm:px-6">
@@ -134,47 +119,43 @@ export default function Category() {
 
         {data ? (
           <>
-            <header className="mt-3 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <h1 className="font-display text-3xl font-bold text-brand-900 dark:text-white">
-                  {data.name}
+            {/* ---------- modern category hero ---------- */}
+            <header className="relative mt-4 overflow-hidden rounded-3xl border border-amber-200/70 bg-gradient-to-r from-white via-[#fdf8ee] to-[#f7e9cf] px-5 py-7 shadow-[0_24px_50px_-38px_rgba(29,56,100,0.55)] dark:border-white/10 dark:from-white/[0.06] dark:via-white/[0.03] dark:to-white/[0.06] sm:px-8 sm:py-9">
+              {/* soft gold glow */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-gold-300/40 blur-3xl dark:bg-gold-500/20"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-20 left-1/3 h-40 w-40 rounded-full bg-brand-300/30 blur-3xl dark:bg-brand-500/15"
+              />
+
+              <div className="relative">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-brand-700 ring-1 ring-brand-900/10 dark:bg-white/10 dark:text-brand-100 dark:ring-white/15">
+                  Book shelf
+                </span>
+
+                <h1 className="mt-3 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+                  <span className="bg-gradient-to-r from-brand-900 via-brand-700 to-gold-600 bg-clip-text text-transparent dark:from-white dark:via-brand-100 dark:to-gold-300">
+                    {data.name}
+                  </span>
                 </h1>
-                <p className="mt-1 text-sm text-brand-800/70 dark:text-white/60">{data.tagline}</p>
+
+                <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-brand-800/70 dark:text-white/60 sm:text-base">
+                  {data.tagline}
+                </p>
+
+                {/* gold hairline accent */}
+                <span
+                  aria-hidden="true"
+                  className="mt-4 block h-1 w-24 rounded-full bg-gradient-to-r from-brand-700 via-gold-500 to-transparent"
+                />
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-brand-700 shadow-sm dark:bg-white/10 dark:text-brand-100">
-                <BookOpen className="h-3.5 w-3.5" /> {books.length} books
-              </span>
             </header>
 
-            <section className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {books.map((book) => (
-                <article
-                  key={book.title}
-                  className="group overflow-hidden rounded-2xl border border-white/70 bg-white/85 shadow-[0_18px_40px_-30px_rgba(29,56,100,0.55)] backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1.5 dark:border-white/10 dark:bg-white/5"
-                >
-                  <div className="aspect-[3/4] overflow-hidden bg-brand-100 dark:bg-brand-900/40">
-                    <img
-                      src={book.image}
-                      alt={`${book.title} cover`}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-3.5">
-                    <h2 className="line-clamp-2 text-sm font-bold text-brand-900 dark:text-white">
-                      {book.title}
-                    </h2>
-                    <p className="mt-0.5 text-xs text-brand-800/65 dark:text-white/55">
-                      by {book.author}
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-brand-700 dark:text-brand-100">
-                      {book.price}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </section>
+            {/* ---- products: search + filters + book-theme grid ---- */}
+            <CategoryProducts slug={slug} category={data.name} />
           </>
         ) : (
           <div className="mt-10 rounded-2xl border border-white/70 bg-white/80 p-10 text-center dark:border-white/10 dark:bg-white/5">
@@ -194,6 +175,8 @@ export default function Category() {
           <ArrowLeft className="h-4 w-4" /> Back to Home
         </Link>
       </main>
+
+      <Footer />
     </div>
   )
 }

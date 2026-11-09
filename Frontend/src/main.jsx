@@ -3,24 +3,22 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import App from './App.jsx'
+import { LanguageProvider } from './i18n/LanguageContext.jsx'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: '#0f172a',
-            color: '#fff',
-            borderRadius: '12px',
-            padding: '12px 16px',
-          },
-        }}
-      />
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <App />
+        {/* navbar ke thoda neeche, page ke TOP par — horizontally center */}
+        <Toaster
+          position="top-center"
+          gutter={12}
+          containerStyle={{ top: '4.6rem' }}
+          toastOptions={{ duration: 2800 }}
+        />
+      </BrowserRouter>
+    </LanguageProvider>
   </StrictMode>,
 )

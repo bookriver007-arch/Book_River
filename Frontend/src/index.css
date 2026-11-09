@@ -414,3 +414,208 @@ body {
     opacity: 1;
   }
 }
+
+/* ============================================================
+   CATEGORY PAGE — product toolbar
+   Light aur dark dono modes me guaranteed contrast (plain CSS,
+   isliye Tailwind utilities ko pakka override karta hai).
+   ============================================================ */
+.cprod-toolbar {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(226, 232, 240, 0.9);
+}
+
+.cprod-search,
+.cprod-sort {
+  background-color: #ffffff;
+  border-color: rgba(226, 232, 240, 0.9);
+}
+
+.cprod-input,
+.cprod-select {
+  color: #1e293b;
+}
+
+.cprod-input::placeholder {
+  color: #94a3b8;
+}
+
+.cprod-search svg,
+.cprod-sort svg {
+  color: #94a3b8;
+}
+
+.cprod-meta {
+  color: #64748b;
+}
+
+.cprod-meta-count {
+  color: #0f172a;
+}
+
+/* ---------- dark mode ---------- */
+.dark .cprod-toolbar {
+  background-color: #0e1a2b;
+  background-image: linear-gradient(135deg, #101c2f, #0a121f);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dark .cprod-search,
+.dark .cprod-sort {
+  background-color: #0b1524;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.dark .cprod-input,
+.dark .cprod-select {
+  color: #f1f5f9;
+}
+
+.dark .cprod-input::placeholder {
+  color: #94a3b8;
+}
+
+.dark .cprod-search svg,
+.dark .cprod-sort svg {
+  color: #94a3b8;
+}
+
+.dark .cprod-select option {
+  background-color: #0b1524;
+  color: #f1f5f9;
+}
+
+.dark .cprod-meta {
+  color: #cbd5e1;
+}
+
+.dark .cprod-meta-count {
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------
+   Modern notifications (page ke center me) — ToastCard.jsx
+   ------------------------------------------------------------------ */
+@keyframes toastPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastPopOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+}
+
+@keyframes toastBarShrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.toast-card {
+  will-change: transform, opacity;
+}
+
+.toast-card--in {
+  animation: toastPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.toast-card--out {
+  animation: toastPopOut 0.22s ease both;
+}
+
+.toast-bar {
+  animation-name: toastBarShrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-card--in,
+  .toast-card--out {
+    animation: none;
+  }
+  .toast-bar {
+    animation: none;
+    width: 0%;
+  }
+}
+
+/* ============================================================
+   Urdu (اردو) — Language = اردو par RTL + Urdu font
+   ============================================================ */
+html.lang-ur body {
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', 'Jameel Noori Nastaleeq', Tahoma, sans-serif;
+}
+
+/* Urdu me headings italic-ish serif achi nahi lagti — simple rakho */
+html.lang-ur .font-display {
+  font-family: 'Noto Naskh Arabic', 'Segoe UI', Tahoma, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Urdu line-height thodi zyada chahiye (diacritics ke liye) */
+html.lang-ur p,
+html.lang-ur li,
+html.lang-ur label {
+  line-height: 1.85;
+}
+
+/* Tailwind ke physical utilities RTL me ulta karo */
+html.lang-ur .space-x-1 > :not([hidden]) ~ :not([hidden]),
+html.lang-ur .space-x-1\.5 > :not([hidden]) ~ :not([hidden]),
+html.lang-ur .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-left: 0;
+  margin-right: 0.5rem;
+}
+
+html.lang-ur input,
+html.lang-ur textarea,
+html.lang-ur select {
+  text-align: right;
+}
+
+html.lang-ur input[type='email'],
+html.lang-ur input[type='tel'],
+html.lang-ur input[inputmode='tel'] {
+  direction: ltr;
+  text-align: right;
+}
+
+/* RTL me alignment utilities ulti ho jati hain */
+html.lang-ur .text-left {
+  text-align: right;
+}
+
+html.lang-ur .text-right {
+  text-align: left;
+}
+
+html.lang-ur .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+html.lang-ur .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+
+
+

@@ -1,0 +1,51 @@
+/* ============================================================
+   HOME — HANGING BOOK (rope se latakti kitaab)
+   Book row ke dono side me, arrows ke BARABAR (same line).
+   Book + rope ek saath halka swing karte rehte hain (auto,
+   `kidsbook-swing` animation Description.css se).
+   ============================================================ */
+
+.hanging-book {
+  flex: 0 0 auto;
+  width: 6rem;
+  pointer-events: none;
+}
+
+.hanging-book-inner {
+  width: 100%;
+}
+
+/* neeche halki si table shadow (kitaab swing kare to bhi shadow na hile) */
+.hanging-book-shadow {
+  display: block;
+  width: 76%;
+  height: 1rem;
+  margin: 0.55rem auto 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.4), transparent 70%);
+  filter: blur(7px);
+}
+
+/* left wali book — mirrored tilt, pages left edge par */
+.hanging-book--left .kidsbook-cover {
+  transform: rotateY(14deg) rotateX(3deg);
+}
+
+.hanging-book--left .kidsbook-pages {
+  right: auto;
+  left: -0.45rem;
+  transform: rotateY(14deg);
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 640px) {
+  .hanging-book {
+    width: 7.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hanging-book {
+    width: 9.5rem;
+  }
+}

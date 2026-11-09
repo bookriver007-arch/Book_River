@@ -1,0 +1,264 @@
+/* ============================================================
+   ABOUT BOOK — Description page wali khuli kitaab ka content
+   (kitaab ka dhancha: Description.css ke .open-book* classes)
+   ============================================================ */
+
+.about-book {
+  width: 100%;
+  margin: 3.5rem auto 0;
+  padding: 0 1rem;
+}
+
+.about-book .open-book-wrap {
+  margin: 0 auto;
+  max-width: 62rem;
+}
+
+.about-book .open-book {
+  height: 29rem;
+}
+
+@media (min-width: 640px) {
+  .about-book .open-book {
+    height: 32rem;
+  }
+}
+
+/* ---- left page: 3 pictures ka modern collage ---- */
+.about-collage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 12rem;
+}
+
+.about-shot {
+  position: absolute;
+  display: block;
+  margin: 0;
+  border-radius: 0.5rem;
+  border: 3px solid #ffffff;
+  background: #ffffff;
+  object-fit: cover;
+  transform-origin: 50% 100%;
+  transition: transform 0.35s ease;
+}
+
+/* bada, tircha hua back cover */
+.about-shot--back {
+  left: 0;
+  top: 3%;
+  z-index: 1;
+  width: 58%;
+  height: 68%;
+  transform: rotate(-7deg);
+  box-shadow: 0 18px 26px -16px rgba(60, 45, 20, 0.55);
+}
+
+/* doosra cover — overlap karta hua */
+.about-shot--mid {
+  right: 0;
+  top: 15%;
+  z-index: 2;
+  width: 46%;
+  height: 58%;
+  transform: rotate(7deg);
+  box-shadow: 0 18px 26px -16px rgba(60, 45, 20, 0.5);
+}
+
+/* polaroid style (neeche caption ke saath) */
+.about-shot--polaroid {
+  left: 10%;
+  bottom: 0;
+  z-index: 3;
+  width: 44%;
+  padding: 4px 4px 0;
+  border: 1px solid rgba(200, 152, 89, 0.45);
+  border-radius: 0.35rem;
+  background: #ffffff;
+  transform: rotate(-2deg);
+  box-shadow: 0 16px 24px -16px rgba(60, 45, 20, 0.5);
+}
+
+.about-shot--polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.2rem;
+}
+
+.about-shot--polaroid figcaption {
+  padding: 0.25rem 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #8c652d;
+}
+
+/* hover — page par pictures halka se seedhi ho jaati hain */
+.bk-page:hover .about-shot--back {
+  transform: rotate(-4deg);
+}
+.bk-page:hover .about-shot--mid {
+  transform: rotate(4deg);
+}
+.bk-page:hover .about-shot--polaroid {
+  transform: rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-shot,
+  .bk-page:hover .about-shot--back,
+  .bk-page:hover .about-shot--mid,
+  .bk-page:hover .about-shot--polaroid {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---- right page ka content — beech se thoda NEECHE ---- */
+.book-col--copy {
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 2.6rem 1.35rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .book-col--copy {
+    gap: 0.65rem;
+    padding: 3.2rem 1.7rem 1.8rem;
+  }
+}
+
+/* page number ko neeche hi rakho (auto-margin se centering na toote) */
+.book-col--copy .book-page-no {
+  margin-top: 0.75rem;
+}
+
+/* ---- right page ka content ---- */
+.about-bk-eyebrow {
+  align-self: flex-start;
+  border-radius: 9999px;
+  padding: 0.16rem 0.6rem;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+  background-image: linear-gradient(100deg, #2c5698, #486f9f 60%, #b0813f);
+}
+
+.about-bk-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--color-brand-900);
+}
+
+.about-bk-text {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: rgba(29, 56, 100, 0.82);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+/* desktop par thoda aur bada + readable */
+@media (min-width: 640px) {
+  .about-bk-title {
+    font-size: 1.7rem;
+  }
+
+  .about-bk-text {
+    font-size: 0.92rem;
+    -webkit-line-clamp: 6;
+  }
+}
+
+.about-bk-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-bk-list a {
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.7;
+  color: var(--color-brand-800);
+  text-decoration: none;
+}
+
+.about-bk-list a:hover {
+  color: #b0813f;
+}
+
+.about-bk-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.about-bk-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(200, 152, 89, 0.42);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(29, 56, 100, 0.65);
+}
+
+.about-bk-fact strong {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  color: var(--color-brand-900);
+}
+
+/* ---- page dots ---- */
+.about-bk-dots {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.about-bk-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 9999px;
+  background: rgba(29, 56, 100, 0.25);
+  transition:
+    width 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.about-bk-dot.is-active {
+  width: 1.15rem;
+  background-image: linear-gradient(100deg, #2c5698, #c89859);
+}
+
+/* ---- dark mode ----
+   Kitaab ke pages hamesha cream (paper) rehte hain, isliye unke andar ka
+   text hamesha DARK hi rehta hai — light/dark dono me sahi padha jaata hai.
+   Sirf dots ko light karte hain kyunki wo kitaab ke bahar hain. */
+.dark .about-bk-dot {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dark .about-bk-dot.is-active {
+  background-image: linear-gradient(100deg, #486f9f, #d7a558);
+}

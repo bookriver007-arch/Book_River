@@ -1,0 +1,343 @@
+/* ============================================================
+   HOME — DEAL SECTION CARDS
+   Har card asli (real) book jaisa dikhta hai: 3D tilt, spine groove,
+   cover sheen, right/bottom page block aur soft shadow.
+   (Products grid wale .product-book style se matched.)
+   ============================================================ */
+
+.deal-card {
+  /* book ka shadow card se bahar bhi dikhe */
+  overflow: visible;
+}
+
+/* 3D camera */
+.deal-book {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 11.5rem;
+  perspective: 1000px;
+}
+
+/* the book itself — real angle + thoda slope */
+.deal-book-inner {
+  position: relative;
+  display: block;
+  transform: rotateY(-16deg) rotateX(4deg) rotateZ(-1.2deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 20px 22px rgba(29, 56, 100, 0.32));
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.deal-card:hover .deal-book-inner {
+  transform: rotateY(-5deg) rotateX(2deg) rotateZ(-0.4deg) translateY(-7px);
+  filter: drop-shadow(0 30px 30px rgba(29, 56, 100, 0.45));
+}
+
+/* cover — full-bleed like a real hardcover */
+.deal-cover {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px 10px 10px 4px;
+  background: #e8e2d3;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22),
+    inset -3px 0 6px -3px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(15, 23, 42, 0.16);
+}
+
+.deal-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* spine groove along the left edge */
+.deal-cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 14%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.32),
+    rgba(0, 0, 0, 0.06) 62%,
+    transparent
+  );
+}
+
+/* soft light sheen — top-left light, bottom-right shade */
+.deal-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.24) 0%,
+    rgba(255, 255, 255, 0.05) 34%,
+    rgba(0, 0, 0, 0.03) 62%,
+    rgba(0, 0, 0, 0.14) 100%
+  );
+}
+
+/* page block — right edge, like a real closed book */
+.deal-pages {
+  position: absolute;
+  top: 2.6%;
+  bottom: 2.6%;
+  right: -0.5rem;
+  z-index: 1;
+  width: 0.5rem;
+  border-radius: 0 3px 3px 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(120, 105, 75, 0.16) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, #d9d0ba 0%, #f7f2e6 35%, #efe8d7 75%, #d9d0ba 100%);
+  box-shadow: 4px 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+/* page block — bottom edge */
+.deal-book-inner::after {
+  content: '';
+  position: absolute;
+  left: 2%;
+  right: -0.3rem;
+  bottom: -0.3rem;
+  z-index: 0;
+  height: 0.3rem;
+  border-radius: 0 0 4px 4px;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 105, 75, 0.16) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #efe8d7, #d9d0ba);
+}
+
+/* discount badge sits above the sheen */
+.deal-badge {
+  position: absolute;
+  left: 0.55rem;
+  top: 0.55rem;
+  z-index: 3;
+  border-radius: 9999px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background-image: linear-gradient(90deg, #e11d48, #f43f5e);
+  box-shadow: 0 8px 16px -8px rgba(225, 29, 72, 0.7);
+}
+
+/* ============================================================
+   DEAL HERO — golden + orange rectangular offer box
+   (heading + short description + offer chip isi box ke andar)
+   ============================================================ */
+.deal-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  padding: 1.6rem 1.4rem;
+  border: 1px solid rgba(200, 152, 89, 0.55);
+  background-image:
+    radial-gradient(120% 150% at 100% 0%, rgba(255, 213, 148, 0.95) 0%, transparent 55%),
+    radial-gradient(95% 130% at 0% 100%, rgba(255, 238, 205, 0.92) 0%, transparent 62%),
+    linear-gradient(135deg, #fffaf1 0%, #fdeccd 48%, #f8d9a6 100%);
+  box-shadow:
+    0 26px 54px -34px rgba(176, 129, 63, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* dashed gold frame inside the box */
+.deal-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0.55rem;
+  z-index: -1;
+  border-radius: 1.15rem;
+  border: 1px dashed rgba(176, 129, 63, 0.45);
+  pointer-events: none;
+}
+
+/* soft orange glow in the corner */
+.deal-hero::after {
+  content: '';
+  position: absolute;
+  top: -5rem;
+  right: -3.5rem;
+  z-index: -1;
+  width: 15rem;
+  height: 15rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(240, 138, 46, 0.42), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* "Deal of the week" pill — orange -> gold */
+.deal-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #fff;
+  background-image: linear-gradient(100deg, #b0813f, #e08a2e 55%, #f0a83c);
+  box-shadow:
+    0 10px 20px -12px rgba(200, 120, 30, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* "Up to 45% off" chip */
+.deal-hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #fff;
+  background-image: linear-gradient(100deg, #c96a1b, #e08a2e 55%, #f0a83c);
+  box-shadow:
+    0 12px 24px -14px rgba(201, 106, 27, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* red sunburst "price tag" sticker — offer tag iske andar likha hota hai */
+.deal-sticker {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin: 0;
+  transform: rotate(-6deg);
+  filter: drop-shadow(0 16px 22px rgba(198, 35, 11, 0.35));
+  transition: transform 0.3s ease;
+}
+
+.deal-sticker:hover {
+  transform: rotate(0deg) scale(1.04);
+}
+
+.deal-sticker-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.deal-sticker-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  max-width: 70%;
+  text-align: center;
+  /* modern sans font (Inter) + tight, punchy look */
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* "UP TO" / "OFF" — chhota, wide tracking */
+.deal-sticker-unit {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  opacity: 0.95;
+}
+
+/* "40%" — bada, tight, modern */
+.deal-sticker-pct {
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+@media (min-width: 640px) {
+  .deal-sticker {
+    width: 8.75rem;
+    height: 8.75rem;
+  }
+  .deal-sticker-unit {
+    font-size: 0.56rem;
+  }
+  .deal-sticker-pct {
+    font-size: 1.6rem;
+  }
+}
+
+/* gold divider between the heading and the cards (ek hi box ke andar) */
+.deal-hero-divider {
+  height: 1px;
+  margin-top: 1.35rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(176, 129, 63, 0.55) 18%,
+    rgba(200, 152, 89, 0.65) 50%,
+    rgba(176, 129, 63, 0.55) 82%,
+    transparent
+  );
+}
+
+/* dark mode — gehra golden-brown box */
+.dark .deal-hero {
+  border-color: rgba(215, 165, 88, 0.32);
+  background-image:
+    radial-gradient(120% 150% at 100% 0%, rgba(126, 74, 22, 0.55) 0%, transparent 55%),
+    linear-gradient(135deg, #241a0d 0%, #302110 52%, #3a2813 100%);
+  box-shadow:
+    0 26px 54px -30px rgba(0, 0, 0, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.dark .deal-hero::before {
+  border-color: rgba(215, 165, 88, 0.3);
+}
+
+@media (min-width: 640px) {
+  .deal-hero {
+    padding: 2rem 2.1rem;
+    border-radius: 1.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deal-book-inner,
+  .deal-card:hover .deal-book-inner {
+    transform: none;
+    transition: none;
+  }
+
+  .deal-sticker,
+  .deal-sticker:hover {
+    transform: none;
+    transition: none;
+  }
+}

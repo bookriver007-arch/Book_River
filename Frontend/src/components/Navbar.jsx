@@ -4,15 +4,21 @@ import { motion as Motion } from 'framer-motion'
 import {
   ArrowLeft,
   ChevronDown,
+  Heart,
   Home,
   LogOut,
   Moon,
+  PackageSearch,
   Settings as SettingsIcon,
+  ShoppingCart,
   Sun,
   UserPlus,
 } from 'lucide-react'
 import useTheme from '../hooks/useTheme.js'
+import useLang from '../hooks/useLang.js'
 import useBrandAssets from '../hooks/useBrandAssets.js'
+import useWishlist from '../hooks/useWishlist.js'
+import useCart from '../hooks/useCart.js'
 
 const CATEGORIES = [
   { label: 'Board Books', slug: 'board-books' },
@@ -55,9 +61,19 @@ function ActivePill() {
  *  - back=true   -> Back button (Auth page)
  *  - login nahi  -> Sign Up button
  */
-export default function Navbar({ back = false, user = null, onLogout = null, categories = false, wide = false }) {
+export default function Navbar({
+  back = false,
+  user = null,
+  onLogout = null,
+  categories = false,
+  wide = false,
+  shopIcons = true,
+}) {
   const { theme, toggleTheme } = useTheme()
+  const { isUrdu, toggleLang } = useLang()
   const { logoUrl } = useBrandAssets()
+  const { count: wishlistCount } = useWishlist()
+  const { count: cartCount } = useCart()
   const navigate = useNavigate()
 
   const isDark = theme === 'dark'
@@ -116,6 +132,69 @@ export default function Navbar({ back = false, user = null, onLogout = null, cat
         {isDark ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
       </Motion.span>
     </button>
+  )
+
+  /** EN / اردو toggle — poori site ki bhasha */
+  const langButton = (
+    <button
+      type="button"
+      onClick={toggleLang}
+      aria-label={isUrdu ? 'Switch to English' : 'اردو میں دیکھیں'}
+      title={isUrdu ? 'English' : 'اردو'}
+      className="nav-icon-btn w-auto px-2 text-[0.66rem] font-extrabold tracking-wide"
+    >
+      {isUrdu ? 'EN' : 'اردو'}
+    </button>
+  )
+
+  const utilityButtons = (
+    <>
+      {langButton}
+      {themeButton}
+    </>
+  )
+
+  const wishlistButton = (
+    <Link
+      to="/wishlist"
+      aria-label={wishlistCount ? `Wishlist (${wishlistCount} books)` : 'Wishlist'}
+      title="Wishlist"
+      className="nav-icon-btn relative"
+    >
+      <Heart className="h-3.5 w-3.5" />
+      {wishlistCount > 0 ? (
+        <span className="absolute -right-1 -top-0.5 grid h-4 min-w-[1rem] place-items-center rounded-full bg-rose-500 px-1 text-[0.56rem] font-bold leading-none text-white shadow">
+          {wishlistCount > 9 ? '9+' : wishlistCount}
+        </span>
+      ) : null}
+    </Link>
+  )
+
+  const cartButton = (
+    <Link
+      to="/cart"
+      aria-label={cartCount ? `Cart (${cartCount} items)` : 'Cart'}
+      title="Cart"
+      className="nav-icon-btn relative"
+    >
+      <ShoppingCart className="h-3.5 w-3.5" />
+      {cartCount > 0 ? (
+        <span className="absolute -right-1 -top-0.5 grid h-4 min-w-[1rem] place-items-center rounded-full bg-brand-600 px-1 text-[0.56rem] font-bold leading-none text-white shadow">
+          {cartCount > 9 ? '9+' : cartCount}
+        </span>
+      ) : null}
+    </Link>
+  )
+
+  const trackButton = (
+    <Link
+      to="/track"
+      aria-label="Order tracking"
+      title="Order tracking — status dekho"
+      className="nav-icon-btn relative"
+    >
+      <PackageSearch className="h-3.5 w-3.5" />
+    </Link>
   )
 
   const userChip = (
@@ -179,6 +258,17 @@ export default function Navbar({ back = false, user = null, onLogout = null, cat
             className="nav-menu-item"
           >
             <SettingsIcon className="h-4 w-4" /> Settings
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              closeMenu()
+              navigate('/track')
+            }}
+            className="nav-menu-item"
+          >
+            <PackageSearch className="h-4 w-4" /> Track order
           </button>
           <button
             type="button"
@@ -272,16 +362,23 @@ export default function Navbar({ back = false, user = null, onLogout = null, cat
             <div className="flex-1" />
           )}
 
-          {/* ---- right cluster: theme + (user ▾ | Back | Sign Up) ---- */}
+          {/* ---- right cluster: (wishlist + cart + track) + theme + (user ▾ | Back | Sign Up) ---- */}
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            {shopIcons ? (
+              <>
+                {wishlistButton}
+                {cartButton}
+                {trackButton}
+              </>
+            ) : null}
             {user ? (
               <>
-                {themeButton}
+                {utilityButtons}
                 {userChip}
               </>
             ) : back ? (
               <>
-                {themeButton}
+                {utilityButtons}
                 <button
                   type="button"
                   onClick={() => navigate('/description')}
@@ -293,7 +390,7 @@ export default function Navbar({ back = false, user = null, onLogout = null, cat
               </>
             ) : (
               <>
-                {themeButton}
+                {utilityButtons}
                 <Link
                   to="/auth"
                   className="nav-cta flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-gradient-to-r from-brand-700 via-brand-600 to-gold-700 px-3.5 py-1.5 text-[0.74rem] font-semibold text-white shadow-lg shadow-brand-700/25 transition-all hover:shadow-xl active:scale-95"
