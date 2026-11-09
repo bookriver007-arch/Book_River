@@ -39,6 +39,20 @@ const orderSchema = new mongoose.Schema(
     shipping: { type: Number, default: 0 },
     total: { type: Number, default: 0 },
 
+    /* payment — poora card number / CVV kabhi save nahi hota */
+    payment: {
+      method: {
+        type: String,
+        enum: ['cod', 'card', 'easypaisa', 'jazzcash', 'bank'],
+        default: 'cod',
+      },
+      brand: { type: String, trim: true, default: '' },
+      last4: { type: String, trim: true, default: '' },
+      mobile: { type: String, trim: true, default: '' },
+      ref: { type: String, trim: true, default: '' },
+      status: { type: String, enum: ['pending', 'paid', 'failed'], default: 'pending' },
+    },
+
     status: { type: String, enum: ORDER_STATUSES, default: 'pending', index: true },
     statusNote: { type: String, trim: true, default: '' },
     decidedAt: { type: Date, default: null },

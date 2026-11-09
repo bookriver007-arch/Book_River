@@ -18,6 +18,9 @@ const router = express.Router()
 const FREE_SHIP_OVER = 999
 const SHIP_FEE = 60
 
+/** checkout ke payment methods */
+const PAYMENT_METHODS = ['cod', 'card', 'easypaisa', 'jazzcash', 'bank']
+
 /** "Rs. 1,320.50" / "1320" -> 1320.5 */
 const priceOf = (value) => {
   const match = String(value ?? '').replace(/,/g, '').match(/\d+(?:\.\d+)?/)
@@ -51,6 +54,14 @@ const toPublic = (order) => ({
   subtotal: order.subtotal,
   shipping: order.shipping,
   total: order.total,
+  payment: {
+    method: order.payment?.method || 'cod',
+    brand: order.payment?.brand || '',
+    last4: order.payment?.last4 || '',
+    mobile: order.payment?.mobile || '',
+    ref: order.payment?.ref || '',
+    status: order.payment?.status || 'pending',
+  },
   createdAt: order.createdAt,
   updatedAt: order.updatedAt,
   decidedAt: order.decidedAt,
@@ -84,6 +95,20 @@ router.post('/', optionalAuth, async (req, res, next) => {
     const shipping = subtotal >= FREE_SHIP_OVER ? 0 : SHIP_FEE
     const itemCount = items.reduce((sum, item) => sum + item.qty, 0)
 
+    // payment — sirf safe info (poora card number / CVV kabhi nahi)
+    const rawPayment = body.payment && typeof body.payment === 'object' ? body.payment : {}
+    const method = PAYMENT_METHODS.includes(String(rawPayment.method))
+      ? String(rawPayment.method)
+      : 'cod'
+    const payment = {
+      method,
+      brand: String(rawPayment.brand || '').slice(0, 20),
+      last4: String(rawPayment.last4 || '').replace(/\D/g, '').slice(-4),
+      mobile: String(rawPayment.mobile || '').replace(/\D/g, '').slice(-11),
+      ref: String(rawPayment.ref || '').slice(0, 60),
+      status: 'pending',
+    }
+
     const order = await Order.create({
       code: await newCode(),
       user: req.userId || null,
@@ -92,6 +117,7 @@ router.post('/', optionalAuth, async (req, res, next) => {
       customerPhone: String(body.customerPhone || body.phone || '').trim(),
       address: String(body.address || '').trim(),
       note: String(body.note || '').trim(),
+      payment,
       items,
       itemCount,
       subtotal,
@@ -143,6 +169,11 @@ router.get('/track/:code', async (req, res, next) => {
       subtotal: order.subtotal,
       shipping: order.shipping,
       total: order.total,
+      payment: {
+        method: order.payment?.method || 'cod',
+        brand: order.payment?.brand || '',
+        last4: order.payment?.last4 || '',
+      },
       items: order.items.map((item) => ({
         bookId: item.bookId,
         title: item.title,

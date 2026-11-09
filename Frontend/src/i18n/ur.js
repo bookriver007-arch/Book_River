@@ -382,6 +382,47 @@ export const UR = {
   'PKR': 'PKR',
   'EasyPaisa': 'ایزی پیسہ',
   'JazzCash': 'جاز کیش',
+
+  /* ---------- checkout (cart page) ---------- */
+  'Delivery details': 'ڈیلیوری کی تفصیل',
+  'Ye pata order ke saath admin ko jayega — Settings se bhi aa jata hai.':
+    'یہ پتہ آرڈر کے ساتھ ایڈمن کو جائے گا — سیٹنگز سے بھی آ جاتا ہے۔',
+  'Payment method': 'ادائیگی کا طریقہ',
+  'Cash on delivery, card ya mobile wallet — jo aasan ho':
+    'کیش آن ڈیلیوری، کارڈ یا موبائل والٹ — جو آسان ہو',
+  'Debit / Credit Card': 'ڈیبٹ / کریڈٹ کارڈ',
+  'Mobile account se payment': 'موبائل اکاؤنٹ سے ادائیگی',
+  'IBFT / online transfer': 'IBFT / آن لائن ٹرانسفر',
+  Payment: 'ادائیگی',
+  'Card number': 'کارڈ نمبر',
+  'Name on card': 'کارڈ پر لکھا نام',
+  Expiry: 'میعاد',
+  'EasyPaisa number': 'ایزی پیسہ نمبر',
+  'JazzCash number': 'جاز کیش نمبر',
+  'Transaction ID / reference': 'ٹرانزیکشن آئی ڈی / ریفرنس',
+  'Order ghar pahunchne par rider ko cash dein — koi advance nahi.':
+    'آرڈر گھر پہنچنے پر رائیڈر کو کیش دیں — کوئی ایڈوانس نہیں۔',
+  'Order place karne ke baad admin isi number par WhatsApp/call karega — payment confirm hone par order approve hoga.':
+    'آرڈر کے بعد ایڈمن اسی نمبر پر واٹس ایپ/کال کرے گا — ادائیگی کی تصدیق پر آرڈر منظور ہوگا۔',
+  'IBFT / online transfer ke baad bank ki di hui transaction ID yahan likho — admin verify karke order approve karega.':
+    'IBFT / آن لائن ٹرانسفر کے بعد بینک کی دی ہوئی ٹرانزیکشن آئی ڈی یہاں لکھیں — ایڈمن تصدیق کر کے آرڈر منظور کرے گا۔',
+  'Card number sirf check hota hai — server par sirf last 4 digits jate hain, CVV kabhi save nahi hota.':
+    'کارڈ نمبر صرف جانچا جاتا ہے — سرور پر صرف آخری 4 ہندسے جاتے ہیں، CVV کبھی محفوظ نہیں ہوتا۔',
+  'Secure checkout · Debit / Credit Card': 'محفوظ چیک آؤٹ · ڈیبٹ / کریڈٹ کارڈ',
+  'Secure checkout · EasyPaisa': 'محفوظ چیک آؤٹ · ایزی پیسہ',
+  'Secure checkout · JazzCash': 'محفوظ چیک آؤٹ · جاز کیش',
+  'Secure checkout · Bank Transfer': 'محفوظ چیک آؤٹ · بینک ٹرانسفر',
+  'Checkout adhoora hai': 'چیک آؤٹ ادھورا ہے',
+  'Poora naam likho': 'پورا نام لکھیں',
+  'Sahi phone number likho (03xx xxxxxxx)': 'صحیح فون نمبر لکھیں (03xx xxxxxxx)',
+  'Ghar ka pata likho': 'گھر کا پتہ لکھیں',
+  'Sheher likho': 'شہر لکھیں',
+  'Card number sahi nahi hai': 'کارڈ نمبر صحیح نہیں ہے',
+  'Card par likha naam likho': 'کارڈ پر لکھا نام لکھیں',
+  'Expiry MM/YY — aage ki date': 'میعاد MM/YY — آگے کی تاریخ',
+  'CVV 3 ya 4 digit': 'CVV 3 یا 4 ہندسے',
+  'Mobile number 03xx xxxxxxx': 'موبائل نمبر 03xx xxxxxxx',
+  'Transaction ID / reference likho': 'ٹرانزیکشن آئی ڈی / ریفرنس لکھیں',
 }
 
 /**

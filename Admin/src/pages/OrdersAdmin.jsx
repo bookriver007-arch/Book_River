@@ -16,6 +16,15 @@ import PageHeader from '../components/PageHeader'
 import { ENDPOINTS, apiDelete, apiList, apiSend } from '../lib/api'
 import { FRONTEND_BASE } from '../lib/api'
 
+/** payment method ke labels */
+const PAYMENT_LABEL = {
+  cod: 'Cash on Delivery',
+  card: 'Card',
+  easypaisa: 'EasyPaisa',
+  jazzcash: 'JazzCash',
+  bank: 'Bank Transfer',
+}
+
 /** har status ka label + pill color */
 const STATUS = {
   pending: { label: 'Pending', cls: 'bg-amber-100 text-amber-800 ring-amber-200' },
@@ -242,6 +251,15 @@ export default function OrdersAdmin() {
                     <p className="text-slate-600">
                       <span className="font-semibold text-slate-800">Address:</span>{' '}
                       {order.address || '—'}
+                    </p>
+                    <p className="text-slate-600 sm:col-span-2">
+                      <span className="font-semibold text-slate-800">Payment:</span>{' '}
+                      {PAYMENT_LABEL[order.payment?.method] || 'Cash on Delivery'}
+                      {order.payment?.last4
+                        ? ` · ${order.payment.brand || 'Card'} ···· ${order.payment.last4}`
+                        : ''}
+                      {order.payment?.mobile ? ` · ${order.payment.mobile}` : ''}
+                      {order.payment?.ref ? ` · Ref ${order.payment.ref}` : ''}
                     </p>
                     {order.note ? (
                       <p className="text-slate-600 sm:col-span-2">
