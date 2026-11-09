@@ -6,6 +6,7 @@ import App from './App.jsx'
 import AutoEnglish from './components/AutoEnglish.jsx'
 import ConfirmDialog from './components/ConfirmDialog.jsx'
 import './index.css'
+import './css/mobile.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

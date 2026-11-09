@@ -435,3 +435,25 @@
     transform: none;
   }
 }
+
+@media (max-width: 640px) {
+  .cat-rail,
+  .ribbon-track,
+  .frames-track,
+  .slideshow-track {
+    scroll-padding-inline: 0.75rem;
+    padding-inline: 0.15rem;
+  }
+
+  /* category rail me book thodi badi (1.5 per view) */
+  .cat-book {
+    width: calc((100% - 1rem) / 1.5);
+  }
+
+  /* title 3 lines tak — poora naam nazar aaye */
+  .cat-book-title,
+  .deal-card-title,
+  .product-title {
+    -webkit-line-clamp: 3;
+  }
+}

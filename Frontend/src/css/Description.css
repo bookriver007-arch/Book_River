@@ -2158,3 +2158,152 @@
     transform: rotateY(180deg);
   }
 }
+
+/* ---------- 14. "New Launches" open book — phone par saaf + poora ---------- */
+/* Phone par do aadhi pages me text kata hua tha; ab tasveer upar,
+   poora text neeche (full width) — kuch bhi hidden/cut nahi. */
+@media (max-width: 639px) {
+  .open-book-wrap,
+  .open-book-wrap-right {
+    margin-left: 0.85rem;
+    margin-right: 0.85rem;
+    margin-top: 1.75rem;
+    max-width: 100%;
+  }
+
+  .open-book,
+  .open-book-wrap-right .open-book {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    perspective: none;
+    transform: none;
+    filter: drop-shadow(0 16px 24px rgba(29, 56, 100, 0.28));
+  }
+
+  .book-click {
+    width: 100%;
+    height: auto;
+  }
+
+  .bk-page {
+    height: auto;
+  }
+
+  .bk-left {
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: none;
+  }
+
+  .bk-right {
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: inset 0 16px 22px -18px rgba(60, 45, 20, 0.4);
+  }
+
+  /* book ka beech wala crease phone par zaroori nahi */
+  .open-book::after {
+    display: none;
+  }
+
+  /* left page — tasveer upar, poori chaudai */
+  .book-col {
+    padding: 0.9rem;
+    gap: 0.6rem;
+  }
+
+  .book-img {
+    flex: 0 0 auto;
+    height: 15rem;
+    transform: none;
+  }
+
+  /* right page — poora text, andar scroll nahi (kuch kata hua na rahe) */
+  .book-desc {
+    flex: 0 0 auto;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+    font-size: 0.84rem;
+    line-height: 1.62;
+  }
+
+  .book-title {
+    font-size: 1.22rem;
+  }
+
+  /* 3D page-turn animation phone par band (simple, clear reading) */
+  .book-flip {
+    display: none;
+  }
+
+  .open-book-wrap::after {
+    bottom: 0.35rem;
+    height: 1.6rem;
+  }
+}
+
+/* hanging kids-book — 1280px se chhoti har screen par bhi dikhe */
+@media (max-width: 1279px) {
+  .kidsbook-scene,
+  .kidsbook-scene-left {
+    display: block;
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    width: min(10rem, 55%);
+    max-width: 12rem;
+    margin: 1.6rem auto 0;
+    z-index: 1;
+  }
+
+  .kidsbook-scene .kidsbook-cover,
+  .kidsbook-scene-left .kidsbook-cover {
+    transform: rotateY(-10deg) rotateX(2deg);
+  }
+
+  .kidsbook-scene-left .kidsbook-pages {
+    right: -0.45rem;
+    left: auto;
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* ---- book modal (spread) — phone par upar/neeche ---- */
+@media (max-width: 639px) {
+  /* Description page ka book modal (spread) — upar/neeche stack */
+  .product-spread {
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100dvh - 2.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .spread-left,
+  .spread-right {
+    width: 100%;
+  }
+
+  .spread-left {
+    padding: 0.7rem;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: none;
+  }
+
+  .spread-left img {
+    height: 13rem;
+    max-height: 13rem;
+  }
+
+  .spread-right {
+    padding: 1rem;
+    text-align: left;
+  }
+
+  /* palatne wali front cover mobile par overlay na kare */
+  .spread-cover {
+    display: none;
+  }
+}

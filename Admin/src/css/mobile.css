@@ -1,0 +1,72 @@
+/* ============================================================
+   MOBILE FIT (Admin) — panel phone par bhi theek chale
+   index.css ke baad import hota hai.
+   ============================================================ */
+
+html,
+body {
+  max-width: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body,
+  #root {
+    overflow-x: clip;
+  }
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+code,
+.mono,
+[data-break] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* iOS input zoom band */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* rows / cards screen se bahar na jayein */
+@media (max-width: 900px) {
+  .admin-bg,
+  .admin-bg main,
+  .card,
+  .row,
+  .anav-seg {
+    max-width: 100%;
+  }
+
+  .card {
+    overflow-x: clip;
+  }
+}
+
+/* navbar chhoti screen par compact */
+@media (max-width: 430px) {
+  .anav-link {
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+    font-size: 0.7rem;
+  }
+}

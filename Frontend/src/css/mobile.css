@@ -1,0 +1,209 @@
+/* ============================================================
+   MOBILE FIT — har page ek phone frame me saaf fit ho jaye
+   (index.css ke BAAD import hota hai, is liye override karta hai)
+   Rules sirf chhoti screens par lagte hain — desktop waisa hi hai.
+   ============================================================ */
+
+/* ---------- 1. page kabhi horizontally scroll na ho ---------- */
+html,
+body {
+  max-width: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden; /* purane browsers ke liye */
+}
+
+@supports (overflow: clip) {
+  html,
+  body,
+  #root {
+    overflow-x: clip; /* scroll container nahi banta -> sticky navbar safe */
+  }
+}
+
+#root,
+.book-page,
+.logo-page {
+  max-width: 100%;
+}
+
+/* ---------- 2. koi bhi media / element container se bahar na jaye ---------- */
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+video,
+iframe {
+  height: auto;
+}
+
+/* ---------- 3. lambe words (order code / email / 2FA key) tootein ---------- */
+code,
+.order-code,
+[data-break] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ---------- 4. iOS par input focus se page zoom na ho ---------- */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* code wale bade inputs apna size rakhein */
+  input.auth-code,
+  .otp-input {
+    font-size: 1.15rem !important;
+  }
+
+  /* iOS par tap karne se grey flash na aaye */
+  button,
+  a,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ---------- 5. modals phone par poore khulein aur scroll hon ---------- */
+.cat-modal,
+.product-modal {
+  padding: 0.75rem;
+}
+
+.cat-modal-panel,
+.product-book,
+.product-modal > div,
+[role='dialog'] > div {
+  max-height: calc(100dvh - 1.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- 6. decorative layers apne section me hi rahein ---------- */
+/* (hanging rope / frames / ribbon / collage — inhi se page chaudi hoti thi) */
+@media (max-width: 900px) {
+  .slideshow-viewport,
+  .ribbon,
+  .frames-marquee,
+  .cat-wrap,
+  .cat-section,
+  .kidsbook-scene,
+  .hanging-book,
+  .deal-hero,
+  .deal-card,
+  .about-book,
+  .about-collage,
+  .first-book-row,
+  .second-book-row,
+  .third-book-row,
+  .product-stage,
+  .auth-main {
+    overflow-x: clip;
+  }
+}
+
+/* ---------- 7. navbar chhoti screen par compact ---------- */
+@media (max-width: 430px) {
+  .nav-glass {
+    gap: 0.3rem;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+  }
+
+  /* Sign Up / Back button sirf icon (text jagah bachane ke liye) */
+  .nav-cta span {
+    display: none;
+  }
+
+  .nav-cta {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .nav-logo-tile {
+    height: 1.75rem;
+    width: 1.75rem;
+  }
+}
+
+/* ---------- 8. headings phone par overflow na karein ---------- */
+@media (max-width: 480px) {
+  .book-page h1,
+  .launch-title,
+  .about-bk-title {
+    font-size: clamp(1.3rem, 6.6vw, 1.85rem);
+    line-height: 1.18;
+  }
+
+  .book-page h2,
+  .cat-title {
+    font-size: clamp(1.05rem, 5.2vw, 1.4rem);
+    line-height: 1.2;
+  }
+}
+
+/* ---------- 9. tap targets kam se kam 40px (mobile) ---------- */
+@media (max-width: 640px) {
+  .auth-btn,
+  .auth-btn-alt,
+  .cat-modal-btn,
+  .btn-primary,
+  .btn-outline {
+    min-height: 2.6rem;
+  }
+}
+
+/* ---------- 10. bahut chhoti screens (≤360px) ---------- */
+@media (max-width: 360px) {
+  .book-page {
+    font-size: 0.94rem;
+  }
+
+  .auth-half {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .abk-paper {
+    padding: 1.15rem 0.9rem;
+  }
+}
+
+/* ---------- 12. aakhri safety net: koi section page se bahar na nikle ---------- */
+@media (max-width: 900px) {
+  .book-page,
+  .logo-page,
+  .auth-page {
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  .book-page > *,
+  .book-page main,
+  .book-page section,
+  .book-page article,
+  .book-page aside,
+  .book-page header,
+  .book-page footer {
+    max-width: 100%;
+  }
+}
+
+/* ---------- 11. footer / sticky bars safe area ---------- */
+@supports (padding: max(0px)) {
+  .site-footer,
+  .footer,
+  [data-safe-bottom] {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}

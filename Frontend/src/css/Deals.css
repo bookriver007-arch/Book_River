@@ -351,3 +351,14 @@
     transition: none;
   }
 }
+
+/* deals: chhoti screen par ek full-width card (kata hua na lage) */
+@media (max-width: 480px) {
+  .deal-card {
+    max-width: none;
+  }
+
+  .deal-card .deal-book {
+    margin-inline: auto;
+  }
+}

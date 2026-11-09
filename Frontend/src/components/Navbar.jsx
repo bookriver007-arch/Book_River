@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion as Motion } from 'framer-motion'
 import {
   ArrowLeft,
@@ -7,12 +7,14 @@ import {
   Heart,
   Home,
   LogOut,
+  Menu,
   Moon,
   PackageSearch,
   Settings as SettingsIcon,
   ShoppingCart,
   Sun,
   UserPlus,
+  X,
 } from 'lucide-react'
 import useTheme from '../hooks/useTheme.js'
 import useLang from '../hooks/useLang.js'
@@ -75,6 +77,7 @@ export default function Navbar({
   const { count: wishlistCount } = useWishlist()
   const { count: cartCount } = useCart()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
 
   const isDark = theme === 'dark'
   const initial = (user?.name || user?.email || 'R').trim().charAt(0).toUpperCase()
@@ -93,6 +96,30 @@ export default function Navbar({
   // user chip ka dropdown (Home / Settings / Logout)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef(null)
+
+  /* ---- mobile drawer (hamburger) ---- */
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const closeDrawer = () => setDrawerOpen(false)
+
+  useEffect(() => {
+    setDrawerOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!drawerOpen) return undefined
+
+    const onKey = (event) => {
+      if (event.key === 'Escape') setDrawerOpen(false)
+    }
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+
+    return () => {
+      document.body.style.overflow = previous
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [drawerOpen])
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -148,10 +175,10 @@ export default function Navbar({
   )
 
   const utilityButtons = (
-    <>
+    <span className="hidden items-center gap-1.5 md:inline-flex sm:gap-2">
       {langButton}
       {themeButton}
-    </>
+    </span>
   )
 
   const wishlistButton = (
@@ -287,6 +314,7 @@ export default function Navbar({
   )
 
   return (
+    <>
     <header className={`sticky top-0 z-50 pt-2.5 sm:pt-3 ${wide ? 'px-3 sm:px-6' : 'px-4 sm:px-10'}`}>
       <div
         className={`nav-shell mx-auto ${wide ? 'max-w-none' : 'max-w-[80rem]'} ${
@@ -298,6 +326,17 @@ export default function Navbar({
             scrolled ? 'h-[3.25rem]' : 'h-[3.75rem]'
           }`}
         >
+          {/* ---- mobile: hamburger ---- */}
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={drawerOpen}
+            className="nav-icon-btn md:hidden"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+
           {/* ---- Logo (soft disc + gold rim) ---- */}
           <Link to="/" className="nav-logo group flex shrink-0 items-center gap-2 pl-0.5">
             <span className="nav-logo-tile">
@@ -323,7 +362,7 @@ export default function Navbar({
 
           {/* ---- categories + Home + Settings (ek hi segmented track) ---- */}
           {categories || user ? (
-            <div className="nav-seg md:justify-between">
+            <div className="nav-seg hidden md:flex md:justify-between">
               {categories
                 ? CATEGORIES.map((c) => (
                     <NavLink key={c.slug} to={`/category/${c.slug}`} className={pillClass}>
@@ -366,9 +405,9 @@ export default function Navbar({
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             {shopIcons ? (
               <>
-                {wishlistButton}
+                <span className="hidden md:inline-flex">{wishlistButton}</span>
                 {cartButton}
-                {trackButton}
+                <span className="hidden md:inline-flex">{trackButton}</span>
               </>
             ) : null}
             {user ? (
@@ -404,6 +443,154 @@ export default function Navbar({
         </nav>
       </div>
     </header>
+
+    {/* ---------- mobile drawer ---------- */}
+    <div className={`fixed inset-0 z-[80] md:hidden ${drawerOpen ? '' : 'pointer-events-none'}`}>
+      <Motion.button
+        type="button"
+        aria-label="Close menu"
+        onClick={closeDrawer}
+        initial={false}
+        animate={{ opacity: drawerOpen ? 1 : 0 }}
+        transition={{ duration: 0.22 }}
+        className="absolute inset-0 cursor-default bg-slate-900/50 backdrop-blur-sm"
+        tabIndex={drawerOpen ? 0 : -1}
+      />
+
+      <Motion.aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu"
+        initial={false}
+        animate={{ x: drawerOpen ? '0%' : '-102%' }}
+        transition={{ type: 'spring', stiffness: 340, damping: 34 }}
+        className="absolute inset-y-0 left-0 flex w-[86%] max-w-[19rem] flex-col overflow-y-auto bg-white shadow-2xl dark:bg-[#0b1626]"
+      >
+        {/* header */}
+        <div className="flex items-center gap-2 border-b border-slate-200/80 px-4 py-3 dark:border-white/10">
+          <Link to="/" onClick={closeDrawer} className="flex min-w-0 items-center gap-2">
+            <span className="nav-logo-tile">
+              <img src={logoUrl} alt="" width="18" height="18" className="h-4 w-4 object-contain" />
+            </span>
+            <span className="truncate font-display text-[0.98rem] font-bold text-brand-900 dark:text-white">
+              Book{' '}
+              <span className="bg-gradient-to-r from-gold-700 to-gold-500 bg-clip-text text-transparent dark:from-gold-400 dark:to-gold-200">
+                River
+              </span>
+            </span>
+          </Link>
+          <button
+            type="button"
+            onClick={closeDrawer}
+            aria-label="Close menu"
+            className="nav-icon-btn ml-auto"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* links */}
+        <div className="flex-1 px-2.5 py-3">
+          {categories ? (
+            <>
+              <p className="px-2 pb-1.5 text-[0.6rem] font-extrabold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+                Categories
+              </p>
+              {CATEGORIES.map((item) => (
+                <NavLink
+                  key={item.slug}
+                  to={`/category/${item.slug}`}
+                  onClick={closeDrawer}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between rounded-xl px-3 py-2.5 text-[0.86rem] font-semibold transition ${
+                      isActive
+                        ? 'bg-brand-50 text-brand-800 dark:bg-white/10 dark:text-white'
+                        : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/5'
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </>
+          ) : null}
+
+          <p className="mt-3 px-2 pb-1.5 text-[0.6rem] font-extrabold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+            Pages
+          </p>
+
+          {[
+            { to: '/home', label: 'Home', icon: Home },
+            { to: '/track', label: 'Track order', icon: PackageSearch },
+            { to: '/orders', label: 'Saved orders', icon: PackageSearch },
+            {
+              to: '/wishlist',
+              label: wishlistCount ? `Wishlist (${wishlistCount})` : 'Wishlist',
+              icon: Heart,
+            },
+            { to: '/cart', label: cartCount ? `Cart (${cartCount})` : 'Cart', icon: ShoppingCart },
+            { to: '/settings', label: 'Settings', icon: SettingsIcon },
+          ].map((item) => {
+            const Icon = item.icon
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                onClick={closeDrawer}
+                className={({ isActive }) =>
+                  `flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[0.86rem] font-semibold transition ${
+                    isActive
+                      ? 'bg-brand-50 text-brand-800 dark:bg-white/10 dark:text-white'
+                      : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/5'
+                  }`
+                }
+              >
+                <Icon className="h-4 w-4 shrink-0 opacity-70" />
+                {item.label}
+              </NavLink>
+            )
+          })}
+        </div>
+
+        {/* account + toggles */}
+        <div className="border-t border-slate-200/80 px-3.5 py-3 dark:border-white/10">
+          <div className="mb-2.5 flex items-center gap-2">
+            {langButton}
+            {themeButton}
+            <span className="text-[0.66rem] font-semibold text-slate-400 dark:text-slate-500">
+              Language &amp; theme
+            </span>
+          </div>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              <span className="min-w-0 flex-1 truncate text-[0.78rem] font-bold text-slate-700 dark:text-slate-200">
+                {firstName}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  closeDrawer()
+                  if (onLogout) onLogout()
+                }}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 px-3 py-1.5 text-[0.72rem] font-bold text-rose-600 dark:border-rose-400/30 dark:text-rose-300"
+              >
+                <LogOut className="h-3.5 w-3.5" /> Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/auth"
+              onClick={closeDrawer}
+              className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand-700 via-brand-600 to-gold-700 px-3 py-2.5 text-[0.8rem] font-bold text-white shadow-lg shadow-brand-700/25"
+            >
+              <UserPlus className="h-4 w-4" /> Sign Up / Login
+            </Link>
+          )}
+        </div>
+      </Motion.aside>
+    </div>
+    </>
   )
 }
 
