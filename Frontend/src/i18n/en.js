@@ -30,6 +30,7 @@ export const EN = {
   Nahi: 'No',
   'Haan, hatao': 'Yes, remove',
   'Haan, delete': 'Yes, delete',
+  abhi: 'now',
   'Haan, khali karo': 'Yes, clear it',
   'Address hata dein?': 'Remove address?',
   'Order hatao?': 'Remove order?',
@@ -318,6 +319,8 @@ export const EN_PATTERNS = [
   [/^(.+) wishlist se hatao$/i, (m) => `Remove ${m[1]} from wishlist`],
   [/^(.+) hatao$/i, (m) => `Remove ${m[1]}`],
   [/^(.+) — backend chalu hai\? dobara try karo$/i, (m) => `${m[1]} — is the backend running? Please try again.`],
+  [/^(.+) ko place hua$/i, (m) => `Placed on ${m[1]}`],
+  [/^(.+) ke naam par$/i, (m) => `Delivered to ${m[1]}`],
   [/^(\d+) books? saved — dil chaahe to cart me daal do\.?$/i, (m) => `${m[1]} ${Number(m[1]) === 1 ? 'book' : 'books'} saved — add them to the cart whenever you like.`],
 ]
 

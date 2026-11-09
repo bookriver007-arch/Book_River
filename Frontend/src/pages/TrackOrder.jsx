@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
@@ -291,6 +291,12 @@ export default function TrackOrder() {
   const meta = order ? STATUS_META[order.status] || STATUS_META.pending : null
   const stepIndex = order ? STEPS.findIndex((step) => step.key === order.status) : -1
 
+  /* jo order abhi khula hua hai wo "Old orders" list me dobara na dikhe */
+  const otherHistory = useMemo(
+    () => history.filter((entry) => entry.code !== order?.code),
+    [history, order],
+  )
+
   const copyCode = async () => {
     try {
       await navigator.clipboard.writeText(order.code)
@@ -372,14 +378,14 @@ export default function TrackOrder() {
           </button>
         </form>
 
-        {/* ---------- old orders (saved) ---------- */}
-        {history.length ? (
+        {/* ---------- old orders (saved / jo order khula hai wo chhod kar) ---------- */}
+        {otherHistory.length ? (
           <section className="mt-4 rounded-3xl border border-slate-200/80 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.04]">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="flex items-center gap-1.5 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                 <History className="h-3.5 w-3.5" /> Old orders
                 <span className="font-normal normal-case tracking-normal text-slate-400 dark:text-slate-500">
-                  ({history.length})
+                  ({otherHistory.length})
                 </span>
               </h2>
               <div className="flex items-center gap-3">
@@ -403,7 +409,7 @@ export default function TrackOrder() {
             </div>
 
             <ul className="mt-3 space-y-2">
-              {history.map((entry) => {
+              {otherHistory.map((entry) => {
                 const entryMeta = STATUS_META[entry.status] || STATUS_META.pending
                 const open = openDetail === entry.code
 
@@ -529,7 +535,7 @@ export default function TrackOrder() {
               </div>
 
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                {when(order.createdAt)} ko place hua
+                {`${when(order.createdAt)} ko place hua`}
               </p>
 
               {order.status === 'rejected' ? (
@@ -611,7 +617,7 @@ export default function TrackOrder() {
 
                 {order.customerName ? (
                   <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                    {order.customerName} ke naam par
+                    {`${order.customerName} ke naam par`}
                   </p>
                 ) : null}
 
